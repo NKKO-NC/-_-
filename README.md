@@ -1,6 +1,12 @@
-# Kalah MVP
+# Kalah Childhood Memories
+
+&#31461;&#24180;&#22238;&#25014;_&#38750;&#27954;&#26827; / Kalah &#25773;&#26827; MVP
 
 A simple browser-based Kalah / Mancala MVP built with plain HTML, CSS, and JavaScript.
+
+## Play
+
+[Play the game on GitHub Pages](https://nkko-nc.github.io/-_-/)
 
 ## Run
 
