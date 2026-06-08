@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalah &#25773;&#26827;</title>
+    <link rel="preload" as="image" href="assets/ruby-gem.png" />
+    <link rel="preload" as="image" href="assets/amethyst-gem.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-app">
+      <header class="game-header">
+        <div>
+          <p class="eyebrow">Kalah</p>
+          <h1>&#25773;&#26827;</h1>
+        </div>
+        <button class="icon-button" id="resetButton" type="button" aria-label="&#37325;&#26032;&#38283;&#22987;" title="&#37325;&#26032;&#38283;&#22987;">
+          &#8635;
+        </button>
+      </header>
+
+      <section class="score-strip" aria-label="&#20998;&#25976;">
+        <div class="player-score player-two" id="playerTwoScore">
+          <span>&#32043;&#26041;</span>
+          <strong>0</strong>
+        </div>
+        <div class="turn-orb" id="turnOrb" aria-hidden="true"></div>
+        <div class="player-score player-one active" id="playerOneScore">
+          <span>&#32005;&#26041;</span>
+          <strong>0</strong>
+        </div>
+      </section>
+
+      <section class="board-wrap" aria-label="Kalah &#25773;&#26827;&#26827;&#30436;">
+        <div class="board" id="board"></div>
+      </section>
+
+      <footer class="game-footer">
+        <p class="status" id="status" aria-live="polite"></p>
+        <div class="meta">
+          <span>6 &#31348;</span>
+          <span>&#27599;&#31348; 6 &#23376;</span>
+        </div>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

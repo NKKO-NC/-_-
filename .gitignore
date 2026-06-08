@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.log
+
+# Keep final transparent game assets in git, but skip chroma-key source exports.
+assets/*-source.png
