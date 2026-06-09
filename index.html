@@ -6,6 +6,9 @@
     <title>Kalah &#25773;&#26827;</title>
     <link rel="preload" as="image" href="assets/ruby-gem.png" />
     <link rel="preload" as="image" href="assets/amethyst-gem.png" />
+    <link rel="preload" as="image" href="assets/Coin.png" />
+    <link rel="preload" as="image" href="assets/Dragon.png" />
+    <link rel="preload" as="image" href="assets/Shield.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -49,32 +52,12 @@
       <button class="coin-toss-button" id="coinTossButton" type="button" aria-label="&#25237;&#25842;&#37504;&#24163;&#27770;&#23450;&#20808;&#25163;">
         <span class="coin-shell" id="coinShell" aria-hidden="true">
           <span class="coin-face coin-front">
-            <span class="coin-ring"></span>
-            <svg class="coin-mark dragon-mark" viewBox="0 0 120 120" role="img" aria-label="Dragon">
-              <path class="dragon-wing" d="M51 55 32 21l36 19 11-12 3 39-22-12-9 23Z" />
-              <path class="dragon-tail" d="M47 70c-16 5-27 15-23 25 3 8 16 10 27 2-8-1-14-5-12-11 2-5 9-8 17-10" />
-              <path class="dragon-body" d="M45 68c3-17 15-29 33-30 14-1 25 8 27 21-9-6-17-6-23-1 9 4 15 12 16 24-8-7-17-9-27-5-12 5-21 2-26-9Z" />
-              <path class="dragon-neck" d="M78 41c4-11 12-18 24-21l-2 11 13-5-8 13 10 5-14 4c-4 8-12 12-23 11" />
-              <path class="dragon-horn" d="M100 28l8-14-1 16" />
-              <path class="dragon-jaw" d="M95 47c5 4 11 5 17 3M78 61c7 0 12 3 15 10" />
-              <path class="dragon-claw" d="M57 79l-7 14M68 80l-2 15M80 76l5 12" />
-              <circle class="dragon-eye-setting" cx="101" cy="37" r="5.2" />
-              <circle class="dragon-eye-gem" cx="101" cy="37" r="3" />
-              <circle class="dragon-eye-spark" cx="99.9" cy="35.8" r="1" />
-            </svg>
+            <img class="coin-base" src="assets/Coin.png" alt="" aria-hidden="true" />
+            <img class="coin-emblem coin-dragon" src="assets/Dragon.png" alt="" aria-hidden="true" />
           </span>
           <span class="coin-face coin-back">
-            <span class="coin-ring"></span>
-            <svg class="coin-mark shield-mark" viewBox="0 0 120 120" role="img" aria-label="Shield and swords">
-              <path class="sword" d="M28 18l34 40-7 7-40-34 8-2 2-8Z" />
-              <path class="sword" d="M92 18L58 58l7 7 40-34-8-2-2-8Z" />
-              <path class="shield" d="M60 28l27 10v23c0 19-11 31-27 39-16-8-27-20-27-39V38l27-10Z" />
-              <path class="shield-line" d="M60 39v46M44 50h32" />
-              <circle class="guard-glow" cx="60" cy="62" r="15" />
-              <circle class="guard-setting" cx="60" cy="62" r="7" />
-              <circle class="guard-gem" cx="60" cy="62" r="4.4" />
-              <circle class="guard-spark" cx="58.5" cy="60.5" r="1.35" />
-            </svg>
+            <img class="coin-base" src="assets/Coin.png" alt="" aria-hidden="true" />
+            <img class="coin-emblem coin-shield" src="assets/Shield.png" alt="" aria-hidden="true" />
           </span>
         </span>
       </button>
