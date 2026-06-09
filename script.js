@@ -42,6 +42,8 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const particleField = document.querySelector("#particleField");
 
+let coinFlipTimer = null;
+
 const topPits = [12, 11, 10, 9, 8, 7];
 const bottomPits = [0, 1, 2, 3, 4, 5];
 const playerTwoPits = [7, 8, 9, 10, 11, 12];
@@ -334,11 +336,22 @@ async function tossCoin() {
   state.message = TEXT.coinFlipping;
   renderCoinOverlay();
 
-  coinShell.classList.remove("show-front", "show-back", "is-settled");
+  clearCoinFlipTimer();
+  coinShell.classList.remove("is-flipping", "is-settled");
+  setCoinFace("front");
   coinShell.classList.add("is-flipping");
-  coinShell.style.setProperty("--coin-spin", result === "front" ? "1800deg" : "1980deg");
+  coinShell.style.setProperty("--coin-spin", "1440deg");
+
+  let flipFrame = 0;
+  coinFlipTimer = window.setInterval(() => {
+    flipFrame += 1;
+    const nearLanding = flipFrame >= 10;
+    const visibleFace = nearLanding ? result : flipFrame % 2 === 0 ? "front" : "back";
+    setCoinFace(visibleFace);
+  }, 105);
 
   await sleep(1320);
+  clearCoinFlipTimer();
   if (token !== state.animationToken) return;
 
   state.activePlayer = firstPlayer;
@@ -347,7 +360,8 @@ async function tossCoin() {
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
 
   coinShell.classList.remove("is-flipping");
-  coinShell.classList.add(result === "front" ? "show-front" : "show-back", "is-settled");
+  setCoinFace(result);
+  coinShell.classList.add("is-settled");
   coinTossStatus.textContent = result === "front" ? TEXT.coinFront : TEXT.coinBack;
   launchParticles(coinTossOverlay, 24, firstPlayer);
 
@@ -369,10 +383,22 @@ function renderCoinOverlay() {
 }
 
 function resetCoinVisual() {
-  coinShell.classList.remove("is-flipping", "show-back", "is-settled");
-  coinShell.classList.add("show-front");
+  clearCoinFlipTimer();
+  coinShell.classList.remove("is-flipping", "is-settled");
+  setCoinFace("front");
   coinShell.style.removeProperty("--coin-spin");
   coinTossStatus.textContent = TEXT.coinReady;
+}
+
+function setCoinFace(face) {
+  coinShell.classList.toggle("show-front", face === "front");
+  coinShell.classList.toggle("show-back", face === "back");
+}
+
+function clearCoinFlipTimer() {
+  if (!coinFlipTimer) return;
+  window.clearInterval(coinFlipTimer);
+  coinFlipTimer = null;
 }
 
 function showResultOverlay() {

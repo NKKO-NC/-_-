@@ -521,7 +521,7 @@ h1 {
 }
 
 .coin-shell.show-back {
-  transform: rotateY(180deg);
+  transform: rotateY(0deg);
 }
 
 .coin-shell.is-settled {
@@ -535,8 +535,9 @@ h1 {
   place-items: center;
   border-radius: 50%;
   overflow: hidden;
-  backface-visibility: hidden;
+  backface-visibility: visible;
   border: 6px solid #f3d78f;
+  opacity: 0;
   background:
     radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.46), transparent 15%),
     linear-gradient(145deg, rgba(255, 228, 161, 0.3), rgba(0, 0, 0, 0.12));
@@ -545,6 +546,7 @@ h1 {
     inset 0 0 0 10px rgba(255, 228, 161, 0.2),
     inset -18px -22px 30px rgba(0, 0, 0, 0.2),
     inset 14px 14px 22px rgba(255, 255, 255, 0.24);
+  transition: opacity 80ms linear;
 }
 
 .coin-face::before {
@@ -561,11 +563,20 @@ h1 {
 }
 
 .coin-front {
-  transform: rotateY(0deg);
+  transform: none;
 }
 
 .coin-back {
-  transform: rotateY(180deg);
+  transform: none;
+}
+
+.coin-shell.show-front .coin-front,
+.coin-shell.show-back .coin-back {
+  opacity: 1;
+}
+
+.coin-shell.is-flipping .coin-face {
+  transition-duration: 42ms;
 }
 
 .coin-base,
@@ -806,19 +817,31 @@ h1 {
 
 @keyframes coin-flip {
   0% {
-    transform: translateY(0) rotateY(0deg) rotateX(0deg);
+    transform: translateY(0) rotateY(0deg) rotateX(0deg) scale(1);
   }
 
-  42% {
-    transform: translateY(-54px) rotateY(calc(var(--coin-spin) * 0.46)) rotateX(14deg);
+  18% {
+    transform: translateY(-42px) rotateY(86deg) rotateX(12deg) scale(1.06);
   }
 
-  76% {
-    transform: translateY(12px) rotateY(calc(var(--coin-spin) * 0.86)) rotateX(-7deg);
+  36% {
+    transform: translateY(-54px) rotateY(182deg) rotateX(14deg) scale(1.02);
+  }
+
+  54% {
+    transform: translateY(-30px) rotateY(274deg) rotateX(-5deg) scale(1.05);
+  }
+
+  72% {
+    transform: translateY(12px) rotateY(366deg) rotateX(-8deg) scale(0.98);
+  }
+
+  88% {
+    transform: translateY(-5px) rotateY(calc(var(--coin-spin) - 90deg)) rotateX(4deg) scale(1.02);
   }
 
   100% {
-    transform: translateY(0) rotateY(var(--coin-spin)) rotateX(0deg);
+    transform: translateY(0) rotateY(var(--coin-spin)) rotateX(0deg) scale(1);
   }
 }
 
