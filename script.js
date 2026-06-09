@@ -29,7 +29,8 @@ const statusEl = document.querySelector("#status");
 const resetButton = document.querySelector("#resetButton");
 const playerOneScore = document.querySelector("#playerOneScore");
 const playerTwoScore = document.querySelector("#playerTwoScore");
-const turnOrb = document.querySelector("#turnOrb");
+const turnIndicator = document.querySelector("#turnIndicator");
+const turnEmblem = document.querySelector("#turnEmblem");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
 const coinTossButton = document.querySelector("#coinTossButton");
 const coinShell = document.querySelector("#coinShell");
@@ -41,8 +42,6 @@ const resultTitle = document.querySelector("#resultTitle");
 const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const particleField = document.querySelector("#particleField");
-
-let coinFlipTimer = null;
 
 const topPits = [12, 11, 10, 9, 8, 7];
 const bottomPits = [0, 1, 2, 3, 4, 5];
@@ -319,9 +318,31 @@ function render() {
   playerTwoScore.querySelector("strong").textContent = getStoneCount(PLAYER_TWO_STORE);
   playerOneScore.classList.toggle("active", state.activePlayer === 1 && !state.gameOver);
   playerTwoScore.classList.toggle("active", state.activePlayer === 2 && !state.gameOver);
-  turnOrb.classList.toggle("purple", state.activePlayer === 2);
+  renderTurnIndicator();
   statusEl.textContent = state.message;
   renderCoinOverlay();
+}
+
+function renderTurnIndicator() {
+  const showingTurn = !state.awaitingCoinToss && !state.gameOver;
+  const activePlayer = showingTurn ? state.activePlayer : 0;
+
+  document.body.classList.toggle("turn-red", activePlayer === 1);
+  document.body.classList.toggle("turn-purple", activePlayer === 2);
+  turnIndicator.classList.toggle("red", activePlayer === 1);
+  turnIndicator.classList.toggle("purple", activePlayer === 2);
+  turnIndicator.classList.toggle("pending", !showingTurn);
+
+  if (activePlayer === 2) {
+    turnEmblem.src = "assets/Shield.png";
+    turnIndicator.setAttribute("aria-label", `${TEXT.purple}${TEXT.turn}`);
+  } else if (activePlayer === 1) {
+    turnEmblem.src = "assets/Dragon.png";
+    turnIndicator.setAttribute("aria-label", `${TEXT.red}${TEXT.turn}`);
+  } else {
+    turnEmblem.src = "assets/Coin.png";
+    turnIndicator.setAttribute("aria-label", state.gameOver ? getEndMessage() : TEXT.coinReady);
+  }
 }
 
 async function tossCoin() {
@@ -336,22 +357,12 @@ async function tossCoin() {
   state.message = TEXT.coinFlipping;
   renderCoinOverlay();
 
-  clearCoinFlipTimer();
-  coinShell.classList.remove("is-flipping", "is-settled");
-  setCoinFace("front");
+  coinShell.classList.remove("is-flipping", "is-settled", "show-front", "show-back");
+  coinShell.classList.add("show-front");
   coinShell.classList.add("is-flipping");
-  coinShell.style.setProperty("--coin-spin", "1440deg");
-
-  let flipFrame = 0;
-  coinFlipTimer = window.setInterval(() => {
-    flipFrame += 1;
-    const nearLanding = flipFrame >= 10;
-    const visibleFace = nearLanding ? result : flipFrame % 2 === 0 ? "front" : "back";
-    setCoinFace(visibleFace);
-  }, 105);
+  coinShell.style.setProperty("--coin-spin", result === "front" ? "1800deg" : "1980deg");
 
   await sleep(1320);
-  clearCoinFlipTimer();
   if (token !== state.animationToken) return;
 
   state.activePlayer = firstPlayer;
@@ -360,7 +371,8 @@ async function tossCoin() {
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
 
   coinShell.classList.remove("is-flipping");
-  setCoinFace(result);
+  coinShell.classList.toggle("show-front", result === "front");
+  coinShell.classList.toggle("show-back", result === "back");
   coinShell.classList.add("is-settled");
   coinTossStatus.textContent = result === "front" ? TEXT.coinFront : TEXT.coinBack;
   launchParticles(coinTossOverlay, 24, firstPlayer);
@@ -383,22 +395,10 @@ function renderCoinOverlay() {
 }
 
 function resetCoinVisual() {
-  clearCoinFlipTimer();
-  coinShell.classList.remove("is-flipping", "is-settled");
-  setCoinFace("front");
+  coinShell.classList.remove("is-flipping", "is-settled", "show-back");
+  coinShell.classList.add("show-front");
   coinShell.style.removeProperty("--coin-spin");
   coinTossStatus.textContent = TEXT.coinReady;
-}
-
-function setCoinFace(face) {
-  coinShell.classList.toggle("show-front", face === "front");
-  coinShell.classList.toggle("show-back", face === "back");
-}
-
-function clearCoinFlipTimer() {
-  if (!coinFlipTimer) return;
-  window.clearInterval(coinFlipTimer);
-  coinFlipTimer = null;
 }
 
 function showResultOverlay() {
@@ -481,9 +481,7 @@ function createPit(index, owner, column, row) {
   }
 
   button.innerHTML = `
-    <span class="label">${visibleNumber}</span>
     <span class="stones">${createStones(index, state.board[index], owner, "pit")}</span>
-    <span class="pit-count">${count}</span>
   `;
 
   return button;
@@ -493,13 +491,14 @@ function createStore(index, label, className) {
   const store = document.createElement("div");
   const owner = getOwner(index);
   const count = getStoneCount(index);
+  const sigil = owner === 1 ? "assets/Dragon.png" : "assets/Shield.png";
 
   store.className = `store cell ${className}${state.lastDropIndex === index ? " just-dropped" : ""}`;
   store.dataset.index = String(index);
   store.setAttribute("role", "group");
   store.setAttribute("aria-label", `${label}\uff0c${count} ${TEXT.stones}`);
   store.innerHTML = `
-    <span class="label">${label}</span>
+    <img class="store-sigil" src="${sigil}" alt="" aria-hidden="true" />
     <span class="stones">${createStones(index, state.board[index], owner, "store")}</span>
     <span class="store-count">${count}</span>
   `;

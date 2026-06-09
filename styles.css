@@ -38,6 +38,22 @@ body {
     linear-gradient(180deg, #0b0a0c 0%, #030304 100%);
 }
 
+body.turn-red {
+  background-image:
+    radial-gradient(circle at 50% 8%, rgba(215, 25, 50, 0.28), transparent 28%),
+    linear-gradient(135deg, rgba(255, 228, 161, 0.08), transparent 28%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
+    linear-gradient(180deg, #120508 0%, #030304 100%);
+}
+
+body.turn-purple {
+  background-image:
+    radial-gradient(circle at 50% 8%, rgba(143, 50, 217, 0.3), transparent 28%),
+    linear-gradient(315deg, rgba(82, 199, 184, 0.06), transparent 34%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
+    linear-gradient(180deg, #0d0614 0%, #030304 100%);
+}
+
 button,
 input,
 select,
@@ -55,13 +71,24 @@ button {
   margin: 0 auto;
   padding: 28px 22px 32px;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto auto 1fr;
   gap: 18px;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .game-header,
-.score-strip,
-.game-footer {
+.score-strip {
   width: min(100%, 1080px);
   margin: 0 auto;
 }
@@ -178,24 +205,62 @@ h1 {
   border-color: var(--gold-bright);
 }
 
-.turn-orb {
-  width: 58px;
+.turn-indicator {
+  width: 78px;
   min-height: 64px;
+  display: grid;
+  place-items: center;
   border: 1px solid var(--gold);
-  border-radius: 999px;
+  border-radius: 8px;
   background:
-    linear-gradient(160deg, rgba(255, 228, 161, 0.2), transparent 46%),
-    linear-gradient(180deg, var(--ruby), #5f0612);
+    radial-gradient(circle at 50% 45%, rgba(255, 228, 161, 0.18), transparent 58%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(0, 0, 0, 0.48)),
+    rgba(0, 0, 0, 0.68);
   box-shadow:
-    inset 0 0 18px rgba(255, 255, 255, 0.28),
+    inset 0 0 0 1px rgba(255, 228, 161, 0.14),
+    inset 0 -14px 24px rgba(0, 0, 0, 0.38),
     0 12px 26px var(--shadow);
-  transition: background 180ms ease, box-shadow 180ms ease;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-.turn-orb.purple {
+.turn-indicator img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.48));
+  opacity: 0.9;
+}
+
+.turn-indicator.red {
+  border-color: rgba(255, 228, 161, 0.92);
   background:
-    linear-gradient(160deg, rgba(255, 228, 161, 0.2), transparent 46%),
-    linear-gradient(180deg, var(--amethyst), #321056);
+    radial-gradient(circle at 50% 45%, rgba(215, 25, 50, 0.42), transparent 58%),
+    linear-gradient(145deg, rgba(255, 228, 161, 0.11), rgba(0, 0, 0, 0.5)),
+    rgba(18, 4, 7, 0.78);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 228, 161, 0.2),
+    0 0 0 1px rgba(255, 228, 161, 0.15),
+    0 14px 30px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(215, 25, 50, 0.18);
+}
+
+.turn-indicator.purple {
+  border-color: rgba(255, 228, 161, 0.92);
+  background:
+    radial-gradient(circle at 50% 45%, rgba(143, 50, 217, 0.46), transparent 58%),
+    linear-gradient(145deg, rgba(255, 228, 161, 0.11), rgba(0, 0, 0, 0.5)),
+    rgba(12, 5, 18, 0.78);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 228, 161, 0.2),
+    0 0 0 1px rgba(255, 228, 161, 0.15),
+    0 14px 30px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(143, 50, 217, 0.2);
+}
+
+.turn-indicator.pending img {
+  width: 46px;
+  height: 46px;
+  opacity: 0.72;
 }
 
 .board-wrap {
@@ -266,14 +331,16 @@ h1 {
   z-index: 1;
   border: 1px solid rgba(255, 228, 161, 0.54);
   background:
-    radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, 0.09), transparent 42%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(0, 0, 0, 0.46)),
+    radial-gradient(ellipse at 50% 56%, rgba(0, 0, 0, 0.74) 0%, rgba(0, 0, 0, 0.5) 35%, transparent 62%),
+    radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.12), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.56)),
     var(--glass);
   box-shadow:
-    inset 0 0 0 2px rgba(0, 0, 0, 0.58),
-    inset 0 -18px 30px rgba(0, 0, 0, 0.46),
-    inset 0 18px 34px rgba(255, 255, 255, 0.035),
-    0 16px 26px rgba(0, 0, 0, 0.3);
+    inset 0 0 0 2px rgba(0, 0, 0, 0.62),
+    inset 0 -26px 42px rgba(0, 0, 0, 0.64),
+    inset 0 18px 34px rgba(255, 255, 255, 0.045),
+    inset 0 0 38px rgba(0, 0, 0, 0.34),
+    0 18px 28px rgba(0, 0, 0, 0.34);
   overflow: hidden;
 }
 
@@ -281,9 +348,12 @@ h1 {
 .store::before {
   content: "";
   position: absolute;
-  inset: 7px;
-  border: 1px solid var(--gold-muted);
+  inset: 8px;
+  border: 1px solid rgba(217, 180, 100, 0.42);
   border-radius: inherit;
+  box-shadow:
+    inset 0 9px 18px rgba(255, 255, 255, 0.05),
+    inset 0 -18px 24px rgba(0, 0, 0, 0.36);
   pointer-events: none;
 }
 
@@ -291,11 +361,12 @@ h1 {
 .store::after {
   content: "";
   position: absolute;
-  inset: 14px 12px auto;
-  height: 34%;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  inset: 16px 14px auto;
+  height: 42%;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 50%;
-  opacity: 0.75;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent);
+  opacity: 0.72;
   pointer-events: none;
 }
 
@@ -334,20 +405,36 @@ h1 {
 
 .store {
   min-height: 100%;
-  border-radius: 40px;
+  border-radius: 44px;
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.68),
+    inset 0 -36px 54px rgba(0, 0, 0, 0.68),
+    inset 0 22px 42px rgba(255, 255, 255, 0.055),
+    0 19px 32px rgba(0, 0, 0, 0.38);
 }
 
 .store.p2-store {
   grid-column: 1;
   grid-row: 1 / span 2;
+  border-color: rgba(197, 121, 255, 0.58);
+  background:
+    radial-gradient(ellipse at 50% 52%, rgba(143, 50, 217, 0.2), transparent 58%),
+    radial-gradient(ellipse at 50% 62%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.44) 48%, transparent 72%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58)),
+    var(--glass-strong);
 }
 
 .store.p1-store {
   grid-column: 8;
   grid-row: 1 / span 2;
+  border-color: rgba(255, 82, 101, 0.52);
+  background:
+    radial-gradient(ellipse at 50% 52%, rgba(215, 25, 50, 0.18), transparent 58%),
+    radial-gradient(ellipse at 50% 62%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.44) 48%, transparent 72%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58)),
+    var(--glass-strong);
 }
 
-.pit-count,
 .store-count {
   position: absolute;
   z-index: 3;
@@ -369,6 +456,7 @@ h1 {
 }
 
 .store-count {
+  z-index: 4;
   right: 50%;
   bottom: 14px;
   transform: translateX(50%);
@@ -377,15 +465,37 @@ h1 {
   font-size: 1.15rem;
 }
 
-.label {
+.store-sigil {
   position: absolute;
-  z-index: 3;
+  z-index: 1;
   left: 50%;
-  top: 13px;
-  transform: translateX(-50%);
-  color: rgba(255, 228, 161, 0.86);
-  font-size: 0.8rem;
-  white-space: nowrap;
+  top: 48%;
+  width: 132%;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.12;
+  transform: translate(-50%, -50%);
+  filter:
+    saturate(0.92)
+    drop-shadow(0 12px 18px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+.p1-store .store-sigil {
+  opacity: 0.13;
+  filter:
+    saturate(1)
+    drop-shadow(0 0 16px rgba(215, 25, 50, 0.22))
+    drop-shadow(0 12px 18px rgba(0, 0, 0, 0.5));
+}
+
+.p2-store .store-sigil {
+  width: 150%;
+  opacity: 0.12;
+  filter:
+    saturate(0.95)
+    drop-shadow(0 0 18px rgba(143, 50, 217, 0.24))
+    drop-shadow(0 12px 18px rgba(0, 0, 0, 0.5));
 }
 
 .stones {
@@ -501,6 +611,7 @@ h1 {
 
 .coin-shell {
   --coin-spin: 1800deg;
+  --coin-depth: 8px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -513,7 +624,7 @@ h1 {
 }
 
 .coin-shell.is-flipping {
-  animation: coin-flip 1320ms cubic-bezier(0.12, 0.72, 0.24, 1) forwards;
+  animation: coin-flip 1320ms cubic-bezier(0.16, 0.72, 0.22, 1) forwards;
 }
 
 .coin-toss-overlay.is-visible .coin-shell.show-front:not(.is-flipping):not(.is-settled) {
@@ -521,7 +632,7 @@ h1 {
 }
 
 .coin-shell.show-back {
-  transform: rotateY(0deg);
+  transform: rotateY(180deg);
 }
 
 .coin-shell.is-settled {
@@ -534,49 +645,49 @@ h1 {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  overflow: hidden;
-  backface-visibility: visible;
-  border: 6px solid #f3d78f;
-  opacity: 0;
-  background:
-    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.46), transparent 15%),
-    linear-gradient(145deg, rgba(255, 228, 161, 0.3), rgba(0, 0, 0, 0.12));
+  overflow: visible;
+  backface-visibility: hidden;
+  border: 0;
+  background: transparent;
   box-shadow:
-    inset 0 0 0 4px rgba(110, 84, 39, 0.34),
-    inset 0 0 0 10px rgba(255, 228, 161, 0.2),
-    inset -18px -22px 30px rgba(0, 0, 0, 0.2),
-    inset 14px 14px 22px rgba(255, 255, 255, 0.24);
-  transition: opacity 80ms linear;
+    inset 0 0 0 6px rgba(243, 215, 143, 0.74),
+    inset -16px -20px 28px rgba(0, 0, 0, 0.2),
+    inset 14px 14px 22px rgba(255, 255, 255, 0.18);
 }
 
 .coin-face::before {
   content: "";
   position: absolute;
-  inset: 8px;
+  inset: 4px;
   z-index: 3;
   border-radius: 50%;
-  border: 1px solid rgba(255, 228, 161, 0.64);
+  border: 1px solid rgba(255, 228, 161, 0.6);
   background:
-    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.16), transparent 18%),
-    radial-gradient(circle, transparent 68%, rgba(255, 228, 161, 0.18) 70%, transparent 72%);
+    radial-gradient(circle at 31% 23%, rgba(255, 255, 255, 0.18), transparent 18%),
+    radial-gradient(circle, transparent 69%, rgba(255, 228, 161, 0.18) 71%, transparent 73%);
   pointer-events: none;
 }
 
 .coin-front {
-  transform: none;
+  transform: translateZ(var(--coin-depth));
 }
 
 .coin-back {
-  transform: none;
+  transform: rotateY(180deg) translateZ(var(--coin-depth));
 }
 
-.coin-shell.show-front .coin-front,
-.coin-shell.show-back .coin-back {
-  opacity: 1;
-}
-
-.coin-shell.is-flipping .coin-face {
-  transition-duration: 42ms;
+.coin-edge {
+  position: absolute;
+  inset: 2.5%;
+  border-radius: 50%;
+  transform: translateZ(0);
+  background:
+    repeating-conic-gradient(from 0deg, #f4d985 0deg 5deg, #8f6e2a 5deg 9deg, #f8e4a4 9deg 12deg),
+    radial-gradient(circle, transparent 63%, rgba(255, 228, 161, 0.78) 65%, rgba(76, 55, 18, 0.9) 72%, transparent 74%);
+  box-shadow:
+    inset 0 0 0 10px rgba(121, 83, 22, 0.28),
+    0 0 0 5px rgba(243, 215, 143, 0.7);
+  opacity: 0.86;
 }
 
 .coin-base,
@@ -820,24 +931,24 @@ h1 {
     transform: translateY(0) rotateY(0deg) rotateX(0deg) scale(1);
   }
 
-  18% {
-    transform: translateY(-42px) rotateY(86deg) rotateX(12deg) scale(1.06);
+  22% {
+    transform: translateY(-34px) rotateY(540deg) rotateX(13deg) scale(1.05);
   }
 
-  36% {
-    transform: translateY(-54px) rotateY(182deg) rotateX(14deg) scale(1.02);
+  48% {
+    transform: translateY(-58px) rotateY(990deg) rotateX(16deg) scale(1.03);
   }
 
-  54% {
-    transform: translateY(-30px) rotateY(274deg) rotateX(-5deg) scale(1.05);
+  68% {
+    transform: translateY(-22px) rotateY(1350deg) rotateX(-8deg) scale(1.04);
   }
 
-  72% {
-    transform: translateY(12px) rotateY(366deg) rotateX(-8deg) scale(0.98);
+  84% {
+    transform: translateY(10px) rotateY(1620deg) rotateX(5deg) scale(0.98);
   }
 
-  88% {
-    transform: translateY(-5px) rotateY(calc(var(--coin-spin) - 90deg)) rotateX(4deg) scale(1.02);
+  93% {
+    transform: translateY(-6px) rotateY(calc(var(--coin-spin) - 72deg)) rotateX(2deg) scale(1.015);
   }
 
   100% {
@@ -966,38 +1077,11 @@ h1 {
   }
 }
 
-.game-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  color: var(--muted);
-}
-
 .status {
   min-height: 1.5rem;
   margin: 0;
   color: var(--text);
   font-size: 1rem;
-}
-
-.meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.meta span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 4px 10px;
-  border: 1px solid rgba(217, 180, 100, 0.28);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.36);
-  color: var(--muted);
-  font-size: 0.86rem;
 }
 
 @media (max-width: 760px) {
@@ -1011,7 +1095,7 @@ h1 {
   }
 
   .score-strip {
-    grid-template-columns: 1fr 48px 1fr;
+    grid-template-columns: 1fr 58px 1fr;
     gap: 8px;
   }
 
@@ -1028,9 +1112,14 @@ h1 {
     font-size: 1.45rem;
   }
 
-  .turn-orb {
-    width: 48px;
+  .turn-indicator {
+    width: 58px;
     min-height: 58px;
+  }
+
+  .turn-indicator img {
+    width: 42px;
+    height: 42px;
   }
 
   .board {
@@ -1044,24 +1133,10 @@ h1 {
     min-height: 84px;
   }
 
-  .pit-count {
-    right: 5px;
-    bottom: 5px;
-    min-width: 25px;
-    height: 23px;
-    padding: 0 6px;
-    font-size: 0.8rem;
-  }
-
   .store-count {
     min-width: 34px;
     height: 28px;
     font-size: 0.96rem;
-  }
-
-  .label {
-    top: 9px;
-    font-size: 0.7rem;
   }
 
   .stones {
@@ -1070,15 +1145,6 @@ h1 {
 
   .store .stones {
     inset: 16% 18% 24%;
-  }
-
-  .game-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .meta {
-    justify-content: flex-start;
   }
 
   .coin-toss-button {
@@ -1113,10 +1179,6 @@ h1 {
 
   .pit {
     min-height: 72px;
-  }
-
-  .label {
-    display: none;
   }
 
   .stone {
