@@ -28,7 +28,9 @@
           <span>&#32043;&#26041;</span>
           <strong>0</strong>
         </div>
-        <div class="turn-orb" id="turnOrb" aria-hidden="true"></div>
+        <div class="turn-indicator" id="turnIndicator" aria-live="polite">
+          <img id="turnEmblem" src="assets/Coin.png" alt="" aria-hidden="true" />
+        </div>
         <div class="player-score player-one active" id="playerOneScore">
           <span>&#32005;&#26041;</span>
           <strong>0</strong>
@@ -39,18 +41,13 @@
         <div class="board" id="board"></div>
       </section>
 
-      <footer class="game-footer">
-        <p class="status" id="status" aria-live="polite"></p>
-        <div class="meta">
-          <span>6 &#31348;</span>
-          <span>&#27599;&#31348; 6 &#23376;</span>
-        </div>
-      </footer>
+      <p class="status sr-only" id="status" aria-live="polite"></p>
     </main>
 
     <div class="coin-toss-overlay" id="coinTossOverlay" aria-live="polite">
       <button class="coin-toss-button" id="coinTossButton" type="button" aria-label="&#25237;&#25842;&#37504;&#24163;&#27770;&#23450;&#20808;&#25163;">
         <span class="coin-shell" id="coinShell" aria-hidden="true">
+          <span class="coin-edge"></span>
           <span class="coin-face coin-front">
             <img class="coin-base" src="assets/Coin.png" alt="" aria-hidden="true" />
             <img class="coin-emblem coin-dragon" src="assets/Dragon.png" alt="" aria-hidden="true" />
