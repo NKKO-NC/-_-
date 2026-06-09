@@ -173,6 +173,11 @@ h1 {
     rgba(0, 0, 0, 0.6);
 }
 
+.player-score.winner-pop {
+  animation: winner-score-pop 760ms cubic-bezier(0.16, 0.82, 0.28, 1) both;
+  border-color: var(--gold-bright);
+}
+
 .turn-orb {
   width: 58px;
   min-height: 64px;
@@ -249,6 +254,10 @@ h1 {
     inset 0 0 0 1px rgba(255, 228, 161, 0.28),
     inset 0 0 78px rgba(0, 0, 0, 0.58),
     0 0 34px rgba(217, 180, 100, 0.08);
+}
+
+.board.is-locked {
+  filter: saturate(0.72) brightness(0.72);
 }
 
 .pit,
@@ -442,6 +451,407 @@ h1 {
   will-change: transform, filter;
 }
 
+.coin-toss-overlay,
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 228, 161, 0.14), transparent 34%),
+    rgba(0, 0, 0, 0.68);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.coin-toss-overlay {
+  overflow: hidden;
+}
+
+.coin-toss-overlay.is-visible,
+.result-overlay:not([hidden]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.coin-toss-button {
+  width: 210px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  perspective: 900px;
+}
+
+.coin-toss-button:disabled {
+  cursor: default;
+}
+
+.coin-toss-button:focus-visible {
+  outline: 3px solid rgba(82, 199, 184, 0.78);
+  outline-offset: 9px;
+}
+
+.coin-shell {
+  --coin-spin: 1800deg;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) rotateX(0deg);
+  filter:
+    drop-shadow(0 26px 28px rgba(0, 0, 0, 0.46))
+    drop-shadow(0 0 22px rgba(255, 228, 161, 0.24));
+}
+
+.coin-shell.is-flipping {
+  animation: coin-flip 1320ms cubic-bezier(0.12, 0.72, 0.24, 1) forwards;
+}
+
+.coin-toss-overlay.is-visible .coin-shell.show-front:not(.is-flipping):not(.is-settled) {
+  animation: coin-ready-pulse 1500ms ease-in-out infinite;
+}
+
+.coin-shell.show-back {
+  transform: rotateY(180deg);
+}
+
+.coin-shell.is-settled {
+  animation: coin-settle 420ms cubic-bezier(0.16, 0.82, 0.28, 1) both;
+}
+
+.coin-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  border: 7px solid #f3d78f;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.82), transparent 9%),
+    radial-gradient(circle at 38% 36%, rgba(255, 255, 255, 0.24), transparent 17%),
+    repeating-conic-gradient(from 5deg, rgba(255, 228, 161, 0.22) 0deg 8deg, rgba(94, 79, 60, 0.13) 8deg 13deg),
+    linear-gradient(145deg, #f0f0ef, #8c9098 52%, #f7f1df 100%);
+  box-shadow:
+    inset 0 0 0 7px rgba(110, 84, 39, 0.36),
+    inset 0 0 0 16px rgba(255, 228, 161, 0.28),
+    inset -22px -28px 34px rgba(0, 0, 0, 0.27),
+    inset 18px 18px 26px rgba(255, 255, 255, 0.52);
+}
+
+.coin-face::before {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(110, 84, 39, 0.5);
+  background:
+    repeating-conic-gradient(from 2deg, transparent 0deg 10deg, rgba(217, 180, 100, 0.28) 10deg 12deg),
+    radial-gradient(circle, transparent 58%, rgba(110, 84, 39, 0.22) 59%, transparent 61%);
+}
+
+.coin-front {
+  transform: rotateY(0deg);
+}
+
+.coin-back {
+  transform: rotateY(180deg);
+}
+
+.coin-ring {
+  position: absolute;
+  inset: 25px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 228, 161, 0.68);
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.22),
+    0 0 14px rgba(255, 228, 161, 0.18);
+}
+
+.coin-mark {
+  position: relative;
+  z-index: 2;
+  width: 64%;
+  height: 64%;
+  fill: rgba(68, 66, 72, 0.94);
+  stroke: rgba(58, 49, 35, 0.9);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter:
+    drop-shadow(0 2px 0 rgba(255, 255, 255, 0.28))
+    drop-shadow(0 7px 6px rgba(0, 0, 0, 0.28));
+}
+
+.dragon-mark .dragon-wing {
+  fill: rgba(68, 68, 78, 0.82);
+  stroke: rgba(52, 43, 31, 0.9);
+  stroke-width: 3.4;
+}
+
+.dragon-mark .dragon-body,
+.dragon-mark .dragon-neck {
+  fill: rgba(45, 47, 56, 0.97);
+  stroke: rgba(50, 41, 29, 0.94);
+  stroke-width: 3.8;
+}
+
+.dragon-mark .dragon-tail,
+.dragon-mark .dragon-horn,
+.dragon-mark .dragon-jaw,
+.dragon-mark .dragon-claw {
+  fill: none;
+  stroke: rgba(45, 47, 56, 0.98);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dragon-mark .dragon-horn,
+.dragon-mark .dragon-jaw,
+.dragon-mark .dragon-claw {
+  stroke-width: 4;
+}
+
+.dragon-eye-setting {
+  fill: rgba(44, 30, 18, 0.96);
+  stroke: rgba(255, 228, 161, 0.82);
+  stroke-width: 2.4;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.28))
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.46));
+}
+
+.dragon-eye-gem {
+  fill: #c70f26;
+  stroke: rgba(74, 0, 10, 0.72);
+  stroke-width: 1.2;
+  filter:
+    drop-shadow(0 0 5px rgba(255, 58, 76, 0.84))
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.42));
+}
+
+.dragon-eye-spark {
+  fill: rgba(255, 225, 225, 0.96);
+  stroke: none;
+}
+
+.shield-mark .sword {
+  fill: rgba(214, 218, 224, 0.94);
+}
+
+.shield-mark .shield {
+  fill: rgba(62, 65, 74, 0.96);
+}
+
+.shield-mark .shield-line {
+  fill: none;
+  stroke: rgba(255, 228, 161, 0.72);
+  stroke-width: 5;
+}
+
+.shield-mark .guard-glow {
+  fill: rgba(180, 75, 255, 0.28);
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 0 12px rgba(190, 92, 255, 0.84));
+  animation: guard-gem-pulse 1400ms ease-in-out infinite;
+}
+
+.shield-mark .guard-setting {
+  fill: rgba(43, 28, 54, 0.98);
+  stroke: rgba(255, 228, 161, 0.78);
+  stroke-width: 2.4;
+  filter:
+    drop-shadow(0 2px 2px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 0 6px rgba(255, 228, 161, 0.18));
+}
+
+.shield-mark .guard-gem {
+  fill: #a93dff;
+  stroke: rgba(52, 13, 83, 0.78);
+  stroke-width: 1.4;
+  filter:
+    drop-shadow(0 0 7px rgba(196, 121, 255, 0.94))
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.38));
+}
+
+.shield-mark .guard-spark {
+  fill: rgba(246, 224, 255, 0.98);
+  stroke: none;
+}
+
+.coin-toss-status {
+  position: fixed;
+  left: 50%;
+  top: calc(50% + 142px);
+  width: min(86vw, 420px);
+  margin: 0;
+  transform: translateX(-50%);
+  color: var(--gold-bright);
+  text-align: center;
+  font-size: 1.08rem;
+  text-shadow:
+    0 2px 14px rgba(0, 0, 0, 0.82),
+    0 0 12px rgba(255, 228, 161, 0.32);
+  animation: toss-hint-pulse 1500ms ease-in-out infinite;
+}
+
+.coin-toss-status::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: min(54%, 180px);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 228, 161, 0.78), transparent);
+  box-shadow: 0 0 10px rgba(255, 228, 161, 0.42);
+}
+
+.result-overlay[hidden] {
+  display: none;
+}
+
+.result-panel {
+  position: relative;
+  width: min(92vw, 440px);
+  min-height: 292px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 14px;
+  padding: 34px 30px 30px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 228, 161, 0.64);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.22)),
+    rgba(4, 4, 6, 0.94);
+  box-shadow:
+    0 34px 74px rgba(0, 0, 0, 0.58),
+    inset 0 0 0 1px rgba(255, 228, 161, 0.16);
+  transform: translateY(18px) scale(0.94);
+  opacity: 0;
+}
+
+.result-panel.is-visible {
+  animation: result-pop 520ms cubic-bezier(0.16, 0.82, 0.28, 1) forwards;
+}
+
+.result-panel.winner-red {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 228, 161, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(215, 25, 50, 0.48), rgba(0, 0, 0, 0.32)),
+    rgba(18, 4, 7, 0.96);
+}
+
+.result-panel.winner-purple {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 228, 161, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(143, 50, 217, 0.48), rgba(0, 0, 0, 0.32)),
+    rgba(12, 5, 18, 0.96);
+}
+
+.result-panel.winner-draw {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 228, 161, 0.2), transparent 36%),
+    linear-gradient(145deg, rgba(82, 199, 184, 0.26), rgba(0, 0, 0, 0.32)),
+    rgba(5, 13, 15, 0.96);
+}
+
+.result-kicker,
+.result-score {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+
+.result-kicker {
+  color: var(--gold-bright);
+  font-size: 0.86rem;
+  letter-spacing: 0.16em;
+}
+
+.result-panel h2 {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.result-score {
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.result-button {
+  position: relative;
+  z-index: 2;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 228, 161, 0.72);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 228, 161, 0.24), rgba(255, 255, 255, 0.03)),
+    rgba(0, 0, 0, 0.56);
+  color: var(--gold-bright);
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.28);
+}
+
+.result-button:hover {
+  border-color: var(--gold-bright);
+  filter: brightness(1.08);
+}
+
+.particle-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  z-index: 4;
+  display: block;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 12px rgba(255, 228, 161, 0.62);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: particle-burst 900ms ease-out forwards;
+}
+
+.particle.red {
+  background: #ff5265;
+  box-shadow: 0 0 14px rgba(255, 82, 101, 0.72);
+}
+
+.particle.purple {
+  background: #c579ff;
+  box-shadow: 0 0 14px rgba(197, 121, 255, 0.72);
+}
+
+.particle.gold {
+  background: var(--gold-bright);
+}
+
 @keyframes stone-drop {
   0% {
     opacity: 0.38;
@@ -473,6 +883,128 @@ h1 {
     filter:
       drop-shadow(var(--shadow-x, 0) var(--shadow-y, 7px) 8px rgba(0, 0, 0, 0.56))
       drop-shadow(0 0 5px rgba(255, 255, 255, 0.14));
+  }
+}
+
+@keyframes coin-flip {
+  0% {
+    transform: translateY(0) rotateY(0deg) rotateX(0deg);
+  }
+
+  42% {
+    transform: translateY(-54px) rotateY(calc(var(--coin-spin) * 0.46)) rotateX(14deg);
+  }
+
+  76% {
+    transform: translateY(12px) rotateY(calc(var(--coin-spin) * 0.86)) rotateX(-7deg);
+  }
+
+  100% {
+    transform: translateY(0) rotateY(var(--coin-spin)) rotateX(0deg);
+  }
+}
+
+@keyframes coin-ready-pulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter:
+      drop-shadow(0 26px 28px rgba(0, 0, 0, 0.46))
+      drop-shadow(0 0 22px rgba(255, 228, 161, 0.24));
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1.025);
+    filter:
+      drop-shadow(0 31px 31px rgba(0, 0, 0, 0.44))
+      drop-shadow(0 0 32px rgba(255, 228, 161, 0.42));
+  }
+}
+
+@keyframes guard-gem-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 0.98;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes toss-hint-pulse {
+  0%,
+  100% {
+    opacity: 0.86;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+  }
+}
+
+@keyframes coin-settle {
+  0% {
+    scale: 1;
+  }
+
+  48% {
+    scale: 1.08;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes result-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+
+  72% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.025);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes winner-score-pop {
+  0% {
+    transform: scale(1);
+  }
+
+  42% {
+    transform: scale(1.055);
+    box-shadow:
+      inset 0 0 26px rgba(255, 255, 255, 0.06),
+      0 0 0 2px rgba(255, 228, 161, 0.28),
+      0 18px 38px rgba(0, 0, 0, 0.34);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes particle-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.58) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.12) rotate(var(--spin));
   }
 }
 
@@ -607,6 +1139,24 @@ h1 {
   .meta {
     justify-content: flex-start;
   }
+
+  .coin-toss-button {
+    width: 168px;
+  }
+
+  .coin-toss-status {
+    top: calc(50% + 116px);
+    font-size: 0.98rem;
+  }
+
+  .result-panel {
+    min-height: 258px;
+    padding: 28px 22px 24px;
+  }
+
+  .result-panel h2 {
+    font-size: 1.85rem;
+  }
 }
 
 @media (max-width: 420px) {
@@ -634,5 +1184,13 @@ h1 {
 
   .store .stone {
     width: 44%;
+  }
+
+  .coin-toss-button {
+    width: 142px;
+  }
+
+  .coin-toss-status {
+    top: calc(50% + 102px);
   }
 }

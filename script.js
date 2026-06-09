@@ -16,6 +16,12 @@ const TEXT = {
   store: "\u91d1\u5eab",
   pit: "\u7a74",
   stones: "\u5b50",
+  coinReady: "\u9ede\u64ca\u9280\u5e63\u6c7a\u5b9a\u5148\u624b",
+  coinFlipping: "\u9280\u5e63\u7ffb\u8f49\u4e2d",
+  coinFront: "\u6b63\u9762\u897f\u6d0b\u9f8d\uff0c\u7d05\u65b9\u5148\u624b",
+  coinBack: "\u53cd\u9762\u76fe\u528d\uff0c\u7d2b\u65b9\u5148\u624b",
+  result: "\u7d50\u7b97",
+  newRound: "\u518d\u958b\u4e00\u5c40",
 };
 
 const boardEl = document.querySelector("#board");
@@ -24,6 +30,17 @@ const resetButton = document.querySelector("#resetButton");
 const playerOneScore = document.querySelector("#playerOneScore");
 const playerTwoScore = document.querySelector("#playerTwoScore");
 const turnOrb = document.querySelector("#turnOrb");
+const coinTossOverlay = document.querySelector("#coinTossOverlay");
+const coinTossButton = document.querySelector("#coinTossButton");
+const coinShell = document.querySelector("#coinShell");
+const coinTossStatus = document.querySelector("#coinTossStatus");
+const resultOverlay = document.querySelector("#resultOverlay");
+const resultPanel = document.querySelector("#resultPanel");
+const resultKicker = document.querySelector("#resultKicker");
+const resultTitle = document.querySelector("#resultTitle");
+const resultScore = document.querySelector("#resultScore");
+const resultResetButton = document.querySelector("#resultResetButton");
+const particleField = document.querySelector("#particleField");
 
 const topPits = [12, 11, 10, 9, 8, 7];
 const bottomPits = [0, 1, 2, 3, 4, 5];
@@ -80,6 +97,10 @@ const state = {
   activePlayer: 1,
   gameOver: false,
   animating: false,
+  awaitingCoinToss: true,
+  coinTossing: false,
+  coinResult: null,
+  resultShown: false,
   animationToken: 0,
   lastDropIndex: null,
   lastDropKey: 0,
@@ -107,10 +128,16 @@ function resetGame() {
   state.activePlayer = 1;
   state.gameOver = false;
   state.animating = false;
+  state.awaitingCoinToss = true;
+  state.coinTossing = false;
+  state.coinResult = null;
+  state.resultShown = false;
   state.lastDropIndex = null;
   state.lastDropKey = 0;
   state.layoutSalt = Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000);
-  state.message = `${TEXT.red}${TEXT.turn}`;
+  state.message = TEXT.coinReady;
+  hideResultOverlay();
+  resetCoinVisual();
   render();
 }
 
@@ -142,6 +169,7 @@ function canSelect(index) {
   return (
     !state.gameOver &&
     !state.animating &&
+    !state.awaitingCoinToss &&
     !isStore(index) &&
     getOwner(index) === state.activePlayer &&
     getStoneCount(index) > 0
@@ -227,6 +255,10 @@ async function makeMove(startIndex) {
   state.animating = false;
   boardEl.classList.remove("is-sowing");
   render();
+
+  if (ended) {
+    showResultOverlay();
+  }
 }
 
 function maybeEndGame() {
@@ -269,6 +301,7 @@ function getPlayerName(player) {
 function render() {
   boardEl.innerHTML = "";
   boardEl.classList.toggle("is-sowing", state.animating);
+  boardEl.classList.toggle("is-locked", state.awaitingCoinToss);
   boardEl.appendChild(createStore(PLAYER_TWO_STORE, `${TEXT.purple}${TEXT.store}`, "p2-store"));
 
   topPits.forEach((index, position) => {
@@ -286,6 +319,118 @@ function render() {
   playerTwoScore.classList.toggle("active", state.activePlayer === 2 && !state.gameOver);
   turnOrb.classList.toggle("purple", state.activePlayer === 2);
   statusEl.textContent = state.message;
+  renderCoinOverlay();
+}
+
+async function tossCoin() {
+  if (!state.awaitingCoinToss || state.coinTossing) return;
+
+  const token = state.animationToken;
+  const result = Math.random() < 0.5 ? "front" : "back";
+  const firstPlayer = result === "front" ? 1 : 2;
+
+  state.coinTossing = true;
+  state.coinResult = result;
+  state.message = TEXT.coinFlipping;
+  renderCoinOverlay();
+
+  coinShell.classList.remove("show-front", "show-back", "is-settled");
+  coinShell.classList.add("is-flipping");
+  coinShell.style.setProperty("--coin-spin", result === "front" ? "1800deg" : "1980deg");
+
+  await sleep(1320);
+  if (token !== state.animationToken) return;
+
+  state.activePlayer = firstPlayer;
+  state.coinTossing = false;
+  state.awaitingCoinToss = false;
+  state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
+
+  coinShell.classList.remove("is-flipping");
+  coinShell.classList.add(result === "front" ? "show-front" : "show-back", "is-settled");
+  coinTossStatus.textContent = result === "front" ? TEXT.coinFront : TEXT.coinBack;
+  launchParticles(coinTossOverlay, 24, firstPlayer);
+
+  await sleep(680);
+  if (token !== state.animationToken) return;
+
+  render();
+}
+
+function renderCoinOverlay() {
+  coinTossOverlay.classList.toggle("is-visible", state.awaitingCoinToss || state.coinTossing);
+  coinTossButton.disabled = !state.awaitingCoinToss || state.coinTossing;
+
+  if (state.coinTossing) {
+    coinTossStatus.textContent = TEXT.coinFlipping;
+  } else if (state.awaitingCoinToss) {
+    coinTossStatus.textContent = TEXT.coinReady;
+  }
+}
+
+function resetCoinVisual() {
+  coinShell.classList.remove("is-flipping", "show-back", "is-settled");
+  coinShell.classList.add("show-front");
+  coinShell.style.removeProperty("--coin-spin");
+  coinTossStatus.textContent = TEXT.coinReady;
+}
+
+function showResultOverlay() {
+  const redScore = getStoneCount(PLAYER_ONE_STORE);
+  const purpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const winner = redScore === purpleScore ? 0 : redScore > purpleScore ? 1 : 2;
+
+  state.resultShown = true;
+  resultOverlay.hidden = false;
+  resultPanel.classList.remove("winner-red", "winner-purple", "winner-draw", "is-visible");
+  resultPanel.classList.add(winner === 1 ? "winner-red" : winner === 2 ? "winner-purple" : "winner-draw");
+  playerOneScore.classList.toggle("winner-pop", winner === 1);
+  playerTwoScore.classList.toggle("winner-pop", winner === 2);
+  resultKicker.textContent = TEXT.result;
+  resultTitle.textContent =
+    winner === 0 ? TEXT.draw : `${getPlayerName(winner)}${TEXT.win}`;
+  resultScore.textContent = `${TEXT.red} ${redScore} : ${purpleScore} ${TEXT.purple}`;
+
+  requestAnimationFrame(() => {
+    resultPanel.classList.add("is-visible");
+    launchParticles(resultPanel, winner === 0 ? 18 : 34, winner);
+  });
+}
+
+function hideResultOverlay() {
+  resultOverlay.hidden = true;
+  resultPanel.classList.remove("winner-red", "winner-purple", "winner-draw", "is-visible");
+  playerOneScore.classList.remove("winner-pop");
+  playerTwoScore.classList.remove("winner-pop");
+  particleField.innerHTML = "";
+}
+
+function launchParticles(anchor, count, player) {
+  const host = anchor === resultPanel ? particleField : coinTossOverlay;
+  const hostRect = host.getBoundingClientRect();
+  const anchorRect = anchor.getBoundingClientRect();
+  const originX = anchorRect.left + anchorRect.width / 2 - hostRect.left;
+  const originY = anchorRect.top + anchorRect.height / 2 - hostRect.top;
+  const colorClass = player === 1 ? "red" : player === 2 ? "purple" : "gold";
+
+  for (let i = 0; i < count; i += 1) {
+    const particle = document.createElement("span");
+    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.34;
+    const distance = randomBetween(Math.random() * 1000, 58, 170);
+    const size = randomBetween(Math.random() * 1000, 5, 12);
+
+    particle.className = `particle ${colorClass}`;
+    particle.style.left = `${originX}px`;
+    particle.style.top = `${originY}px`;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
+    particle.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
+    particle.style.setProperty("--spin", `${randomBetween(Math.random() * 1000, -220, 220)}deg`);
+    host.appendChild(particle);
+
+    window.setTimeout(() => particle.remove(), 920);
+  }
 }
 
 function createPit(index, owner, column, row) {
@@ -569,5 +714,7 @@ boardEl.addEventListener("click", (event) => {
 });
 
 resetButton.addEventListener("click", resetGame);
+coinTossButton.addEventListener("click", tossCoin);
+resultResetButton.addEventListener("click", resetGame);
 
 resetGame();
