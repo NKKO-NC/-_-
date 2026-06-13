@@ -435,6 +435,7 @@ h1 {
     var(--glass-strong);
 }
 
+.pit-count,
 .store-count {
   position: absolute;
   z-index: 3;
@@ -453,6 +454,16 @@ h1 {
   font-size: 0.96rem;
   font-weight: 700;
   line-height: 1;
+}
+
+.pit-count {
+  min-width: 34px;
+  max-width: calc(100% - 18px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "Times New Roman", Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0;
 }
 
 .store-count {
@@ -1137,6 +1148,15 @@ h1 {
     min-width: 34px;
     height: 28px;
     font-size: 0.96rem;
+  }
+
+  .pit-count {
+    right: 5px;
+    bottom: 5px;
+    min-width: 26px;
+    height: 23px;
+    padding: 0 6px;
+    font-size: 0.68rem;
   }
 
   .stones {

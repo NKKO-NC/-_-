@@ -482,6 +482,7 @@ function createPit(index, owner, column, row) {
 
   button.innerHTML = `
     <span class="stones">${createStones(index, state.board[index], owner, "pit")}</span>
+    <span class="pit-count">${formatRomanCount(count)}</span>
   `;
 
   return button;
@@ -726,6 +727,37 @@ function seededRandom(seed) {
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
+}
+
+function formatRomanCount(value) {
+  if (value <= 0) return "N";
+
+  const numerals = [
+    [1000, "M"],
+    [900, "CM"],
+    [500, "D"],
+    [400, "CD"],
+    [100, "C"],
+    [90, "XC"],
+    [50, "L"],
+    [40, "XL"],
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+  let remainder = value;
+  let roman = "";
+
+  for (const [amount, symbol] of numerals) {
+    while (remainder >= amount) {
+      roman += symbol;
+      remainder -= amount;
+    }
+  }
+
+  return roman;
 }
 
 function sleep(ms) {
