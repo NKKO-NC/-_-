@@ -46,17 +46,7 @@
 
     <div class="coin-toss-overlay" id="coinTossOverlay" aria-live="polite">
       <button class="coin-toss-button" id="coinTossButton" type="button" aria-label="&#25237;&#25842;&#37504;&#24163;&#27770;&#23450;&#20808;&#25163;">
-        <span class="coin-shell" id="coinShell" aria-hidden="true">
-          <span class="coin-edge"></span>
-          <span class="coin-face coin-front">
-            <img class="coin-base" src="assets/Coin.png" alt="" aria-hidden="true" />
-            <img class="coin-emblem coin-dragon" src="assets/Dragon.png" alt="" aria-hidden="true" />
-          </span>
-          <span class="coin-face coin-back">
-            <img class="coin-base" src="assets/Coin.png" alt="" aria-hidden="true" />
-            <img class="coin-emblem coin-shield" src="assets/Shield.png" alt="" aria-hidden="true" />
-          </span>
-        </span>
+        <canvas class="coin-canvas" id="coinCanvas" aria-hidden="true"></canvas>
       </button>
       <p class="coin-toss-status" id="coinTossStatus">&#40670;&#25802;&#37504;&#24163;&#27770;&#23450;&#20808;&#25163;</p>
     </div>
@@ -71,6 +61,6 @@
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>

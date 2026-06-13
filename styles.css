@@ -609,6 +609,7 @@ h1 {
   background: transparent;
   cursor: pointer;
   perspective: 900px;
+  overflow: hidden;
 }
 
 .coin-toss-button:disabled {
@@ -620,141 +621,11 @@ h1 {
   outline-offset: 9px;
 }
 
-.coin-shell {
-  --coin-spin: 1800deg;
-  --coin-depth: 5px;
-  position: relative;
+.coin-canvas {
   width: 100%;
   height: 100%;
   display: block;
-  transform-style: preserve-3d;
-  transform: rotateY(0deg) rotateX(0deg);
-  filter:
-    drop-shadow(0 26px 28px rgba(0, 0, 0, 0.46))
-    drop-shadow(0 0 22px rgba(255, 228, 161, 0.24));
-}
-
-.coin-shell::before {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  transform: translateZ(0);
-  background:
-    radial-gradient(circle, transparent 58%, rgba(80, 64, 38, 0.55) 60%, rgba(255, 228, 161, 0.35) 66%, transparent 69%);
   pointer-events: none;
-}
-
-.coin-shell.is-flipping {
-  animation: coin-flip 1320ms cubic-bezier(0.16, 0.72, 0.22, 1) forwards;
-}
-
-.coin-toss-overlay.is-visible .coin-shell.show-front:not(.is-flipping):not(.is-settled) {
-  animation: coin-ready-pulse 1500ms ease-in-out infinite;
-}
-
-.coin-shell.show-back {
-  transform: rotateY(180deg);
-}
-
-.coin-shell.is-settled {
-  animation: coin-settle 420ms cubic-bezier(0.16, 0.82, 0.28, 1) both;
-}
-
-.coin-face {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  overflow: visible;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform-style: preserve-3d;
-  border: 0;
-  background: transparent;
-  box-shadow:
-    inset 0 0 0 6px rgba(243, 215, 143, 0.74),
-    inset -16px -20px 28px rgba(0, 0, 0, 0.2),
-    inset 14px 14px 22px rgba(255, 255, 255, 0.18);
-}
-
-.coin-face::before {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  z-index: 3;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 228, 161, 0.6);
-  background:
-    radial-gradient(circle at 31% 23%, rgba(255, 255, 255, 0.18), transparent 18%),
-    radial-gradient(circle, transparent 69%, rgba(255, 228, 161, 0.18) 71%, transparent 73%);
-  pointer-events: none;
-}
-
-.coin-front {
-  transform: translateZ(var(--coin-depth)) rotateY(0deg);
-}
-
-.coin-back {
-  transform: rotateY(180deg) translateZ(var(--coin-depth));
-}
-
-.coin-edge {
-  display: none;
-  position: absolute;
-  inset: 2.5%;
-  border-radius: 50%;
-  transform: translateZ(0);
-  background:
-    repeating-conic-gradient(from 0deg, #f4d985 0deg 5deg, #8f6e2a 5deg 9deg, #f8e4a4 9deg 12deg),
-    radial-gradient(circle, transparent 63%, rgba(255, 228, 161, 0.78) 65%, rgba(76, 55, 18, 0.9) 72%, transparent 74%);
-  box-shadow:
-    inset 0 0 0 10px rgba(121, 83, 22, 0.28),
-    0 0 0 5px rgba(243, 215, 143, 0.7);
-  opacity: 0.86;
-}
-
-.coin-base,
-.coin-emblem {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: block;
-  object-fit: contain;
-  user-select: none;
-  pointer-events: none;
-}
-
-.coin-base {
-  z-index: 1;
-  width: 104%;
-  height: 104%;
-  transform: translate(-50%, -50%);
-  filter:
-    drop-shadow(0 2px 2px rgba(255, 255, 255, 0.22))
-    drop-shadow(0 12px 16px rgba(0, 0, 0, 0.26));
-}
-
-.coin-emblem {
-  z-index: 2;
-  transform: translate(-50%, -50%);
-}
-
-.coin-dragon {
-  width: 58%;
-  height: 58%;
-  filter:
-    drop-shadow(0 0 9px rgba(255, 51, 74, 0.18))
-    drop-shadow(0 9px 10px rgba(0, 0, 0, 0.42));
-}
-
-.coin-shield {
-  width: 64%;
-  height: 64%;
-  filter:
-    drop-shadow(0 0 11px rgba(182, 86, 255, 0.24))
-    drop-shadow(0 10px 11px rgba(0, 0, 0, 0.42));
 }
 
 .coin-toss-status {
@@ -951,66 +822,6 @@ h1 {
   }
 }
 
-@keyframes coin-flip {
-  0% {
-    transform: translateY(0) rotateY(0deg) rotateX(0deg) scale(1);
-  }
-
-  22% {
-    transform: translateY(-34px) rotateY(540deg) rotateX(13deg) scale(1.05);
-  }
-
-  48% {
-    transform: translateY(-58px) rotateY(990deg) rotateX(16deg) scale(1.03);
-  }
-
-  68% {
-    transform: translateY(-22px) rotateY(1350deg) rotateX(-8deg) scale(1.04);
-  }
-
-  84% {
-    transform: translateY(10px) rotateY(1620deg) rotateX(5deg) scale(0.98);
-  }
-
-  93% {
-    transform: translateY(-6px) rotateY(calc(var(--coin-spin) - 72deg)) rotateX(2deg) scale(1.015);
-  }
-
-  100% {
-    transform: translateY(0) rotateY(var(--coin-spin)) rotateX(0deg) scale(1);
-  }
-}
-
-@keyframes coin-ready-pulse {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    filter:
-      drop-shadow(0 26px 28px rgba(0, 0, 0, 0.46))
-      drop-shadow(0 0 22px rgba(255, 228, 161, 0.24));
-  }
-
-  50% {
-    transform: translateY(-4px) scale(1.025);
-    filter:
-      drop-shadow(0 31px 31px rgba(0, 0, 0, 0.44))
-      drop-shadow(0 0 32px rgba(255, 228, 161, 0.42));
-  }
-}
-
-@keyframes guard-gem-pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(0.92);
-  }
-
-  50% {
-    opacity: 0.98;
-    transform: scale(1.08);
-  }
-}
-
 @keyframes toss-hint-pulse {
   0%,
   100% {
@@ -1021,20 +832,6 @@ h1 {
   50% {
     opacity: 1;
     transform: translateX(-50%) translateY(-2px);
-  }
-}
-
-@keyframes coin-settle {
-  0% {
-    scale: 1;
-  }
-
-  48% {
-    scale: 1.08;
-  }
-
-  100% {
-    scale: 1;
   }
 }
 

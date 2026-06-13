@@ -1,3 +1,5 @@
+import { CoinTossScene } from "./coin/index.js";
+
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
 const PLAYER_TWO_STORE = 13;
@@ -33,7 +35,7 @@ const turnIndicator = document.querySelector("#turnIndicator");
 const turnEmblem = document.querySelector("#turnEmblem");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
 const coinTossButton = document.querySelector("#coinTossButton");
-const coinShell = document.querySelector("#coinShell");
+const coinCanvas = document.querySelector("#coinCanvas");
 const coinTossStatus = document.querySelector("#coinTossStatus");
 const resultOverlay = document.querySelector("#resultOverlay");
 const resultPanel = document.querySelector("#resultPanel");
@@ -42,6 +44,14 @@ const resultTitle = document.querySelector("#resultTitle");
 const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const particleField = document.querySelector("#particleField");
+
+const coinScene = new CoinTossScene({
+  canvas: coinCanvas,
+  dragonSrc: new URL("./assets/Dragon.png", import.meta.url).href,
+  shieldSrc: new URL("./assets/Shield.png", import.meta.url).href,
+});
+
+await coinScene.ready;
 
 const topPits = [12, 11, 10, 9, 8, 7];
 const bottomPits = [0, 1, 2, 3, 4, 5];
@@ -357,23 +367,13 @@ async function tossCoin() {
   state.message = TEXT.coinFlipping;
   renderCoinOverlay();
 
-  coinShell.classList.remove("is-flipping", "is-settled", "show-front", "show-back");
-  coinShell.classList.add("show-front");
-  coinShell.classList.add("is-flipping");
-  coinShell.style.setProperty("--coin-spin", result === "front" ? "1800deg" : "1980deg");
-
-  await sleep(1320);
+  await coinScene.play(result);
   if (token !== state.animationToken) return;
 
   state.activePlayer = firstPlayer;
   state.coinTossing = false;
   state.awaitingCoinToss = false;
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
-
-  coinShell.classList.remove("is-flipping");
-  coinShell.classList.toggle("show-front", result === "front");
-  coinShell.classList.toggle("show-back", result === "back");
-  coinShell.classList.add("is-settled");
   coinTossStatus.textContent = result === "front" ? TEXT.coinFront : TEXT.coinBack;
   launchParticles(coinTossOverlay, 24, firstPlayer);
 
@@ -395,9 +395,7 @@ function renderCoinOverlay() {
 }
 
 function resetCoinVisual() {
-  coinShell.classList.remove("is-flipping", "is-settled", "show-back");
-  coinShell.classList.add("show-front");
-  coinShell.style.removeProperty("--coin-spin");
+  coinScene.reset();
   coinTossStatus.textContent = TEXT.coinReady;
 }
 
@@ -413,8 +411,7 @@ function showResultOverlay() {
   playerOneScore.classList.toggle("winner-pop", winner === 1);
   playerTwoScore.classList.toggle("winner-pop", winner === 2);
   resultKicker.textContent = TEXT.result;
-  resultTitle.textContent =
-    winner === 0 ? TEXT.draw : `${getPlayerName(winner)}${TEXT.win}`;
+  resultTitle.textContent = winner === 0 ? TEXT.draw : `${getPlayerName(winner)}${TEXT.win}`;
   resultScore.textContent = `${TEXT.red} ${redScore} : ${purpleScore} ${TEXT.purple}`;
 
   requestAnimationFrame(() => {
