@@ -1,3 +1,5 @@
+import { CoinTossScene } from "./coin/index.js";
+
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
 const PLAYER_TWO_STORE = 13;

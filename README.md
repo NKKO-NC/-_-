@@ -10,7 +10,13 @@ A simple browser-based Kalah / Mancala MVP built with plain HTML, CSS, and JavaS
 
 ## Run
 
-Open `index.html` in a browser.
+Run a local static server, then open the site in a browser:
+
+```bash
+node serve.mjs 8123
+```
+
+Then visit `http://127.0.0.1:8123/`.
 
 ## Features
 
@@ -20,6 +26,7 @@ Open `index.html` in a browser.
 - Dark crystal board with gold line styling
 - Animated sowing with random landing positions and light collision spacing
 - Stones keep their original color after moving
+- Coin toss rendered with local Three.js build and a transparent canvas overlay
 - Capture, extra turn, end-game collection, and winner detection
 
 ## Files
@@ -27,4 +34,6 @@ Open `index.html` in a browser.
 - `index.html` - page shell
 - `styles.css` - board and animation styling
 - `script.js` - Kalah rules and rendering
+- `serve.mjs` - tiny local static server for module-based offline use
+- `vendor/three/` - local Three.js build files
 - `assets/` - generated gemstone assets used by the game
