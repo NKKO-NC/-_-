@@ -1,5 +1,3 @@
-import { CoinTossScene } from "./coin/index.js";
-
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
 const PLAYER_TWO_STORE = 13;
@@ -47,11 +45,10 @@ const particleField = document.querySelector("#particleField");
 
 const coinScene = new CoinTossScene({
   canvas: coinCanvas,
-  dragonSrc: new URL("./assets/Dragon.png", import.meta.url).href,
-  shieldSrc: new URL("./assets/Shield.png", import.meta.url).href,
+  coinSrc: "assets/Coin.png",
+  dragonSrc: "assets/Dragon.png",
+  shieldSrc: "assets/Shield.png",
 });
-
-await coinScene.ready;
 
 const topPits = [12, 11, 10, 9, 8, 7];
 const bottomPits = [0, 1, 2, 3, 4, 5];
