@@ -39,7 +39,11 @@ const DIFFICULTY_LABELS = {
 
 const boardEl = document.querySelector("#board");
 const statusEl = document.querySelector("#status");
+const mainMenu = document.querySelector("#mainMenu");
+const gameScreen = document.querySelector("#gameScreen");
+const startButton = document.querySelector("#startButton");
 const resetButton = document.querySelector("#resetButton");
+const menuButton = document.querySelector("#menuButton");
 const playerOneScore = document.querySelector("#playerOneScore");
 const playerTwoScore = document.querySelector("#playerTwoScore");
 const playerOneLabel = playerOneScore.querySelector("span");
@@ -54,6 +58,7 @@ const difficultyMediumButton = document.querySelector("#difficultyMediumButton")
 const difficultyHardButton = document.querySelector("#difficultyHardButton");
 const controlHint = document.querySelector("#controlHint");
 const aiBadge = document.querySelector("#aiBadge");
+const aiDialogue = document.querySelector("#aiDialogue");
 const aiDialogueSpeaker = document.querySelector("#aiDialogueSpeaker");
 const aiDialogueLine = document.querySelector("#aiDialogueLine");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
@@ -66,6 +71,7 @@ const resultKicker = document.querySelector("#resultKicker");
 const resultTitle = document.querySelector("#resultTitle");
 const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
+const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
 
 const coinScene = new CoinTossScene({
@@ -139,7 +145,8 @@ const state = {
   lastDropKey: 0,
   message: "",
   layoutSalt: Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000),
-  mode: "pvp",
+  screen: "menu",
+  mode: "pve",
   aiDifficulty: "medium",
   humanPlayer: 1,
   aiPlayer: 2,
@@ -244,6 +251,7 @@ function createInitialBoard() {
 
 function resetGame() {
   state.animationToken += 1;
+  state.screen = "game";
   state.board = createInitialBoard();
   state.activePlayer = 1;
   state.gameOver = false;
@@ -266,6 +274,26 @@ function resetGame() {
   hideResultOverlay();
   resetCoinVisual();
   render();
+}
+
+function showMainMenu() {
+  state.animationToken += 1;
+  state.screen = "menu";
+  state.gameOver = false;
+  state.animating = false;
+  state.awaitingCoinToss = false;
+  state.coinTossing = false;
+  state.aiThinking = false;
+  state.resultShown = false;
+  state.lastDropIndex = null;
+  state.message = "";
+  setAiDialogue("AI", "");
+  hideResultOverlay();
+  resetCoinVisual();
+  coinTossOverlay.hidden = true;
+  coinTossOverlay.classList.remove("is-visible");
+  document.body.classList.remove("turn-red", "turn-purple");
+  renderInterfaceState();
 }
 
 function otherPlayer(player) {
@@ -1047,6 +1075,11 @@ function getEndMessage() {
 }
 
 function render() {
+  if (state.screen !== "game") {
+    renderInterfaceState();
+    return;
+  }
+
   boardEl.innerHTML = "";
   boardEl.classList.toggle("is-sowing", state.animating);
   boardEl.classList.toggle("is-locked", state.awaitingCoinToss || state.aiThinking || isAiTurn());
@@ -1068,28 +1101,30 @@ function render() {
   playerOneScore.classList.toggle("active", state.activePlayer === 1 && !state.gameOver);
   playerTwoScore.classList.toggle("active", state.activePlayer === 2 && !state.gameOver);
   renderTurnIndicator();
-  renderControlState();
+  renderInterfaceState();
   statusEl.textContent = state.message;
   renderCoinOverlay();
 }
 
-function renderControlState() {
+function renderInterfaceState() {
+  mainMenu.hidden = state.screen !== "menu";
+  gameScreen.hidden = state.screen !== "game";
+
   for (const [mode, button] of Object.entries(modeButtons)) {
     button.classList.toggle("is-active", state.mode === mode);
     button.setAttribute("aria-pressed", String(state.mode === mode));
   }
 
-  const difficultyEnabled = state.mode === "pve";
-  difficultyField.hidden = !difficultyEnabled;
+  difficultyField.hidden = state.mode !== "pve";
 
   for (const [difficulty, button] of Object.entries(difficultyButtons)) {
     button.classList.toggle("is-active", state.aiDifficulty === difficulty);
     button.setAttribute("aria-pressed", String(state.aiDifficulty === difficulty));
-    button.disabled = !difficultyEnabled;
   }
 
   controlHint.textContent =
     state.mode === "pve" ? `${TEXT.pveHint} \u00b7 ${getDifficultyLabel()}` : TEXT.pvpHint;
+  aiDialogue.hidden = state.screen !== "game" || state.mode !== "pve";
   aiBadge.hidden = !(state.mode === "pve" && state.aiThinking);
   aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
   aiDialogueLine.textContent = state.aiDialogue.line;
@@ -1527,30 +1562,55 @@ function sleep(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
+function selectMode(mode) {
+  state.mode = mode;
+  renderInterfaceState();
+}
+
 modePvpButton.addEventListener("click", () => {
-  state.mode = "pvp";
-  resetGame();
+  selectMode("pvp");
+});
+
+modePvpButton.addEventListener("mouseenter", () => {
+  selectMode("pvp");
+});
+
+modePvpButton.addEventListener("focus", () => {
+  selectMode("pvp");
 });
 
 modePveButton.addEventListener("click", () => {
-  state.mode = "pve";
-  resetGame();
+  selectMode("pve");
+});
+
+modePveButton.addEventListener("mouseenter", () => {
+  selectMode("pve");
+});
+
+modePveButton.addEventListener("focus", () => {
+  selectMode("pve");
 });
 
 difficultyEasyButton.addEventListener("click", () => {
   state.aiDifficulty = "easy";
-  resetGame();
+  renderInterfaceState();
 });
 
 difficultyMediumButton.addEventListener("click", () => {
   state.aiDifficulty = "medium";
-  resetGame();
+  renderInterfaceState();
 });
 
 difficultyHardButton.addEventListener("click", () => {
   state.aiDifficulty = "hard";
-  resetGame();
+  renderInterfaceState();
 });
+
+startButton.addEventListener("click", resetGame);
+resetButton.addEventListener("click", resetGame);
+menuButton.addEventListener("click", showMainMenu);
+resultResetButton.addEventListener("click", resetGame);
+resultMenuButton.addEventListener("click", showMainMenu);
 
 boardEl.addEventListener("click", (event) => {
   const pit = event.target.closest(".pit");
@@ -1558,8 +1618,6 @@ boardEl.addEventListener("click", (event) => {
   void makeMove(Number(pit.dataset.index));
 });
 
-resetButton.addEventListener("click", resetGame);
 coinTossButton.addEventListener("click", tossCoin);
-resultResetButton.addEventListener("click", resetGame);
 
-resetGame();
+showMainMenu();
