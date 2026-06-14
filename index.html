@@ -24,6 +24,31 @@
         </button>
       </header>
 
+      <section class="game-controls" aria-label="&#36938;&#25138;&#35373;&#23450;">
+        <div class="control-field">
+          <span>&#27169;&#24335;</span>
+          <div class="segmented-control" id="modeControl" role="group" aria-label="&#27169;&#24335;">
+            <button class="segment-button is-active" id="modePvpButton" type="button" data-mode="pvp">&#38617;&#20154;&#23565;&#25136;</button>
+            <button class="segment-button" id="modePveButton" type="button" data-mode="pve">&#21934;&#20154; vs AI</button>
+          </div>
+        </div>
+        <div class="control-field" id="difficultyField">
+          <span>AI &#38627;&#24230;</span>
+          <div class="segmented-control" id="difficultyControl" role="group" aria-label="AI &#38627;&#24230;">
+            <button class="segment-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
+            <button class="segment-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
+            <button class="segment-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
+          </div>
+        </div>
+        <p class="control-hint" id="controlHint"></p>
+        <p class="ai-badge" id="aiBadge" hidden>AI &#24605;&#32771;&#20013;...</p>
+      </section>
+
+      <section class="ai-dialogue" id="aiDialogue" aria-live="polite">
+        <p class="ai-dialogue-speaker" id="aiDialogueSpeaker">AI</p>
+        <p class="ai-dialogue-line" id="aiDialogueLine">&#36984;&#25875;&#21934;&#20154;&#27169;&#24335;&#24460;&#65292;AI &#26371;&#22312;&#36889;&#35041;&#36319;&#20320;&#20114;&#21205;&#12290;</p>
+      </section>
+
       <section class="score-strip" aria-label="&#20998;&#25976;">
         <div class="player-score player-two" id="playerTwoScore">
           <span>&#32043;&#26041;</span>

@@ -10,6 +10,8 @@ const AMETHYST_SRC = "assets/amethyst-gem.png";
 const TEXT = {
   red: "\u7d05\u65b9",
   purple: "\u7d2b\u65b9",
+  player: "\u73a9\u5bb6",
+  ai: "AI",
   turn: "\u884c\u68cb",
   extra: "\u518d\u884c\u4e00\u624b",
   capture: "\u5403\u5b50",
@@ -24,6 +26,15 @@ const TEXT = {
   coinBack: "\u53cd\u9762\u76fe\u528d\uff0c\u7d2b\u65b9\u5148\u624b",
   result: "\u7d50\u7b97",
   newRound: "\u518d\u958b\u4e00\u5c40",
+  pvpHint: "\u96d9\u4eba\u5c0d\u6230\uff1a\u540c\u6a5f\u8f2a\u6d41\u64cd\u4f5c",
+  pveHint: "\u55ae\u4eba\u5c0d\u6230\uff1a\u73a9\u5bb6 = \u7d05\u65b9\uff0cAI = \u7d2b\u65b9",
+  aiThinking: "AI \u601d\u8003\u4e2d...",
+};
+
+const DIFFICULTY_LABELS = {
+  easy: "Easy",
+  medium: "Medium",
+  hard: "Hard",
 };
 
 const boardEl = document.querySelector("#board");
@@ -31,8 +42,20 @@ const statusEl = document.querySelector("#status");
 const resetButton = document.querySelector("#resetButton");
 const playerOneScore = document.querySelector("#playerOneScore");
 const playerTwoScore = document.querySelector("#playerTwoScore");
+const playerOneLabel = playerOneScore.querySelector("span");
+const playerTwoLabel = playerTwoScore.querySelector("span");
 const turnIndicator = document.querySelector("#turnIndicator");
 const turnEmblem = document.querySelector("#turnEmblem");
+const modePvpButton = document.querySelector("#modePvpButton");
+const modePveButton = document.querySelector("#modePveButton");
+const difficultyField = document.querySelector("#difficultyField");
+const difficultyEasyButton = document.querySelector("#difficultyEasyButton");
+const difficultyMediumButton = document.querySelector("#difficultyMediumButton");
+const difficultyHardButton = document.querySelector("#difficultyHardButton");
+const controlHint = document.querySelector("#controlHint");
+const aiBadge = document.querySelector("#aiBadge");
+const aiDialogueSpeaker = document.querySelector("#aiDialogueSpeaker");
+const aiDialogueLine = document.querySelector("#aiDialogueLine");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
 const coinTossButton = document.querySelector("#coinTossButton");
 const coinCanvas = document.querySelector("#coinCanvas");
@@ -116,6 +139,93 @@ const state = {
   lastDropKey: 0,
   message: "",
   layoutSalt: Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000),
+  mode: "pvp",
+  aiDifficulty: "medium",
+  humanPlayer: 1,
+  aiPlayer: 2,
+  aiThinking: false,
+  aiThinkDelayMs: 520,
+  aiDialogue: {
+    speaker: "AI",
+    line: "\u9078\u64c7\u55ae\u4eba\u6a21\u5f0f\u5f8c\uff0cAI \u6703\u5728\u9019\u88e1\u8ddf\u4f60\u4e92\u52d5\u3002",
+  },
+};
+
+const modeButtons = {
+  pvp: modePvpButton,
+  pve: modePveButton,
+};
+
+const difficultyButtons = {
+  easy: difficultyEasyButton,
+  medium: difficultyMediumButton,
+  hard: difficultyHardButton,
+};
+
+const AI_LINES = {
+  intro: [
+    "\u6211\u6e96\u5099\u597d\u4e86\uff0c\u4f86\u770b\u770b\u4f60\u9019\u5c40\u600e\u9ebc\u4e0b\u3002",
+    "\u4f86\u5427\uff0c\u6211\u6703\u4e00\u908a\u4e0b\u68cb\u4e00\u908a\u8ddf\u4f60\u804a\u3002",
+    "\u9019\u76e4\u6211\u4e0d\u6703\u53ea\u662f\u975c\u975c\u5730\u7b49\u4f60\u843d\u5b50\u3002",
+  ],
+  pvp: [
+    "\u96d9\u4eba\u6a21\u5f0f\u5df2\u958b\u555f\uff0cAI \u5148\u9000\u4e0b\uff0c\u4f60\u5011\u5169\u4f4d\u8acb\u3002",
+    "\u9019\u5c40\u4ea4\u7d66\u4f60\u5011\u5169\u4eba\u5c0d\u62fc\uff0cAI \u5c31\u7576\u65c1\u89c0\u3002",
+  ],
+  thinking: {
+    easy: [
+      "\u7b49\u6211\u60f3\u4e00\u4e0b\uff0c\u9019\u624b\u5148\u770b\u6709\u6c92\u6709\u9806\u624b\u7684\u3002",
+      "\u55ef\uff0c\u5148\u770b\u770b\u80fd\u4e0d\u80fd\u591a\u8cfa\u4e00\u624b\u3002",
+    ],
+    medium: [
+      "\u9019\u624b\u6211\u6703\u7c21\u55ae\u63a8\u5e7e\u6b65\uff0c\u4f60\u5148\u7b49\u6211\u4e00\u4e0b\u3002",
+      "\u6211\u5728\u7be9\u6389\u5dee\u624b\uff0c\u770b\u770b\u54ea\u500b\u7bc0\u594f\u6bd4\u8f03\u5c0d\u3002",
+    ],
+    hard: [
+      "\u9019\u624b\u6211\u6703\u770b\u5f97\u6df1\u4e00\u9ede\uff0c\u4f60\u53ef\u4ee5\u958b\u59cb\u7dca\u5f35\u4e86\u3002",
+      "\u5225\u6025\uff0c\u6211\u5728\u628a\u5f8c\u9762\u5e7e\u624b\u90fd\u6383\u904e\u4e00\u904d\u3002",
+    ],
+  },
+  aiMove: {
+    extra: [
+      "\u9019\u624b\u6211\u8981\u9023\u8d70\uff0c\u7bc0\u594f\u76ee\u524d\u5728\u6211\u9019\u88e1\u3002",
+      "\u6211\u5148\u628a\u56de\u5408\u5b88\u4f4f\uff0c\u518d\u4f86\u7e7c\u7e8c\u58d3\u4f60\u3002",
+    ],
+    capture: [
+      "\u4f60\u9019\u500b\u7f3a\u53e3\u6211\u6536\u4e0b\u4e86\u3002",
+      "\u9019\u624b\u5403\u5b50\u4e0d\u932f\uff0c\u76e4\u9762\u958b\u59cb\u5f80\u6211\u9019\u908a\u50be\u4e86\u3002",
+    ],
+    strong: [
+      "\u9019\u624b\u6211\u6311\u5f97\u5f88\u7a69\u3002",
+      "\u6211\u559c\u6b61\u9019\u500b\u63db\u5b50\u9806\u5e8f\u3002",
+    ],
+    neutral: [
+      "\u5148\u9019\u6a23\u4f48\u5c40\uff0c\u8f2a\u5230\u4f60\u4e86\u3002",
+      "\u6211\u5148\u505a\u500b\u7a69\u5b9a\u624b\uff0c\u770b\u4f60\u56de\u61c9\u3002",
+    ],
+  },
+  player: {
+    strong: [
+      "\u9019\u624b\u4e0d\u932f\uff0c\u4f60\u6709\u770b\u5230\u7bc0\u594f\u3002",
+      "\u597d\u7684\u4e00\u624b\uff0c\u9019\u500b\u8655\u7406\u6709\u9ede\u6771\u897f\u3002",
+    ],
+    extra: [
+      "\u4f60\u628a\u9023\u8d70\u62ff\u5230\u4e86\uff0c\u9019\u5c31\u6709\u58d3\u529b\u4e86\u3002",
+      "\u9019\u500b\u518d\u8d70\u4e00\u624b\u5f88\u95dc\u9375\u3002",
+    ],
+    capture: [
+      "\u4f60\u9019\u624b\u5403\u5f97\u6eff\u6e96\u7684\u3002",
+      "\u55ef\uff0c\u9019\u500b\u7f3a\u53e3\u88ab\u4f60\u6293\u5230\u4e86\u3002",
+    ],
+    blunder: [
+      "\u9019\u624b\u6709\u9ede\u9b06\uff0c\u6211\u61c9\u8a72\u6709\u6771\u897f\u53ef\u4ee5\u6253\u3002",
+      "\u4f60\u525b\u525b\u7d66\u4e86\u6211\u4e00\u500b\u53ef\u4ee5\u9032\u653b\u7684\u7e2b\u3002",
+    ],
+    weak: [
+      "\u9019\u624b\u504f\u4fdd\u5b88\uff0c\u6211\u6703\u8a66\u8457\u7528\u7bc0\u594f\u58d3\u4f60\u3002",
+      "\u6211\u770b\u5230\u4f60\u60f3\u7a69\u4f4f\uff0c\u4f46\u9019\u624b\u5229\u6f64\u4e0d\u5927\u3002",
+    ],
+  },
 };
 
 function createInitialBoard() {
@@ -144,11 +254,22 @@ function resetGame() {
   state.resultShown = false;
   state.lastDropIndex = null;
   state.lastDropKey = 0;
+  state.aiThinking = false;
   state.layoutSalt = Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000);
   state.message = TEXT.coinReady;
+  setAiDialogue(
+    "AI",
+    state.mode === "pve"
+      ? pickRandom(AI_LINES.intro)
+      : pickRandom(AI_LINES.pvp)
+  );
   hideResultOverlay();
   resetCoinVisual();
   render();
+}
+
+function otherPlayer(player) {
+  return player === 1 ? 2 : 1;
 }
 
 function getOwner(index) {
@@ -171,23 +292,625 @@ function getOpponentStore(player) {
   return player === 1 ? PLAYER_TWO_STORE : PLAYER_ONE_STORE;
 }
 
+function getPlayerPits(player) {
+  return player === 1 ? bottomPits : playerTwoPits;
+}
+
 function getStoneCount(index) {
   return state.board[index].length;
+}
+
+function isAiEnabled() {
+  return state.mode === "pve";
+}
+
+function isAiPlayer(player) {
+  return isAiEnabled() && player === state.aiPlayer;
+}
+
+function isAiTurn() {
+  return isAiPlayer(state.activePlayer);
 }
 
 function canSelect(index) {
   return (
     !state.gameOver &&
     !state.animating &&
+    !state.aiThinking &&
     !state.awaitingCoinToss &&
     !isStore(index) &&
     getOwner(index) === state.activePlayer &&
-    getStoneCount(index) > 0
+    getStoneCount(index) > 0 &&
+    !isAiTurn()
   );
 }
 
+function getPlayerName(player) {
+  if (state.mode === "pve") {
+    return player === 1 ? TEXT.player : TEXT.ai;
+  }
+
+  return player === 1 ? TEXT.red : TEXT.purple;
+}
+
+function getScoreLabel(player) {
+  if (state.mode === "pve") {
+    return player === 1 ? `${TEXT.player}` : `${TEXT.ai}`;
+  }
+
+  return player === 1 ? TEXT.red : TEXT.purple;
+}
+
+function getDifficultyLabel() {
+  return DIFFICULTY_LABELS[state.aiDifficulty] || DIFFICULTY_LABELS.medium;
+}
+
+function getModeSummary() {
+  return state.mode === "pve" ? `\u55ae\u4eba\u5c0d\u6230 \u00b7 ${getDifficultyLabel()}` : "\u96d9\u4eba\u5c0d\u6230";
+}
+
+function getCoinResultText(result) {
+  if (state.mode !== "pve") {
+    return result === "front" ? TEXT.coinFront : TEXT.coinBack;
+  }
+
+  return result === "front"
+    ? "\u6b63\u9762\u897f\u6d0b\u9f8d\uff0c\u73a9\u5bb6\u5148\u624b"
+    : "\u53cd\u9762\u76fe\u528d\uff0cAI \u5148\u624b";
+}
+
+function toCountBoard(stoneBoard) {
+  return stoneBoard.map((cell) => cell.length);
+}
+
+function cloneCountBoard(countBoard) {
+  return countBoard.slice();
+}
+
+function getLegalMovesForCountBoard(countBoard, player) {
+  return getPlayerPits(player).filter((index) => countBoard[index] > 0);
+}
+
+function getSideStoneTotal(countBoard, player) {
+  return getPlayerPits(player).reduce((sum, index) => sum + countBoard[index], 0);
+}
+
+function isTerminalCountBoard(countBoard) {
+  return getSideStoneTotal(countBoard, 1) === 0 || getSideStoneTotal(countBoard, 2) === 0;
+}
+
+function finalizeCountBoard(countBoard) {
+  const nextBoard = cloneCountBoard(countBoard);
+  const playerOneRemaining = getSideStoneTotal(nextBoard, 1);
+  const playerTwoRemaining = getSideStoneTotal(nextBoard, 2);
+
+  nextBoard[PLAYER_ONE_STORE] += playerOneRemaining;
+  nextBoard[PLAYER_TWO_STORE] += playerTwoRemaining;
+
+  for (const index of [...bottomPits, ...playerTwoPits]) {
+    nextBoard[index] = 0;
+  }
+
+  return nextBoard;
+}
+
+function simulateCountMove(countBoard, player, startIndex) {
+  const ownPits = getPlayerPits(player);
+  if (!ownPits.includes(startIndex) || countBoard[startIndex] <= 0) {
+    return null;
+  }
+
+  const nextBoard = cloneCountBoard(countBoard);
+  const ownStore = getStore(player);
+  const opponentStore = getOpponentStore(player);
+  let stones = nextBoard[startIndex];
+  let currentIndex = startIndex;
+
+  nextBoard[startIndex] = 0;
+
+  while (stones > 0) {
+    currentIndex = (currentIndex + 1) % BOARD_SIZE;
+    if (currentIndex === opponentStore) {
+      continue;
+    }
+
+    nextBoard[currentIndex] += 1;
+    stones -= 1;
+  }
+
+  let captureCount = 0;
+  const landedInOwnPit = !isStore(currentIndex) && getOwner(currentIndex) === player;
+
+  if (landedInOwnPit && nextBoard[currentIndex] === 1) {
+    const oppositeIndex = 12 - currentIndex;
+    const oppositeCount = nextBoard[oppositeIndex];
+
+    if (oppositeCount > 0) {
+      captureCount = oppositeCount + nextBoard[currentIndex];
+      nextBoard[ownStore] += captureCount;
+      nextBoard[currentIndex] = 0;
+      nextBoard[oppositeIndex] = 0;
+    }
+  }
+
+  const extraTurn = currentIndex === ownStore;
+  let gameOver = false;
+
+  if (isTerminalCountBoard(nextBoard)) {
+    const finalBoard = finalizeCountBoard(nextBoard);
+    for (let index = 0; index < BOARD_SIZE; index += 1) {
+      nextBoard[index] = finalBoard[index];
+    }
+    gameOver = true;
+  }
+
+  return {
+    board: nextBoard,
+    nextPlayer: gameOver ? player : extraTurn ? player : otherPlayer(player),
+    extraTurn,
+    captureCount,
+    lastIndex: currentIndex,
+    gameOver,
+  };
+}
+
+function getStoreDiff(countBoard, player) {
+  return countBoard[getStore(player)] - countBoard[getStore(otherPlayer(player))];
+}
+
+function getSideStoneDiff(countBoard, player) {
+  return getSideStoneTotal(countBoard, player) - getSideStoneTotal(countBoard, otherPlayer(player));
+}
+
+function countImmediateExtraTurns(countBoard, player) {
+  let total = 0;
+
+  for (const move of getLegalMovesForCountBoard(countBoard, player)) {
+    const result = simulateCountMove(countBoard, player, move);
+    if (result?.extraTurn) {
+      total += 1;
+    }
+  }
+
+  return total;
+}
+
+function getBestImmediateCapture(countBoard, player) {
+  let best = 0;
+
+  for (const move of getLegalMovesForCountBoard(countBoard, player)) {
+    const result = simulateCountMove(countBoard, player, move);
+    if (result && result.captureCount > best) {
+      best = result.captureCount;
+    }
+  }
+
+  return best;
+}
+
+function getEndgamePressure(countBoard, player) {
+  const ownSide = getSideStoneTotal(countBoard, player);
+  const opponentSide = getSideStoneTotal(countBoard, otherPlayer(player));
+  const storeDiff = getStoreDiff(countBoard, player);
+
+  if (ownSide <= 6 || opponentSide <= 6) {
+    return storeDiff + (opponentSide === 0 ? 6 : 0) - (ownSide === 0 ? 6 : 0);
+  }
+
+  return 0;
+}
+
+function evaluateCountBoard(countBoard, player) {
+  const storeDiff = getStoreDiff(countBoard, player);
+  const sideStoneDiff = getSideStoneDiff(countBoard, player);
+  const ownExtraTurns = countImmediateExtraTurns(countBoard, player);
+  const opponentExtraTurns = countImmediateExtraTurns(countBoard, otherPlayer(player));
+  const ownCapturePotential = getBestImmediateCapture(countBoard, player);
+  const opponentCaptureThreat = getBestImmediateCapture(countBoard, otherPlayer(player));
+  const endgamePressure = getEndgamePressure(countBoard, player);
+
+  return (
+    storeDiff * 12 +
+    sideStoneDiff * 2 +
+    ownExtraTurns * 7 -
+    opponentExtraTurns * 5 +
+    ownCapturePotential * 5 -
+    opponentCaptureThreat * 6 +
+    endgamePressure * 8
+  );
+}
+
+function analyzeMove(countBoard, player, move) {
+  const beforeStoreDiff = getStoreDiff(countBoard, player);
+  const beforeStore = countBoard[getStore(player)];
+  const result = simulateCountMove(countBoard, player, move);
+
+  if (!result) {
+    return null;
+  }
+
+  const immediateStoreGain = result.board[getStore(player)] - beforeStore;
+  const storeDiffAfter = getStoreDiff(result.board, player);
+  const opponentBestCapture = result.gameOver ? 0 : getBestImmediateCapture(result.board, result.nextPlayer);
+  const opponentBestExtraTurn = result.gameOver ? 0 : countImmediateExtraTurns(result.board, result.nextPlayer);
+  const evaluation = evaluateCountBoard(result.board, player);
+  const greedyScore =
+    immediateStoreGain * 10 +
+    result.captureCount * 7 +
+    (result.extraTurn ? 9 : 0) +
+    storeDiffAfter * 2;
+  const easyScore =
+    immediateStoreGain * 6 +
+    result.captureCount * 8 +
+    (result.extraTurn ? 12 : 0) +
+    evaluation * 0.35 -
+    opponentBestCapture * 4;
+  const searchPriority =
+    (result.extraTurn ? 100 : 0) +
+    result.captureCount * 18 +
+    immediateStoreGain * 7 -
+    opponentBestCapture * 4 -
+    opponentBestExtraTurn * 6;
+  const severeBlunder =
+    !result.gameOver &&
+    !result.extraTurn &&
+    result.captureCount === 0 &&
+    opponentBestCapture >= 4 &&
+    storeDiffAfter <= beforeStoreDiff;
+
+  return {
+    move,
+    result,
+    evaluation,
+    easyScore,
+    greedyScore,
+    searchPriority,
+    immediateStoreGain,
+    opponentBestCapture,
+    opponentBestExtraTurn,
+    severeBlunder,
+  };
+}
+
+function analyzeMoves(countBoard, player) {
+  return getLegalMovesForCountBoard(countBoard, player)
+    .map((move) => analyzeMove(countBoard, player, move))
+    .filter(Boolean);
+}
+
+function orderMovesForSearch(countBoard, player) {
+  return analyzeMoves(countBoard, player)
+    .sort((a, b) => b.searchPriority - a.searchPriority)
+    .map((entry) => entry.move);
+}
+
+function searchCountBoard(countBoard, player, depth, alpha, beta, rootPlayer) {
+  if (depth <= 0 || isTerminalCountBoard(countBoard)) {
+    return evaluateCountBoard(countBoard, rootPlayer);
+  }
+
+  const moves = orderMovesForSearch(countBoard, player);
+  if (moves.length === 0) {
+    return evaluateCountBoard(countBoard, rootPlayer);
+  }
+
+  if (player === rootPlayer) {
+    let best = -Infinity;
+
+    for (const move of moves) {
+      const result = simulateCountMove(countBoard, player, move);
+      if (!result) {
+        continue;
+      }
+
+      const nextDepth = result.extraTurn ? depth : depth - 1;
+      const value = searchCountBoard(
+        result.board,
+        result.nextPlayer,
+        nextDepth,
+        alpha,
+        beta,
+        rootPlayer
+      );
+
+      best = Math.max(best, value);
+      alpha = Math.max(alpha, best);
+
+      if (beta <= alpha) {
+        break;
+      }
+    }
+
+    return best;
+  }
+
+  let best = Infinity;
+
+  for (const move of moves) {
+    const result = simulateCountMove(countBoard, player, move);
+    if (!result) {
+      continue;
+    }
+
+    const nextDepth = result.extraTurn ? depth : depth - 1;
+    const value = searchCountBoard(
+      result.board,
+      result.nextPlayer,
+      nextDepth,
+      alpha,
+      beta,
+      rootPlayer
+    );
+
+    best = Math.min(best, value);
+    beta = Math.min(beta, best);
+
+    if (beta <= alpha) {
+      break;
+    }
+  }
+
+  return best;
+}
+
+function getMediumDepth(countBoard) {
+  const remaining = getSideStoneTotal(countBoard, 1) + getSideStoneTotal(countBoard, 2);
+  return remaining <= 18 ? 4 : 3;
+}
+
+function getHardDepth(countBoard) {
+  const remaining = getSideStoneTotal(countBoard, 1) + getSideStoneTotal(countBoard, 2);
+
+  if (remaining <= 14) return 8;
+  if (remaining <= 24) return 7;
+  return 6;
+}
+
+function weightedChoice(items, getWeight) {
+  let totalWeight = 0;
+  const weighted = items.map((item) => {
+    const weight = Math.max(0.01, getWeight(item));
+    totalWeight += weight;
+    return { item, weight };
+  });
+
+  let threshold = Math.random() * totalWeight;
+
+  for (const entry of weighted) {
+    threshold -= entry.weight;
+    if (threshold <= 0) {
+      return entry.item;
+    }
+  }
+
+  return weighted[weighted.length - 1]?.item ?? null;
+}
+
+function clampPoolByScore(entries, key, margin) {
+  if (entries.length === 0) {
+    return entries;
+  }
+
+  const best = entries[0][key];
+  return entries.filter((entry) => best - entry[key] <= margin);
+}
+
+function chooseEasyMove(countBoard, player) {
+  const moves = analyzeMoves(countBoard, player).sort((a, b) => b.easyScore - a.easyScore);
+  if (moves.length === 0) {
+    return null;
+  }
+
+  const tacticalMoves = moves.filter(
+    (entry) => entry.result.extraTurn || entry.result.captureCount > 0 || entry.immediateStoreGain >= 2
+  );
+  const preferredPool =
+    tacticalMoves.length > 0
+      ? clampPoolByScore(tacticalMoves, "easyScore", 10)
+      : clampPoolByScore(moves, "easyScore", 8).slice(0, Math.min(3, moves.length));
+
+  const fallbackPool = moves.slice(0, Math.min(4, moves.length));
+  const roll = Math.random();
+
+  if (roll < 0.82) {
+    return weightedChoice(preferredPool, (entry) => entry.easyScore + 24)?.move ?? fallbackPool[0].move;
+  }
+
+  return weightedChoice(fallbackPool, (entry) => entry.easyScore + 8)?.move ?? fallbackPool[0].move;
+}
+
+function scoreMoveWithSearch(countBoard, player, analysis, depth) {
+  const nextDepth = analysis.result.extraTurn ? depth : depth - 1;
+  return searchCountBoard(
+    analysis.result.board,
+    analysis.result.nextPlayer,
+    Math.max(0, nextDepth),
+    -Infinity,
+    Infinity,
+    player
+  );
+}
+
+function filterMediumCandidates(analyses) {
+  const safeCandidates = analyses.filter((entry) => !entry.severeBlunder);
+  return safeCandidates.length > 0 ? safeCandidates : analyses;
+}
+
+function chooseMediumMove(countBoard, player) {
+  const analyses = analyzeMoves(countBoard, player);
+  if (analyses.length === 0) {
+    return null;
+  }
+
+  const depth = getMediumDepth(countBoard);
+  const filtered = filterMediumCandidates(analyses);
+  const evaluated = filtered
+    .map((entry) => ({
+      ...entry,
+      searchValue: scoreMoveWithSearch(countBoard, player, entry, depth),
+    }))
+    .sort((a, b) => b.searchValue - a.searchValue);
+
+  const smartPool = clampPoolByScore(evaluated, "searchValue", 6);
+  const greedyPool = analyses
+    .map((entry) => ({
+      ...entry,
+      searchValue: scoreMoveWithSearch(countBoard, player, entry, Math.max(2, depth - 1)),
+    }))
+    .sort((a, b) => b.greedyScore - a.greedyScore);
+  const greedyTop = clampPoolByScore(greedyPool, "greedyScore", 8);
+  const sillyPool = [...greedyPool].sort((a, b) => a.searchValue - b.searchValue).slice(0, Math.max(1, Math.ceil(greedyPool.length / 2)));
+  const roll = Math.random();
+
+  if (roll < 0.7) {
+    return weightedChoice(smartPool, (entry) => entry.searchValue + 48)?.move ?? evaluated[0].move;
+  }
+
+  if (roll < 0.99) {
+    return weightedChoice(greedyTop, (entry) => entry.greedyScore + 20)?.move ?? greedyPool[0].move;
+  }
+
+  return weightedChoice(sillyPool, (entry) => Math.max(1, 24 - entry.searchValue))?.move ?? greedyPool[greedyPool.length - 1].move;
+}
+
+function chooseHardMove(countBoard, player) {
+  const analyses = analyzeMoves(countBoard, player);
+  if (analyses.length === 0) {
+    return null;
+  }
+
+  const depth = getHardDepth(countBoard);
+  const evaluated = analyses
+    .map((entry) => ({
+      ...entry,
+      searchValue: scoreMoveWithSearch(countBoard, player, entry, depth),
+    }))
+    .sort((a, b) => b.searchValue - a.searchValue);
+  const topMoves = clampPoolByScore(evaluated, "searchValue", 2);
+
+  return weightedChoice(topMoves, (entry) => entry.searchValue + 64)?.move ?? evaluated[0].move;
+}
+
+function chooseAiMove() {
+  const countBoard = toCountBoard(state.board);
+
+  if (state.aiDifficulty === "easy") {
+    return chooseEasyMove(countBoard, state.aiPlayer);
+  }
+
+  if (state.aiDifficulty === "hard") {
+    return chooseHardMove(countBoard, state.aiPlayer);
+  }
+
+  return chooseMediumMove(countBoard, state.aiPlayer);
+}
+
+function pickRandom(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function setAiDialogue(speaker, line) {
+  state.aiDialogue = { speaker, line };
+}
+
+function describePlayerMoveQuality(analysis) {
+  if (!analysis) {
+    return null;
+  }
+
+  if (analysis.result.extraTurn) {
+    return "extra";
+  }
+
+  if (analysis.result.captureCount > 0) {
+    return "capture";
+  }
+
+  if (analysis.severeBlunder || analysis.opponentBestCapture >= 4) {
+    return "blunder";
+  }
+
+  if (analysis.evaluation >= 24) {
+    return "strong";
+  }
+
+  if (analysis.evaluation <= 0) {
+    return "weak";
+  }
+
+  return null;
+}
+
+function getAiReactionForPlayerMove(analysis) {
+  const quality = describePlayerMoveQuality(analysis);
+  if (!quality) {
+    return null;
+  }
+
+  return pickRandom(AI_LINES.player[quality]);
+}
+
+function getAiMoveLine(analysis) {
+  if (!analysis) {
+    return pickRandom(AI_LINES.aiMove.neutral);
+  }
+
+  if (analysis.result.extraTurn) {
+    return pickRandom(AI_LINES.aiMove.extra);
+  }
+
+  if (analysis.result.captureCount > 0) {
+    return pickRandom(AI_LINES.aiMove.capture);
+  }
+
+  if (analysis.searchPriority >= 26 || analysis.evaluation >= 30) {
+    return pickRandom(AI_LINES.aiMove.strong);
+  }
+
+  return pickRandom(AI_LINES.aiMove.neutral);
+}
+
+async function maybeRunAiTurn() {
+  if (!isAiEnabled() || state.gameOver || state.awaitingCoinToss || state.animating || state.aiThinking) {
+    return;
+  }
+
+  if (state.activePlayer !== state.aiPlayer) {
+    return;
+  }
+
+  const token = state.animationToken;
+  state.aiThinking = true;
+  state.message = TEXT.aiThinking;
+  setAiDialogue("AI", pickRandom(AI_LINES.thinking[state.aiDifficulty]));
+  render();
+
+  await sleep(state.aiThinkDelayMs);
+
+  if (token !== state.animationToken || !isAiTurn() || state.gameOver) {
+    state.aiThinking = false;
+    render();
+    return;
+  }
+
+  const move = chooseAiMove();
+  state.aiThinking = false;
+
+  if (move == null) {
+    render();
+    return;
+  }
+
+  const analysis = analyzeMove(toCountBoard(state.board), state.aiPlayer, move);
+  render();
+  setAiDialogue("AI", getAiMoveLine(analysis));
+  await makeMove(move);
+}
+
 async function makeMove(startIndex) {
-  if (!canSelect(startIndex)) return;
+  if (!canSelect(startIndex) && !(isAiTurn() && !state.aiThinking && getOwner(startIndex) === state.activePlayer)) {
+    return;
+  }
 
   const token = state.animationToken + 1;
   state.animationToken = token;
@@ -195,6 +918,11 @@ async function makeMove(startIndex) {
   boardEl.classList.add("is-sowing");
 
   const movingPlayer = state.activePlayer;
+  const preMoveCountBoard = isAiEnabled() ? toCountBoard(state.board) : null;
+  const moveAnalysis =
+    isAiEnabled() && preMoveCountBoard
+      ? analyzeMove(preMoveCountBoard, movingPlayer, startIndex)
+      : null;
   const ownStore = getStore(movingPlayer);
   const opponentStore = getOpponentStore(movingPlayer);
   const stones = state.board[startIndex].splice(0);
@@ -255,11 +983,22 @@ async function makeMove(startIndex) {
   } else if (currentIndex === ownStore) {
     state.message = `${getPlayerName(movingPlayer)}${TEXT.extra}`;
   } else {
-    state.activePlayer = movingPlayer === 1 ? 2 : 1;
+    state.activePlayer = otherPlayer(movingPlayer);
     state.message =
       captureCount > 0
         ? `${getPlayerName(movingPlayer)}${TEXT.capture} ${captureCount}\uff0c${getPlayerName(state.activePlayer)}${TEXT.turn}`
         : `${getPlayerName(state.activePlayer)}${TEXT.turn}`;
+  }
+
+  if (isAiEnabled()) {
+    if (movingPlayer === state.humanPlayer) {
+      const reaction = getAiReactionForPlayerMove(moveAnalysis);
+      if (reaction) {
+        setAiDialogue("AI", reaction);
+      }
+    } else {
+      setAiDialogue("AI", getAiMoveLine(moveAnalysis));
+    }
   }
 
   state.animating = false;
@@ -268,7 +1007,10 @@ async function makeMove(startIndex) {
 
   if (ended) {
     showResultOverlay();
+    return;
   }
+
+  await maybeRunAiTurn();
 }
 
 function maybeEndGame() {
@@ -300,19 +1042,15 @@ function getEndMessage() {
 
   if (redScore === purpleScore) return `${TEXT.draw} ${redScore} : ${purpleScore}`;
   return redScore > purpleScore
-    ? `${TEXT.red}${TEXT.win} ${redScore} : ${purpleScore}`
-    : `${TEXT.purple}${TEXT.win} ${purpleScore} : ${redScore}`;
-}
-
-function getPlayerName(player) {
-  return player === 1 ? TEXT.red : TEXT.purple;
+    ? `${getPlayerName(1)}${TEXT.win} ${redScore} : ${purpleScore}`
+    : `${getPlayerName(2)}${TEXT.win} ${purpleScore} : ${redScore}`;
 }
 
 function render() {
   boardEl.innerHTML = "";
   boardEl.classList.toggle("is-sowing", state.animating);
-  boardEl.classList.toggle("is-locked", state.awaitingCoinToss);
-  boardEl.appendChild(createStore(PLAYER_TWO_STORE, `${TEXT.purple}${TEXT.store}`, "p2-store"));
+  boardEl.classList.toggle("is-locked", state.awaitingCoinToss || state.aiThinking || isAiTurn());
+  boardEl.appendChild(createStore(PLAYER_TWO_STORE, `${getPlayerName(2)}${TEXT.store}`, "p2-store"));
 
   topPits.forEach((index, position) => {
     boardEl.appendChild(createPit(index, 2, position + 2, 1));
@@ -322,14 +1060,39 @@ function render() {
     boardEl.appendChild(createPit(index, 1, position + 2, 2));
   });
 
-  boardEl.appendChild(createStore(PLAYER_ONE_STORE, `${TEXT.red}${TEXT.store}`, "p1-store"));
+  boardEl.appendChild(createStore(PLAYER_ONE_STORE, `${getPlayerName(1)}${TEXT.store}`, "p1-store"));
+  playerOneLabel.textContent = getScoreLabel(1);
+  playerTwoLabel.textContent = getScoreLabel(2);
   playerOneScore.querySelector("strong").textContent = getStoneCount(PLAYER_ONE_STORE);
   playerTwoScore.querySelector("strong").textContent = getStoneCount(PLAYER_TWO_STORE);
   playerOneScore.classList.toggle("active", state.activePlayer === 1 && !state.gameOver);
   playerTwoScore.classList.toggle("active", state.activePlayer === 2 && !state.gameOver);
   renderTurnIndicator();
+  renderControlState();
   statusEl.textContent = state.message;
   renderCoinOverlay();
+}
+
+function renderControlState() {
+  for (const [mode, button] of Object.entries(modeButtons)) {
+    button.classList.toggle("is-active", state.mode === mode);
+    button.setAttribute("aria-pressed", String(state.mode === mode));
+  }
+
+  const difficultyEnabled = state.mode === "pve";
+  difficultyField.hidden = !difficultyEnabled;
+
+  for (const [difficulty, button] of Object.entries(difficultyButtons)) {
+    button.classList.toggle("is-active", state.aiDifficulty === difficulty);
+    button.setAttribute("aria-pressed", String(state.aiDifficulty === difficulty));
+    button.disabled = !difficultyEnabled;
+  }
+
+  controlHint.textContent =
+    state.mode === "pve" ? `${TEXT.pveHint} \u00b7 ${getDifficultyLabel()}` : TEXT.pvpHint;
+  aiBadge.hidden = !(state.mode === "pve" && state.aiThinking);
+  aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
+  aiDialogueLine.textContent = state.aiDialogue.line;
 }
 
 function renderTurnIndicator() {
@@ -344,10 +1107,10 @@ function renderTurnIndicator() {
 
   if (activePlayer === 2) {
     turnEmblem.src = "assets/Shield.png";
-    turnIndicator.setAttribute("aria-label", `${TEXT.purple}${TEXT.turn}`);
+    turnIndicator.setAttribute("aria-label", `${getPlayerName(2)}${TEXT.turn}`);
   } else if (activePlayer === 1) {
     turnEmblem.src = "assets/Dragon.png";
-    turnIndicator.setAttribute("aria-label", `${TEXT.red}${TEXT.turn}`);
+    turnIndicator.setAttribute("aria-label", `${getPlayerName(1)}${TEXT.turn}`);
   } else {
     turnEmblem.src = "assets/Coin.png";
     turnIndicator.setAttribute("aria-label", state.gameOver ? getEndMessage() : TEXT.coinReady);
@@ -373,13 +1136,14 @@ async function tossCoin() {
   state.coinTossing = false;
   state.awaitingCoinToss = false;
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
-  coinTossStatus.textContent = result === "front" ? TEXT.coinFront : TEXT.coinBack;
+  coinTossStatus.textContent = getCoinResultText(result);
   launchParticles(coinTossOverlay, 24, firstPlayer);
 
   await sleep(680);
   if (token !== state.animationToken) return;
 
   render();
+  await maybeRunAiTurn();
 }
 
 function renderCoinOverlay() {
@@ -412,9 +1176,9 @@ function showResultOverlay() {
   resultPanel.classList.add(winner === 1 ? "winner-red" : winner === 2 ? "winner-purple" : "winner-draw");
   playerOneScore.classList.toggle("winner-pop", winner === 1);
   playerTwoScore.classList.toggle("winner-pop", winner === 2);
-  resultKicker.textContent = TEXT.result;
+  resultKicker.textContent = `${TEXT.result} \u00b7 ${getModeSummary()}`;
   resultTitle.textContent = winner === 0 ? TEXT.draw : `${getPlayerName(winner)}${TEXT.win}`;
-  resultScore.textContent = `${TEXT.red} ${redScore} : ${purpleScore} ${TEXT.purple}`;
+  resultScore.textContent = `${getPlayerName(1)} ${redScore} : ${purpleScore} ${getPlayerName(2)}`;
 
   requestAnimationFrame(() => {
     resultPanel.classList.add("is-visible");
@@ -762,6 +1526,31 @@ function formatRomanCount(value) {
 function sleep(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
+
+modePvpButton.addEventListener("click", () => {
+  state.mode = "pvp";
+  resetGame();
+});
+
+modePveButton.addEventListener("click", () => {
+  state.mode = "pve";
+  resetGame();
+});
+
+difficultyEasyButton.addEventListener("click", () => {
+  state.aiDifficulty = "easy";
+  resetGame();
+});
+
+difficultyMediumButton.addEventListener("click", () => {
+  state.aiDifficulty = "medium";
+  resetGame();
+});
+
+difficultyHardButton.addEventListener("click", () => {
+  state.aiDifficulty = "hard";
+  resetGame();
+});
 
 boardEl.addEventListener("click", (event) => {
   const pit = event.target.closest(".pit");
