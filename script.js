@@ -1,4 +1,5 @@
 import { CoinTossScene } from "./coin/index.js";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js";
 
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
@@ -153,8 +154,8 @@ const state = {
   aiThinking: false,
   aiThinkDelayMs: 520,
   aiDialogue: {
-    speaker: "AI",
-    line: "\u9078\u64c7\u55ae\u4eba\u6a21\u5f0f\u5f8c\uff0cAI \u6703\u5728\u9019\u88e1\u8ddf\u4f60\u4e92\u52d5\u3002",
+    speaker: "\u65c1\u767d",
+    line: "\u9078\u64c7\u6a21\u5f0f\u5f8c\uff0c\u95dc\u9375\u5c40\u9762\u6703\u5728\u9019\u88e1\u88dc\u4e0a\u53f0\u8a5e\u3002",
   },
 };
 
@@ -169,71 +170,12 @@ const difficultyButtons = {
   hard: difficultyHardButton,
 };
 
-const AI_LINES = {
-  intro: [
-    "\u6211\u6e96\u5099\u597d\u4e86\uff0c\u4f86\u770b\u770b\u4f60\u9019\u5c40\u600e\u9ebc\u4e0b\u3002",
-    "\u4f86\u5427\uff0c\u6211\u6703\u4e00\u908a\u4e0b\u68cb\u4e00\u908a\u8ddf\u4f60\u804a\u3002",
-    "\u9019\u76e4\u6211\u4e0d\u6703\u53ea\u662f\u975c\u975c\u5730\u7b49\u4f60\u843d\u5b50\u3002",
-  ],
-  pvp: [
-    "\u96d9\u4eba\u6a21\u5f0f\u5df2\u958b\u555f\uff0cAI \u5148\u9000\u4e0b\uff0c\u4f60\u5011\u5169\u4f4d\u8acb\u3002",
-    "\u9019\u5c40\u4ea4\u7d66\u4f60\u5011\u5169\u4eba\u5c0d\u62fc\uff0cAI \u5c31\u7576\u65c1\u89c0\u3002",
-  ],
-  thinking: {
-    easy: [
-      "\u7b49\u6211\u60f3\u4e00\u4e0b\uff0c\u9019\u624b\u5148\u770b\u6709\u6c92\u6709\u9806\u624b\u7684\u3002",
-      "\u55ef\uff0c\u5148\u770b\u770b\u80fd\u4e0d\u80fd\u591a\u8cfa\u4e00\u624b\u3002",
-    ],
-    medium: [
-      "\u9019\u624b\u6211\u6703\u7c21\u55ae\u63a8\u5e7e\u6b65\uff0c\u4f60\u5148\u7b49\u6211\u4e00\u4e0b\u3002",
-      "\u6211\u5728\u7be9\u6389\u5dee\u624b\uff0c\u770b\u770b\u54ea\u500b\u7bc0\u594f\u6bd4\u8f03\u5c0d\u3002",
-    ],
-    hard: [
-      "\u9019\u624b\u6211\u6703\u770b\u5f97\u6df1\u4e00\u9ede\uff0c\u4f60\u53ef\u4ee5\u958b\u59cb\u7dca\u5f35\u4e86\u3002",
-      "\u5225\u6025\uff0c\u6211\u5728\u628a\u5f8c\u9762\u5e7e\u624b\u90fd\u6383\u904e\u4e00\u904d\u3002",
-    ],
-  },
-  aiMove: {
-    extra: [
-      "\u9019\u624b\u6211\u8981\u9023\u8d70\uff0c\u7bc0\u594f\u76ee\u524d\u5728\u6211\u9019\u88e1\u3002",
-      "\u6211\u5148\u628a\u56de\u5408\u5b88\u4f4f\uff0c\u518d\u4f86\u7e7c\u7e8c\u58d3\u4f60\u3002",
-    ],
-    capture: [
-      "\u4f60\u9019\u500b\u7f3a\u53e3\u6211\u6536\u4e0b\u4e86\u3002",
-      "\u9019\u624b\u5403\u5b50\u4e0d\u932f\uff0c\u76e4\u9762\u958b\u59cb\u5f80\u6211\u9019\u908a\u50be\u4e86\u3002",
-    ],
-    strong: [
-      "\u9019\u624b\u6211\u6311\u5f97\u5f88\u7a69\u3002",
-      "\u6211\u559c\u6b61\u9019\u500b\u63db\u5b50\u9806\u5e8f\u3002",
-    ],
-    neutral: [
-      "\u5148\u9019\u6a23\u4f48\u5c40\uff0c\u8f2a\u5230\u4f60\u4e86\u3002",
-      "\u6211\u5148\u505a\u500b\u7a69\u5b9a\u624b\uff0c\u770b\u4f60\u56de\u61c9\u3002",
-    ],
-  },
-  player: {
-    strong: [
-      "\u9019\u624b\u4e0d\u932f\uff0c\u4f60\u6709\u770b\u5230\u7bc0\u594f\u3002",
-      "\u597d\u7684\u4e00\u624b\uff0c\u9019\u500b\u8655\u7406\u6709\u9ede\u6771\u897f\u3002",
-    ],
-    extra: [
-      "\u4f60\u628a\u9023\u8d70\u62ff\u5230\u4e86\uff0c\u9019\u5c31\u6709\u58d3\u529b\u4e86\u3002",
-      "\u9019\u500b\u518d\u8d70\u4e00\u624b\u5f88\u95dc\u9375\u3002",
-    ],
-    capture: [
-      "\u4f60\u9019\u624b\u5403\u5f97\u6eff\u6e96\u7684\u3002",
-      "\u55ef\uff0c\u9019\u500b\u7f3a\u53e3\u88ab\u4f60\u6293\u5230\u4e86\u3002",
-    ],
-    blunder: [
-      "\u9019\u624b\u6709\u9ede\u9b06\uff0c\u6211\u61c9\u8a72\u6709\u6771\u897f\u53ef\u4ee5\u6253\u3002",
-      "\u4f60\u525b\u525b\u7d66\u4e86\u6211\u4e00\u500b\u53ef\u4ee5\u9032\u653b\u7684\u7e2b\u3002",
-    ],
-    weak: [
-      "\u9019\u624b\u504f\u4fdd\u5b88\uff0c\u6211\u6703\u8a66\u8457\u7528\u7bc0\u594f\u58d3\u4f60\u3002",
-      "\u6211\u770b\u5230\u4f60\u60f3\u7a69\u4f4f\uff0c\u4f46\u9019\u624b\u5229\u6f64\u4e0d\u5927\u3002",
-    ],
-  },
+const NARRATOR = "\u65c1\u767d";
+const SIDE_LABELS = {
+  1: "\u7d05\u5bf6\u77f3\u65b9",
+  2: "\u7d2b\u6c34\u6676\u65b9",
 };
+const LOW_SIDE_THRESHOLD = 8;
 
 function createInitialBoard() {
   return Array.from({ length: BOARD_SIZE }, (_, index) => {
@@ -265,12 +207,8 @@ function resetGame() {
   state.aiThinking = false;
   state.layoutSalt = Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000);
   state.message = TEXT.coinReady;
-  setAiDialogue(
-    "AI",
-    state.mode === "pve"
-      ? pickRandom(AI_LINES.intro)
-      : pickRandom(AI_LINES.pvp)
-  );
+  resetDialogueHistory();
+  setAiDialogue(NARRATOR, getDialogue("coin.beforeToss"));
   hideResultOverlay();
   resetCoinVisual();
   render();
@@ -287,7 +225,7 @@ function showMainMenu() {
   state.resultShown = false;
   state.lastDropIndex = null;
   state.message = "";
-  setAiDialogue("AI", "");
+  setAiDialogue("", "");
   hideResultOverlay();
   resetCoinVisual();
   coinTossOverlay.hidden = true;
@@ -359,6 +297,116 @@ function getPlayerName(player) {
   }
 
   return player === 1 ? TEXT.red : TEXT.purple;
+}
+
+function getSideName(player) {
+  return SIDE_LABELS[player] ?? "";
+}
+
+function getSideStoneCount(board, player) {
+  const pits = player === 1 ? bottomPits : playerTwoPits;
+  return pits.reduce((total, index) => total + board[index].length, 0);
+}
+
+function getAdvantageBucket(diff) {
+  const absDiff = Math.abs(diff);
+
+  if (absDiff === 0) {
+    return "tied";
+  }
+
+  if (absDiff <= 3) {
+    return "slightLead";
+  }
+
+  if (absDiff <= 8) {
+    return "comebackPossible";
+  }
+
+  return absDiff <= 12 ? "bigLead" : "desperate";
+}
+
+function getAdvantageDialogue(redScore, purpleScore) {
+  const diff = redScore - purpleScore;
+  const bucket = getAdvantageBucket(diff);
+
+  if (bucket === "tied") {
+    return getDialogue("advantage.tied");
+  }
+
+  const leader = diff > 0 ? getSideName(1) : getSideName(2);
+  const trailer = diff > 0 ? getSideName(2) : getSideName(1);
+
+  if (bucket === "slightLead") {
+    return getDialogue("advantage.slightLead", { leader });
+  }
+
+  if (bucket === "comebackPossible") {
+    return getDialogue("advantage.comebackPossible", { trailer });
+  }
+
+  return getDialogue(`advantage.${bucket}`, bucket === "bigLead" ? { leader } : { trailer });
+}
+
+function getEndDialogue() {
+  const redScore = getStoneCount(PLAYER_ONE_STORE);
+  const purpleScore = getStoneCount(PLAYER_TWO_STORE);
+
+  if (redScore === purpleScore) {
+    return getDialogue("endgame.draw");
+  }
+
+  return redScore > purpleScore ? getDialogue("endgame.redWins") : getDialogue("endgame.purpleWins");
+}
+
+function getPostMoveDialogue({
+  movingPlayer,
+  ended,
+  landedInStore,
+  captureCount,
+  preRedScore,
+  prePurpleScore,
+  preRedSide,
+  prePurpleSide,
+}) {
+  if (ended) {
+    return getEndDialogue();
+  }
+
+  if (captureCount > 0) {
+    return getDialogue("move.capture");
+  }
+
+  if (landedInStore) {
+    return getDialogue("move.extraTurn");
+  }
+
+  const postRedScore = getStoneCount(PLAYER_ONE_STORE);
+  const postPurpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const movingScoreGain =
+    (movingPlayer === 1 ? postRedScore - preRedScore : postPurpleScore - prePurpleScore);
+
+  if (movingScoreGain >= 3) {
+    return getDialogue("move.bigStoreGain");
+  }
+
+  const preBucket = getAdvantageBucket(preRedScore - prePurpleScore);
+  const postBucket = getAdvantageBucket(postRedScore - postPurpleScore);
+  if (preBucket !== postBucket) {
+    return getAdvantageDialogue(postRedScore, postPurpleScore);
+  }
+
+  const postRedSide = getSideStoneCount(state.board, 1);
+  const postPurpleSide = getSideStoneCount(state.board, 2);
+  if (preRedSide > LOW_SIDE_THRESHOLD && postRedSide <= LOW_SIDE_THRESHOLD) {
+    return getDialogue("boardState.redSideLow");
+  }
+
+  if (prePurpleSide > LOW_SIDE_THRESHOLD && postPurpleSide <= LOW_SIDE_THRESHOLD) {
+    return getDialogue("boardState.purpleSideLow");
+  }
+
+  return "";
 }
 
 function getScoreLabel(player) {
@@ -833,69 +881,8 @@ function chooseAiMove() {
   return chooseMediumMove(countBoard, state.aiPlayer);
 }
 
-function pickRandom(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 function setAiDialogue(speaker, line) {
   state.aiDialogue = { speaker, line };
-}
-
-function describePlayerMoveQuality(analysis) {
-  if (!analysis) {
-    return null;
-  }
-
-  if (analysis.result.extraTurn) {
-    return "extra";
-  }
-
-  if (analysis.result.captureCount > 0) {
-    return "capture";
-  }
-
-  if (analysis.severeBlunder || analysis.opponentBestCapture >= 4) {
-    return "blunder";
-  }
-
-  if (analysis.evaluation >= 24) {
-    return "strong";
-  }
-
-  if (analysis.evaluation <= 0) {
-    return "weak";
-  }
-
-  return null;
-}
-
-function getAiReactionForPlayerMove(analysis) {
-  const quality = describePlayerMoveQuality(analysis);
-  if (!quality) {
-    return null;
-  }
-
-  return pickRandom(AI_LINES.player[quality]);
-}
-
-function getAiMoveLine(analysis) {
-  if (!analysis) {
-    return pickRandom(AI_LINES.aiMove.neutral);
-  }
-
-  if (analysis.result.extraTurn) {
-    return pickRandom(AI_LINES.aiMove.extra);
-  }
-
-  if (analysis.result.captureCount > 0) {
-    return pickRandom(AI_LINES.aiMove.capture);
-  }
-
-  if (analysis.searchPriority >= 26 || analysis.evaluation >= 30) {
-    return pickRandom(AI_LINES.aiMove.strong);
-  }
-
-  return pickRandom(AI_LINES.aiMove.neutral);
 }
 
 async function maybeRunAiTurn() {
@@ -910,7 +897,6 @@ async function maybeRunAiTurn() {
   const token = state.animationToken;
   state.aiThinking = true;
   state.message = TEXT.aiThinking;
-  setAiDialogue("AI", pickRandom(AI_LINES.thinking[state.aiDifficulty]));
   render();
 
   await sleep(state.aiThinkDelayMs);
@@ -929,9 +915,7 @@ async function maybeRunAiTurn() {
     return;
   }
 
-  const analysis = analyzeMove(toCountBoard(state.board), state.aiPlayer, move);
   render();
-  setAiDialogue("AI", getAiMoveLine(analysis));
   await makeMove(move);
 }
 
@@ -946,11 +930,10 @@ async function makeMove(startIndex) {
   boardEl.classList.add("is-sowing");
 
   const movingPlayer = state.activePlayer;
-  const preMoveCountBoard = isAiEnabled() ? toCountBoard(state.board) : null;
-  const moveAnalysis =
-    isAiEnabled() && preMoveCountBoard
-      ? analyzeMove(preMoveCountBoard, movingPlayer, startIndex)
-      : null;
+  const preRedScore = getStoneCount(PLAYER_ONE_STORE);
+  const prePurpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const preRedSide = getSideStoneCount(state.board, 1);
+  const prePurpleSide = getSideStoneCount(state.board, 2);
   const ownStore = getStore(movingPlayer);
   const opponentStore = getOpponentStore(movingPlayer);
   const stones = state.board[startIndex].splice(0);
@@ -1018,15 +1001,19 @@ async function makeMove(startIndex) {
         : `${getPlayerName(state.activePlayer)}${TEXT.turn}`;
   }
 
-  if (isAiEnabled()) {
-    if (movingPlayer === state.humanPlayer) {
-      const reaction = getAiReactionForPlayerMove(moveAnalysis);
-      if (reaction) {
-        setAiDialogue("AI", reaction);
-      }
-    } else {
-      setAiDialogue("AI", getAiMoveLine(moveAnalysis));
-    }
+  const dialogueLine = getPostMoveDialogue({
+    movingPlayer,
+    ended,
+    landedInStore: currentIndex === ownStore,
+    captureCount,
+    preRedScore,
+    prePurpleScore,
+    preRedSide,
+    prePurpleSide,
+  });
+
+  if (dialogueLine) {
+    setAiDialogue(NARRATOR, dialogueLine);
   }
 
   state.animating = false;
@@ -1124,7 +1111,7 @@ function renderInterfaceState() {
 
   controlHint.textContent =
     state.mode === "pve" ? `${TEXT.pveHint} \u00b7 ${getDifficultyLabel()}` : TEXT.pvpHint;
-  aiDialogue.hidden = state.screen !== "game" || state.mode !== "pve";
+  aiDialogue.hidden = state.screen !== "game";
   aiBadge.hidden = !(state.mode === "pve" && state.aiThinking);
   aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
   aiDialogueLine.textContent = state.aiDialogue.line;
@@ -1162,7 +1149,8 @@ async function tossCoin() {
   state.coinTossing = true;
   state.coinResult = result;
   state.message = TEXT.coinFlipping;
-  renderCoinOverlay();
+  setAiDialogue(NARRATOR, getDialogue("coin.flipping"));
+  render();
 
   await coinScene.play(result);
   if (token !== state.animationToken) return;
@@ -1171,8 +1159,10 @@ async function tossCoin() {
   state.coinTossing = false;
   state.awaitingCoinToss = false;
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
+  setAiDialogue(NARRATOR, getDialogue(result === "front" ? "coin.redFirst" : "coin.purpleFirst"));
   coinTossStatus.textContent = getCoinResultText(result);
   launchParticles(coinTossOverlay, 24, firstPlayer);
+  render();
 
   await sleep(680);
   if (token !== state.animationToken) return;

@@ -100,21 +100,21 @@ function createCoinEdgeTexture(anisotropy) {
   }
 
   const gradient = ctx.createLinearGradient(0, 0, width, 0);
-  gradient.addColorStop(0, "#6f4d18");
-  gradient.addColorStop(0.16, "#c79f4e");
-  gradient.addColorStop(0.5, "#f4ddb0");
-  gradient.addColorStop(0.84, "#b37f30");
-  gradient.addColorStop(1, "#75521a");
+  gradient.addColorStop(0, "#55514b");
+  gradient.addColorStop(0.18, "#9d978f");
+  gradient.addColorStop(0.5, "#d9d3ca");
+  gradient.addColorStop(0.82, "#8d877f");
+  gradient.addColorStop(1, "#4f4b45");
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 
-  for (let x = 0; x < width; x += 10) {
-    const alpha = x % 20 === 0 ? 0.3 : 0.16;
-    ctx.fillStyle = `rgba(74, 46, 12, ${alpha})`;
-    ctx.fillRect(x, 0, 3, height);
+  for (let x = 0; x < width; x += 14) {
+    const alpha = x % 28 === 0 ? 0.24 : 0.12;
+    ctx.fillStyle = `rgba(56, 52, 48, ${alpha})`;
+    ctx.fillRect(x, 8, 2, height - 16);
   }
 
-  ctx.strokeStyle = "rgba(255, 245, 214, 0.18)";
+  ctx.strokeStyle = "rgba(255, 252, 242, 0.18)";
   ctx.lineWidth = 2;
   for (const y of [10, height - 10]) {
     ctx.beginPath();
@@ -123,12 +123,23 @@ function createCoinEdgeTexture(anisotropy) {
     ctx.stroke();
   }
 
+  ctx.strokeStyle = "rgba(46, 44, 42, 0.4)";
+  ctx.lineWidth = 1.5;
+  for (let x = 8; x < width; x += 18) {
+    const notchHeight = 16 + Math.random() * 16;
+    const y = (height - notchHeight) / 2 + (Math.random() * 6 - 3);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 3, y + notchHeight);
+    ctx.stroke();
+  }
+
   ctx.globalCompositeOperation = "overlay";
-  ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-  for (let i = 0; i < 60; i += 1) {
+  ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+  for (let i = 0; i < 36; i += 1) {
     const x = Math.random() * width;
-    const w = 5 + Math.random() * 16;
-    const h = 8 + Math.random() * 28;
+    const w = 8 + Math.random() * 12;
+    const h = 10 + Math.random() * 22;
     const y = Math.random() * (height - h);
     ctx.fillRect(x, y, w, h);
   }
@@ -156,12 +167,13 @@ function disposeMaterial(material) {
 }
 
 class CoinTossScene {
-  constructor({ canvas, dragonSrc, shieldSrc }) {
+  constructor({ canvas, coinSrc, dragonSrc, shieldSrc }) {
     if (!canvas) {
       throw new Error("CoinTossScene requires a canvas element.");
     }
 
     this.canvas = canvas;
+    this.coinSrc = coinSrc;
     this.dragonSrc = dragonSrc;
     this.shieldSrc = shieldSrc;
     this.scene = new THREE.Scene();
@@ -196,7 +208,7 @@ class CoinTossScene {
 
     this.faceRadius = 1.02;
     this.bodyRadius = 1.06;
-    this.bodyThickness = 0.18;
+    this.bodyThickness = 0.09;
     this.faceDepth = this.bodyThickness / 2 + 0.015;
     this.activeFace = "front";
     this.animationFrame = 0;
@@ -218,11 +230,13 @@ class CoinTossScene {
 
   async init() {
     const anisotropy = this.renderer.capabilities.getMaxAnisotropy();
-    const [dragonTexture, shieldTexture] = await Promise.all([
+    const [coinTexture, dragonTexture, shieldTexture] = await Promise.all([
+      loadTexture(this.loader, this.coinSrc, anisotropy).catch(() => createFallbackTexture("C", anisotropy)),
       loadTexture(this.loader, this.dragonSrc, anisotropy).catch(() => createFallbackTexture("D", anisotropy)),
       loadTexture(this.loader, this.shieldSrc, anisotropy).catch(() => createFallbackTexture("S", anisotropy)),
     ]);
 
+    this.coinTexture = coinTexture;
     this.dragonTexture = dragonTexture;
     this.shieldTexture = shieldTexture;
     this.edgeTexture = createCoinEdgeTexture(anisotropy);
@@ -243,9 +257,10 @@ class CoinTossScene {
     const faceGeometry = new THREE.CircleGeometry(this.faceRadius, 64);
 
     const capMaterial = new THREE.MeshStandardMaterial({
-      color: 0xcda34e,
+      color: 0xf1ece3,
+      map: this.coinTexture,
       metalness: 0.94,
-      roughness: 0.38,
+      roughness: 0.42,
     });
     const faceMaterialOptions = {
       transparent: true,
@@ -255,9 +270,9 @@ class CoinTossScene {
       side: THREE.FrontSide,
     };
     const edgeMaterial = new THREE.MeshStandardMaterial({
-      color: 0xc59a48,
+      color: 0xc8c1b7,
       metalness: 0.9,
-      roughness: 0.34,
+      roughness: 0.4,
       map: this.edgeTexture,
     });
 
@@ -433,6 +448,9 @@ class CoinTossScene {
     this.backDisc?.geometry.dispose();
     disposeMaterial(this.backDisc?.material);
     this.edgeTexture?.dispose?.();
+    this.coinTexture?.dispose?.();
+    this.dragonTexture?.dispose?.();
+    this.shieldTexture?.dispose?.();
     this.renderer.dispose();
   }
 }
