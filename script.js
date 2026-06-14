@@ -75,12 +75,63 @@ const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
 
-const coinScene = new CoinTossScene({
-  canvas: coinCanvas,
-  coinSrc: "assets/Coin.png",
-  dragonSrc: "assets/Dragon.png",
-  shieldSrc: "assets/Shield.png",
-});
+function setCoinFallbackVisual() {
+  coinTossButton.classList.add("is-fallback");
+  coinCanvas.setAttribute("aria-hidden", "true");
+}
+
+function createFallbackCoinScene() {
+  setCoinFallbackVisual();
+
+  return {
+    async play() {
+      return false;
+    },
+    reset() {},
+  };
+}
+
+function createCoinScene() {
+  try {
+    const scene = new CoinTossScene({
+      canvas: coinCanvas,
+      coinSrc: "assets/Coin.png",
+      dragonSrc: "assets/Dragon.png",
+      shieldSrc: "assets/Shield.png",
+    });
+
+    scene.ready = scene.ready.catch((error) => {
+      console.warn("Coin scene initialization failed. Falling back to static coin.", error);
+      setCoinFallbackVisual();
+      return null;
+    });
+
+    return {
+      async play(face) {
+        try {
+          return await scene.play(face);
+        } catch (error) {
+          console.warn("Coin scene animation failed. Falling back to static coin.", error);
+          setCoinFallbackVisual();
+          return false;
+        }
+      },
+      reset() {
+        try {
+          scene.reset();
+        } catch (error) {
+          console.warn("Coin scene reset failed. Falling back to static coin.", error);
+          setCoinFallbackVisual();
+        }
+      },
+    };
+  } catch (error) {
+    console.warn("Coin scene setup failed. Falling back to static coin.", error);
+    return createFallbackCoinScene();
+  }
+}
+
+const coinScene = createCoinScene();
 
 const topPits = [12, 11, 10, 9, 8, 7];
 const bottomPits = [0, 1, 2, 3, 4, 5];

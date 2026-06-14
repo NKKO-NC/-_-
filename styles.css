@@ -860,6 +860,19 @@ h1 {
   overflow: visible;
 }
 
+.coin-toss-button.is-fallback {
+  background-image: url("assets/Coin.png");
+  background-size: cover;
+  background-position: center;
+  filter:
+    drop-shadow(0 14px 24px rgba(0, 0, 0, 0.48))
+    drop-shadow(0 0 18px rgba(255, 228, 161, 0.18));
+}
+
+.coin-toss-button.is-fallback .coin-canvas {
+  opacity: 0;
+}
+
 .coin-toss-button:disabled {
   cursor: default;
 }
