@@ -14,60 +14,73 @@
   </head>
   <body>
     <main class="game-app">
-      <header class="game-header">
-        <div>
+      <section class="main-menu" id="mainMenu" aria-label="&#20027;&#33756;&#21934;">
+        <div class="menu-title">
           <p class="eyebrow">Kalah</p>
           <h1>&#25773;&#26827;</h1>
         </div>
-        <button class="icon-button" id="resetButton" type="button" aria-label="&#37325;&#26032;&#38283;&#22987;" title="&#37325;&#26032;&#38283;&#22987;">
-          &#8635;
-        </button>
-      </header>
-
-      <section class="game-controls" aria-label="&#36938;&#25138;&#35373;&#23450;">
-        <div class="control-field">
-          <span>&#27169;&#24335;</span>
-          <div class="segmented-control" id="modeControl" role="group" aria-label="&#27169;&#24335;">
-            <button class="segment-button is-active" id="modePvpButton" type="button" data-mode="pvp">&#38617;&#20154;&#23565;&#25136;</button>
-            <button class="segment-button" id="modePveButton" type="button" data-mode="pve">&#21934;&#20154; vs AI</button>
-          </div>
+        <div class="menu-options" role="group" aria-label="&#27169;&#24335;">
+          <button class="menu-option is-active" id="modePveButton" type="button" data-mode="pve">
+            <span>&#21934;&#20154;&#27169;&#24335;</span>
+            <small>vs AI</small>
+          </button>
+          <button class="menu-option" id="modePvpButton" type="button" data-mode="pvp">
+            <span>&#38617;&#20154;&#27169;&#24335;</span>
+            <small>Local</small>
+          </button>
         </div>
-        <div class="control-field" id="difficultyField">
+        <div class="menu-difficulty" id="difficultyField">
           <span>AI &#38627;&#24230;</span>
-          <div class="segmented-control" id="difficultyControl" role="group" aria-label="AI &#38627;&#24230;">
-            <button class="segment-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
-            <button class="segment-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
-            <button class="segment-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
+          <div class="difficulty-options" role="group" aria-label="AI &#38627;&#24230;">
+            <button class="difficulty-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
+            <button class="difficulty-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
+            <button class="difficulty-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
           </div>
         </div>
         <p class="control-hint" id="controlHint"></p>
-        <p class="ai-badge" id="aiBadge" hidden>AI &#24605;&#32771;&#20013;...</p>
+        <button class="start-button" id="startButton" type="button">&#38283;&#22987;</button>
       </section>
 
-      <section class="ai-dialogue" id="aiDialogue" aria-live="polite">
-        <p class="ai-dialogue-speaker" id="aiDialogueSpeaker">AI</p>
-        <p class="ai-dialogue-line" id="aiDialogueLine">&#36984;&#25875;&#21934;&#20154;&#27169;&#24335;&#24460;&#65292;AI &#26371;&#22312;&#36889;&#35041;&#36319;&#20320;&#20114;&#21205;&#12290;</p>
-      </section>
+      <section class="game-screen" id="gameScreen" hidden>
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">Kalah</p>
+            <h1>&#25773;&#26827;</h1>
+          </div>
+          <div class="game-actions">
+            <button class="icon-button" id="resetButton" type="button" aria-label="&#37325;&#26032;&#19968;&#23616;" title="&#37325;&#26032;&#19968;&#23616;">
+              &#8635;
+            </button>
+            <button class="menu-return-button" id="menuButton" type="button">&#22238;&#20027;&#33756;&#21934;</button>
+          </div>
+        </header>
 
-      <section class="score-strip" aria-label="&#20998;&#25976;">
-        <div class="player-score player-two" id="playerTwoScore">
-          <span>&#32043;&#26041;</span>
-          <strong>0</strong>
-        </div>
-        <div class="turn-indicator" id="turnIndicator" aria-live="polite">
-          <img id="turnEmblem" src="assets/Coin.png" alt="" aria-hidden="true" />
-        </div>
-        <div class="player-score player-one active" id="playerOneScore">
-          <span>&#32005;&#26041;</span>
-          <strong>0</strong>
-        </div>
-      </section>
+        <section class="ai-dialogue" id="aiDialogue" aria-live="polite">
+          <p class="ai-dialogue-speaker" id="aiDialogueSpeaker">AI</p>
+          <p class="ai-dialogue-line" id="aiDialogueLine"></p>
+          <p class="ai-badge" id="aiBadge" hidden>AI &#24605;&#32771;&#20013;...</p>
+        </section>
 
-      <section class="board-wrap" aria-label="Kalah &#25773;&#26827;&#26827;&#30436;">
-        <div class="board" id="board"></div>
-      </section>
+        <section class="score-strip" aria-label="&#20998;&#25976;">
+          <div class="player-score player-two" id="playerTwoScore">
+            <span>&#32043;&#26041;</span>
+            <strong>0</strong>
+          </div>
+          <div class="turn-indicator" id="turnIndicator" aria-live="polite">
+            <img id="turnEmblem" src="assets/Coin.png" alt="" aria-hidden="true" />
+          </div>
+          <div class="player-score player-one active" id="playerOneScore">
+            <span>&#32005;&#26041;</span>
+            <strong>0</strong>
+          </div>
+        </section>
 
-      <p class="status sr-only" id="status" aria-live="polite"></p>
+        <section class="board-wrap" aria-label="Kalah &#25773;&#26827;&#26827;&#30436;">
+          <div class="board" id="board"></div>
+        </section>
+
+        <p class="status sr-only" id="status" aria-live="polite"></p>
+      </section>
     </main>
 
     <div class="coin-toss-overlay" id="coinTossOverlay" aria-live="polite">
@@ -83,7 +96,10 @@
         <p class="result-kicker" id="resultKicker"></p>
         <h2 id="resultTitle"></h2>
         <p class="result-score" id="resultScore"></p>
-        <button class="result-button" id="resultResetButton" type="button">&#20877;&#38283;&#19968;&#23616;</button>
+        <div class="result-actions">
+          <button class="result-button" id="resultResetButton" type="button">&#20877;&#38283;&#19968;&#23616;</button>
+          <button class="result-button secondary" id="resultMenuButton" type="button">&#22238;&#20027;&#33756;&#21934;</button>
+        </div>
       </div>
     </div>
 
