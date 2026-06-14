@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js";
+import { CoinTossScene } from "./coin/index.js?v=20260615c";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260615c";
 
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
@@ -74,6 +74,7 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
+const ASSET_VERSION = "20260615c";
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");
@@ -95,9 +96,9 @@ function createCoinScene() {
   try {
     const scene = new CoinTossScene({
       canvas: coinCanvas,
-      coinSrc: "assets/Coin.png",
-      dragonSrc: "assets/Dragon.png",
-      shieldSrc: "assets/Shield.png",
+      coinSrc: `assets/Coin.png?v=${ASSET_VERSION}`,
+      dragonSrc: `assets/Dragon.png?v=${ASSET_VERSION}`,
+      shieldSrc: `assets/Shield.png?v=${ASSET_VERSION}`,
     });
 
     scene.ready = scene.ready.catch((error) => {
@@ -1179,13 +1180,13 @@ function renderTurnIndicator() {
   turnIndicator.classList.toggle("pending", !showingTurn);
 
   if (activePlayer === 2) {
-    turnEmblem.src = "assets/Shield.png";
+    turnEmblem.src = `assets/Shield.png?v=${ASSET_VERSION}`;
     turnIndicator.setAttribute("aria-label", `${getPlayerName(2)}${TEXT.turn}`);
   } else if (activePlayer === 1) {
-    turnEmblem.src = "assets/Dragon.png";
+    turnEmblem.src = `assets/Dragon.png?v=${ASSET_VERSION}`;
     turnIndicator.setAttribute("aria-label", `${getPlayerName(1)}${TEXT.turn}`);
   } else {
-    turnEmblem.src = "assets/Coin.png";
+    turnEmblem.src = `assets/Coin.png?v=${ASSET_VERSION}`;
     turnIndicator.setAttribute("aria-label", state.gameOver ? getEndMessage() : TEXT.coinReady);
   }
 }
@@ -1331,7 +1332,8 @@ function createStore(index, label, className) {
   const store = document.createElement("div");
   const owner = getOwner(index);
   const count = getStoneCount(index);
-  const sigil = owner === 1 ? "assets/Dragon.png" : "assets/Shield.png";
+  const sigil =
+    owner === 1 ? `assets/Dragon.png?v=${ASSET_VERSION}` : `assets/Shield.png?v=${ASSET_VERSION}`;
 
   store.className = `store cell ${className}${state.lastDropIndex === index ? " just-dropped" : ""}`;
   store.dataset.index = String(index);
@@ -1354,7 +1356,10 @@ function createStones(index, stones, owner, type) {
 
   layouts.forEach((layout, i) => {
     const stoneOwner = visibleStones[i] || owner;
-    const src = stoneOwner === 1 ? RUBY_SRC : AMETHYST_SRC;
+    const src =
+      stoneOwner === 1
+        ? `${RUBY_SRC}?v=${ASSET_VERSION}`
+        : `${AMETHYST_SRC}?v=${ASSET_VERSION}`;
     const entering = i === newStoneIndex ? " entering" : "";
 
     html += `
@@ -1480,7 +1485,10 @@ async function animateStoneBetween(fromIndex, toIndex, stoneOwner, token) {
   const size = clamp(Math.min(from.width, from.height) * 0.33, 30, 58);
 
   image.className = "flying-stone";
-  image.src = stoneOwner === 1 ? RUBY_SRC : AMETHYST_SRC;
+  image.src =
+    stoneOwner === 1
+      ? `${RUBY_SRC}?v=${ASSET_VERSION}`
+      : `${AMETHYST_SRC}?v=${ASSET_VERSION}`;
   image.alt = "";
   image.setAttribute("aria-hidden", "true");
   image.style.left = `${from.x}px`;
