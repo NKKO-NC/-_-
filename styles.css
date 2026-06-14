@@ -609,7 +609,7 @@ h1 {
   background: transparent;
   cursor: pointer;
   perspective: 900px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .coin-toss-button:disabled {

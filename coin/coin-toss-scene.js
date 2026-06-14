@@ -84,6 +84,77 @@ function createFallbackTexture(label, anisotropy) {
   return texture;
 }
 
+function createCoinEdgeTexture(anisotropy) {
+  const width = 512;
+  const height = 96;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) {
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    texture.anisotropy = anisotropy;
+    return texture;
+  }
+
+  const gradient = ctx.createLinearGradient(0, 0, width, 0);
+  gradient.addColorStop(0, "#6f4d18");
+  gradient.addColorStop(0.16, "#c79f4e");
+  gradient.addColorStop(0.5, "#f4ddb0");
+  gradient.addColorStop(0.84, "#b37f30");
+  gradient.addColorStop(1, "#75521a");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  for (let x = 0; x < width; x += 10) {
+    const alpha = x % 20 === 0 ? 0.3 : 0.16;
+    ctx.fillStyle = `rgba(74, 46, 12, ${alpha})`;
+    ctx.fillRect(x, 0, 3, height);
+  }
+
+  ctx.strokeStyle = "rgba(255, 245, 214, 0.18)";
+  ctx.lineWidth = 2;
+  for (const y of [10, height - 10]) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(width, y);
+    ctx.stroke();
+  }
+
+  ctx.globalCompositeOperation = "overlay";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+  for (let i = 0; i < 60; i += 1) {
+    const x = Math.random() * width;
+    const w = 5 + Math.random() * 16;
+    const h = 8 + Math.random() * 28;
+    const y = Math.random() * (height - h);
+    ctx.fillRect(x, y, w, h);
+  }
+  ctx.globalCompositeOperation = "source-over";
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = anisotropy;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.repeat.set(3.5, 1);
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function disposeMaterial(material) {
+  if (Array.isArray(material)) {
+    for (const item of material) {
+      item?.dispose?.();
+    }
+    return;
+  }
+
+  material?.dispose?.();
+}
+
 class CoinTossScene {
   constructor({ canvas, dragonSrc, shieldSrc }) {
     if (!canvas) {
@@ -125,8 +196,8 @@ class CoinTossScene {
 
     this.faceRadius = 1.02;
     this.bodyRadius = 1.06;
-    this.bodyThickness = 0.24;
-    this.faceDepth = this.bodyThickness / 2 + 0.02;
+    this.bodyThickness = 0.18;
+    this.faceDepth = this.bodyThickness / 2 + 0.015;
     this.activeFace = "front";
     this.animationFrame = 0;
     this.animationToken = 0;
@@ -154,6 +225,7 @@ class CoinTossScene {
 
     this.dragonTexture = dragonTexture;
     this.shieldTexture = shieldTexture;
+    this.edgeTexture = createCoinEdgeTexture(anisotropy);
     this.buildCoin();
     this.resize();
     this.setFace("front");
@@ -170,10 +242,10 @@ class CoinTossScene {
     );
     const faceGeometry = new THREE.CircleGeometry(this.faceRadius, 64);
 
-    const bodyMaterial = new THREE.MeshStandardMaterial({
+    const capMaterial = new THREE.MeshStandardMaterial({
       color: 0xcda34e,
-      metalness: 0.95,
-      roughness: 0.34,
+      metalness: 0.94,
+      roughness: 0.38,
     });
     const faceMaterialOptions = {
       transparent: true,
@@ -182,8 +254,14 @@ class CoinTossScene {
       roughness: 0.72,
       side: THREE.FrontSide,
     };
+    const edgeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xc59a48,
+      metalness: 0.9,
+      roughness: 0.34,
+      map: this.edgeTexture,
+    });
 
-    this.bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    this.bodyMesh = new THREE.Mesh(bodyGeometry, [capMaterial, capMaterial.clone(), edgeMaterial]);
     this.bodyMesh.rotation.x = Math.PI / 2;
     this.group.add(this.bodyMesh);
 
@@ -277,14 +355,14 @@ class CoinTossScene {
     const startRotationZ = this.group.rotation.z;
     const startPositionY = this.group.position.y;
     const targetY = face === "back" ? Math.PI : 0;
-    const spinTurns = randomRange(5.75, 7.25) * (Math.random() < 0.5 ? 1 : -1);
+    const spinTurns = randomRange(4.9, 6.1) * (Math.random() < 0.5 ? 1 : -1);
     const endY = targetY + spinTurns * TAU;
     const xTilt = randomRange(0.9, 1.28) * (Math.random() < 0.5 ? 1 : -1);
     const zTilt = randomRange(0.48, 0.82) * (Math.random() < 0.5 ? 1 : -1);
-    const lift = randomRange(1.08, 1.34);
+    const lift = randomRange(0.9, 1.1);
     const squash = randomRange(0.03, 0.055);
     const wobbleTurns = randomRange(8.5, 11.5);
-    const duration = randomRange(1180, 1360);
+    const duration = randomRange(1300, 1480);
     const settleStart = 0.78;
     const settleDuration = 0.22;
 
@@ -349,11 +427,12 @@ class CoinTossScene {
     window.removeEventListener("resize", this.handleResize);
 
     this.bodyMesh?.geometry.dispose();
-    this.bodyMesh?.material.dispose();
+    disposeMaterial(this.bodyMesh?.material);
     this.frontDisc?.geometry.dispose();
-    this.frontDisc?.material.dispose();
+    disposeMaterial(this.frontDisc?.material);
     this.backDisc?.geometry.dispose();
-    this.backDisc?.material.dispose();
+    disposeMaterial(this.backDisc?.material);
+    this.edgeTexture?.dispose?.();
     this.renderer.dispose();
   }
 }
