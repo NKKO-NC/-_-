@@ -383,7 +383,10 @@ async function tossCoin() {
 }
 
 function renderCoinOverlay() {
-  coinTossOverlay.classList.toggle("is-visible", state.awaitingCoinToss || state.coinTossing);
+  const isVisible = state.awaitingCoinToss || state.coinTossing;
+
+  coinTossOverlay.hidden = !isVisible;
+  coinTossOverlay.classList.toggle("is-visible", isVisible);
   coinTossButton.disabled = !state.awaitingCoinToss || state.coinTossing;
 
   if (state.coinTossing) {
