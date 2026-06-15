@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260616b";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616b";
+import { CoinTossScene } from "./coin/index.js?v=20260616c";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616c";
 
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
@@ -74,7 +74,7 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
-const ASSET_VERSION = "20260616b";
+const ASSET_VERSION = "20260616c";
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");
@@ -191,6 +191,7 @@ const state = {
   animating: false,
   awaitingCoinToss: true,
   coinTossing: false,
+  coinResultHolding: false,
   coinResult: null,
   resultShown: false,
   animationToken: 0,
@@ -252,6 +253,7 @@ function resetGame() {
   state.animating = false;
   state.awaitingCoinToss = true;
   state.coinTossing = false;
+  state.coinResultHolding = false;
   state.coinResult = null;
   state.resultShown = false;
   state.lastDropIndex = null;
@@ -273,6 +275,7 @@ function showMainMenu() {
   state.animating = false;
   state.awaitingCoinToss = false;
   state.coinTossing = false;
+  state.coinResultHolding = false;
   state.aiThinking = false;
   state.resultShown = false;
   state.lastDropIndex = null;
@@ -1209,7 +1212,7 @@ async function tossCoin() {
 
   state.activePlayer = firstPlayer;
   state.coinTossing = false;
-  state.awaitingCoinToss = false;
+  state.coinResultHolding = true;
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
   setAiDialogue(NARRATOR, getDialogue(result === "front" ? "coin.redFirst" : "coin.purpleFirst"));
   coinTossStatus.textContent = getCoinResultText(result);
@@ -1219,19 +1222,23 @@ async function tossCoin() {
   await sleep(1000);
   if (token !== state.animationToken) return;
 
+  state.coinResultHolding = false;
+  state.awaitingCoinToss = false;
   render();
   await maybeRunAiTurn();
 }
 
 function renderCoinOverlay() {
-  const isVisible = state.awaitingCoinToss || state.coinTossing;
+  const isVisible = state.awaitingCoinToss || state.coinTossing || state.coinResultHolding;
 
   coinTossOverlay.hidden = !isVisible;
   coinTossOverlay.classList.toggle("is-visible", isVisible);
-  coinTossButton.disabled = !state.awaitingCoinToss || state.coinTossing;
+  coinTossButton.disabled = !state.awaitingCoinToss || state.coinTossing || state.coinResultHolding;
 
   if (state.coinTossing) {
     coinTossStatus.textContent = TEXT.coinFlipping;
+  } else if (state.coinResultHolding && state.coinResult) {
+    coinTossStatus.textContent = getCoinResultText(state.coinResult);
   } else if (state.awaitingCoinToss) {
     coinTossStatus.textContent = TEXT.coinReady;
   }

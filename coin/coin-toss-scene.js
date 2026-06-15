@@ -1,4 +1,4 @@
-import * as THREE from "../vendor/three/build/three.module.js?v=20260616b";
+import * as THREE from "../vendor/three/build/three.module.js?v=20260616c";
 
 const TAU = Math.PI * 2;
 
@@ -277,8 +277,8 @@ class CoinTossScene {
       offsetY: -0.01,
     });
     this.shieldFaceTexture = createFaceOverlayTexture(shieldTexture, anisotropy, {
-      scale: 0.64,
-      offsetY: 0.01,
+      scale: 0.46,
+      offsetY: 0.015,
     });
     this.edgeTexture = createCoinEdgeTexture(anisotropy);
     this.buildCoin();
