@@ -180,10 +180,13 @@ h1 {
   color: var(--gold-bright);
   cursor: pointer;
   font-size: 1.35rem;
+  line-height: 1;
+  overflow: hidden;
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .utility-button {
+  font-family: "Segoe UI Symbol", "Times New Roman", Georgia, serif;
   font-weight: 800;
 }
 
@@ -868,7 +871,7 @@ h1 {
 }
 
 .coin-toss-button.is-fallback {
-  background-image: url("assets/Coin.png?v=20260616e");
+  background-image: url("assets/Coin.png?v=20260616f");
   background-size: cover;
   background-position: center;
   filter:
@@ -1537,11 +1540,11 @@ h1 {
 
 @media (max-width: 760px) and (orientation: portrait) {
   .board {
-    width: min(100%, 430px);
-    height: clamp(286px, 78vw, 338px);
+    width: min(100%, 440px);
+    height: clamp(300px, 82vw, 350px);
     min-height: 0;
     display: block;
-    padding: 10px;
+    padding: 12px;
     overflow: hidden;
   }
 
@@ -1562,84 +1565,86 @@ h1 {
   }
 
   .board .pit {
-    width: 17.4%;
-    aspect-ratio: 1;
+    width: 11.8%;
+    height: 20%;
+    aspect-ratio: auto;
+    border-radius: 46% / 55%;
   }
 
   .board .store {
-    width: 14%;
-    height: 47%;
+    width: 12%;
+    height: 30%;
     border-radius: 999px;
   }
 
   .board .store[data-index="13"] {
-    left: 4%;
-    top: 28%;
+    left: 8.9%;
+    top: 35%;
   }
 
   .board .store[data-index="6"] {
-    left: 82%;
-    top: 28%;
+    left: 79.1%;
+    top: 35%;
   }
 
   .board .pit[data-index="12"] {
-    left: 20%;
-    top: 23%;
+    left: 8.9%;
+    top: 10%;
   }
 
   .board .pit[data-index="11"] {
-    left: 31%;
-    top: 17%;
+    left: 22.9%;
+    top: 10%;
   }
 
   .board .pit[data-index="10"] {
-    left: 42%;
-    top: 14%;
+    left: 36.9%;
+    top: 10%;
   }
 
   .board .pit[data-index="9"] {
-    left: 53%;
-    top: 14%;
+    left: 51.1%;
+    top: 10%;
   }
 
   .board .pit[data-index="8"] {
-    left: 64%;
-    top: 17%;
+    left: 65.1%;
+    top: 10%;
   }
 
   .board .pit[data-index="7"] {
-    left: 75%;
-    top: 23%;
+    left: 79.1%;
+    top: 10%;
   }
 
   .board .pit[data-index="0"] {
-    left: 20%;
-    top: 58%;
+    left: 8.9%;
+    top: 70%;
   }
 
   .board .pit[data-index="1"] {
-    left: 31%;
-    top: 64%;
+    left: 22.9%;
+    top: 70%;
   }
 
   .board .pit[data-index="2"] {
-    left: 42%;
-    top: 67%;
+    left: 36.9%;
+    top: 70%;
   }
 
   .board .pit[data-index="3"] {
-    left: 53%;
-    top: 67%;
+    left: 51.1%;
+    top: 70%;
   }
 
   .board .pit[data-index="4"] {
-    left: 64%;
-    top: 64%;
+    left: 65.1%;
+    top: 70%;
   }
 
   .board .pit[data-index="5"] {
-    left: 75%;
-    top: 58%;
+    left: 79.1%;
+    top: 70%;
   }
 
   .board .pit:hover:not(:disabled) {
@@ -1647,16 +1652,18 @@ h1 {
   }
 
   .store-sigil {
-    width: 154%;
+    width: 142%;
   }
 
   .pit-count {
-    right: 4px;
-    bottom: 4px;
+    right: 3px;
+    bottom: 3px;
+    min-width: 22px;
+    height: 21px;
   }
 
   .store-count {
-    bottom: 11px;
+    bottom: 8px;
   }
 }
 
