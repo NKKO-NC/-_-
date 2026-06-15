@@ -1,4 +1,4 @@
-import * as THREE from "../vendor/three/build/three.module.js?v=20260615c";
+import * as THREE from "../vendor/three/build/three.module.js?v=20260616a";
 
 const TAU = Math.PI * 2;
 
@@ -76,6 +76,38 @@ function createFallbackTexture(label, anisotropy) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(label, size / 2, size / 2 + 4);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = anisotropy;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createFaceOverlayTexture(sourceTexture, anisotropy, { scale = 0.72, offsetX = 0, offsetY = 0 } = {}) {
+  const size = 1024;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx || !sourceTexture?.image) {
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    texture.anisotropy = anisotropy;
+    return texture;
+  }
+
+  const { image } = sourceTexture;
+  const imageAspect = image.width / image.height || 1;
+  const maxSize = size * scale;
+  const drawWidth = imageAspect >= 1 ? maxSize : maxSize * imageAspect;
+  const drawHeight = imageAspect >= 1 ? maxSize / imageAspect : maxSize;
+  const x = (size - drawWidth) / 2 + offsetX * size;
+  const y = (size - drawHeight) / 2 + offsetY * size;
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(image, x, y, drawWidth, drawHeight);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -240,6 +272,14 @@ class CoinTossScene {
     this.coinTexture = coinTexture;
     this.dragonTexture = dragonTexture;
     this.shieldTexture = shieldTexture;
+    this.dragonFaceTexture = createFaceOverlayTexture(dragonTexture, anisotropy, {
+      scale: 0.76,
+      offsetY: -0.01,
+    });
+    this.shieldFaceTexture = createFaceOverlayTexture(shieldTexture, anisotropy, {
+      scale: 0.64,
+      offsetY: 0.01,
+    });
     this.edgeTexture = createCoinEdgeTexture(anisotropy);
     this.buildCoin();
     this.resize();
@@ -285,7 +325,7 @@ class CoinTossScene {
       faceGeometry,
       new THREE.MeshStandardMaterial({
         ...faceMaterialOptions,
-        map: this.dragonTexture,
+        map: this.dragonFaceTexture,
       })
     );
     this.frontDisc.position.z = this.faceDepth;
@@ -296,7 +336,7 @@ class CoinTossScene {
       faceGeometry.clone(),
       new THREE.MeshStandardMaterial({
         ...faceMaterialOptions,
-        map: this.shieldTexture,
+        map: this.shieldFaceTexture,
       })
     );
     this.backDisc.position.z = -this.faceDepth;
@@ -451,7 +491,9 @@ class CoinTossScene {
     this.edgeTexture?.dispose?.();
     this.coinTexture?.dispose?.();
     this.dragonTexture?.dispose?.();
+    this.dragonFaceTexture?.dispose?.();
     this.shieldTexture?.dispose?.();
+    this.shieldFaceTexture?.dispose?.();
     this.renderer.dispose();
   }
 }

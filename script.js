@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260615c";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260615c";
+import { CoinTossScene } from "./coin/index.js?v=20260616a";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616a";
 
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
@@ -74,7 +74,7 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
-const ASSET_VERSION = "20260615c";
+const ASSET_VERSION = "20260616a";
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");
@@ -1216,7 +1216,7 @@ async function tossCoin() {
   launchParticles(coinTossOverlay, 24, firstPlayer);
   render();
 
-  await sleep(680);
+  await sleep(320);
   if (token !== state.animationToken) return;
 
   render();
