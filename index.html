@@ -2,62 +2,70 @@
 <html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalah &#25773;&#26827;</title>
-    <link rel="preload" as="image" href="assets/ruby-gem.png?v=20260616d" />
-    <link rel="preload" as="image" href="assets/amethyst-gem.png?v=20260616d" />
-    <link rel="preload" as="image" href="assets/Coin.png?v=20260616d" />
-    <link rel="preload" as="image" href="assets/Dragon.png?v=20260616d" />
-    <link rel="preload" as="image" href="assets/Shield.png?v=20260616d" />
-    <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css?v=20260616d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Kalah 播棋：可離線遊玩的寶石棋盤對戰。" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Kalah 播棋" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Kalah 播棋</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preload" as="image" href="assets/ruby-gem.png?v=20260616e" />
+    <link rel="preload" as="image" href="assets/amethyst-gem.png?v=20260616e" />
+    <link rel="preload" as="image" href="assets/Coin.png?v=20260616e" />
+    <link rel="preload" as="image" href="assets/Dragon.png?v=20260616e" />
+    <link rel="preload" as="image" href="assets/Shield.png?v=20260616e" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260616e" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png?v=20260616e" />
+    <link rel="stylesheet" href="styles.css?v=20260616e" />
   </head>
   <body>
     <main class="game-app">
-      <section class="main-menu" id="mainMenu" aria-label="&#20027;&#33756;&#21934;">
+      <section class="main-menu" id="mainMenu" aria-label="主菜單">
         <div class="menu-title">
           <p class="eyebrow">Kalah</p>
-          <h1>&#25773;&#26827;</h1>
+          <h1>播棋</h1>
         </div>
-        <div class="menu-options" role="group" aria-label="&#27169;&#24335;">
+        <div class="menu-options" role="group" aria-label="模式">
           <button class="menu-option is-active" id="modePveButton" type="button" data-mode="pve">
-            <span>&#21934;&#20154;&#27169;&#24335;</span>
+            <span>單人模式</span>
             <small>vs AI</small>
           </button>
           <button class="menu-option" id="modePvpButton" type="button" data-mode="pvp">
-            <span>&#38617;&#20154;&#27169;&#24335;</span>
+            <span>雙人模式</span>
             <small>Local</small>
           </button>
         </div>
         <div class="menu-difficulty" id="difficultyField">
-          <span>AI &#38627;&#24230;</span>
-          <div class="difficulty-options" role="group" aria-label="AI &#38627;&#24230;">
+          <span>AI 難度</span>
+          <div class="difficulty-options" role="group" aria-label="AI 難度">
             <button class="difficulty-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
             <button class="difficulty-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
             <button class="difficulty-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
           </div>
         </div>
         <p class="control-hint" id="controlHint"></p>
-        <button class="start-button" id="startButton" type="button">&#38283;&#22987;</button>
+        <button class="start-button" id="startButton" type="button">開始</button>
       </section>
 
       <section class="game-screen" id="gameScreen" hidden>
         <header class="game-header">
           <div>
             <p class="eyebrow">Kalah</p>
-            <h1>&#25773;&#26827;</h1>
+            <h1>播棋</h1>
           </div>
           <div class="game-actions">
-            <button class="icon-button utility-button" id="rulesButton" type="button" aria-label="遊戲規則" title="遊戲規則">
+            <button class="icon-button utility-button" id="rulesButton" type="button" aria-label="玩法" title="玩法">
               ?
             </button>
             <button class="icon-button utility-button" id="settingsButton" type="button" aria-label="設定" title="設定">
               &#9881;
             </button>
-            <button class="icon-button" id="resetButton" type="button" aria-label="&#37325;&#26032;&#19968;&#23616;" title="&#37325;&#26032;&#19968;&#23616;">
+            <button class="icon-button" id="resetButton" type="button" aria-label="重新一局" title="重新一局">
               &#8635;
             </button>
-            <button class="menu-return-button" id="menuButton" type="button">&#22238;&#20027;&#33756;&#21934;</button>
+            <button class="menu-return-button" id="menuButton" type="button">回主菜單</button>
           </div>
         </header>
 
@@ -66,21 +74,21 @@
           <p class="ai-dialogue-line" id="aiDialogueLine"></p>
         </section>
 
-        <section class="score-strip" aria-label="&#20998;&#25976;">
+        <section class="score-strip" aria-label="分數">
           <div class="player-score player-two" id="playerTwoScore">
-            <span>&#32043;&#26041;</span>
+            <span>紫方</span>
             <strong>0</strong>
           </div>
           <div class="turn-indicator" id="turnIndicator" aria-live="polite">
-            <img id="turnEmblem" src="assets/Coin.png?v=20260616d" alt="" aria-hidden="true" />
+            <img id="turnEmblem" src="assets/Coin.png?v=20260616e" alt="" aria-hidden="true" />
           </div>
           <div class="player-score player-one active" id="playerOneScore">
-            <span>&#32005;&#26041;</span>
+            <span>紅方</span>
             <strong>0</strong>
           </div>
         </section>
 
-        <section class="board-wrap" aria-label="Kalah &#25773;&#26827;&#26827;&#30436;">
+        <section class="board-wrap" aria-label="Kalah 播棋棋盤">
           <div class="board" id="board"></div>
         </section>
 
@@ -89,10 +97,10 @@
     </main>
 
     <div class="coin-toss-overlay" id="coinTossOverlay" aria-live="polite">
-      <button class="coin-toss-button" id="coinTossButton" type="button" aria-label="&#25237;&#25842;&#37504;&#24163;&#27770;&#23450;&#20808;&#25163;">
+      <button class="coin-toss-button" id="coinTossButton" type="button" aria-label="投擲銀幣決定先手">
         <canvas class="coin-canvas" id="coinCanvas" aria-hidden="true"></canvas>
       </button>
-      <p class="coin-toss-status" id="coinTossStatus">&#40670;&#25802;&#37504;&#24163;&#27770;&#23450;&#20808;&#25163;</p>
+      <p class="coin-toss-status" id="coinTossStatus">點擊銀幣決定先手</p>
     </div>
 
     <div class="result-overlay" id="resultOverlay" hidden aria-live="polite">
@@ -102,23 +110,23 @@
         <h2 id="resultTitle"></h2>
         <p class="result-score" id="resultScore"></p>
         <div class="result-actions">
-          <button class="result-button" id="resultResetButton" type="button">&#20877;&#38283;&#19968;&#23616;</button>
-          <button class="result-button secondary" id="resultMenuButton" type="button">&#22238;&#20027;&#33756;&#21934;</button>
+          <button class="result-button" id="resultResetButton" type="button">再開一局</button>
+          <button class="result-button secondary" id="resultMenuButton" type="button">回主菜單</button>
         </div>
       </div>
     </div>
 
     <div class="floating-card-overlay" id="rulesOverlay" hidden aria-live="polite">
       <section class="floating-card rules-card" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
-        <button class="floating-card-close" id="rulesCloseButton" type="button" aria-label="關閉規則">&times;</button>
-        <p class="floating-card-kicker">遊戲規則</p>
-        <h2 id="rulesTitle">Kalah 播棋</h2>
+        <button class="floating-card-close" id="rulesCloseButton" type="button" aria-label="關閉玩法">&times;</button>
+        <p class="floating-card-kicker">玩法</p>
+        <h2 id="rulesTitle">Kalah 規則</h2>
         <div class="rules-list">
-          <p>每位玩家各有 6 個穴與 1 個金庫。</p>
-          <p>輪到你時，選自己的穴，把棋子逆時針一顆顆播下。</p>
-          <p>最後一顆落進自己的金庫，可以再走一手。</p>
-          <p>最後一顆落在自己的空穴，會吃掉對面穴位的棋子。</p>
-          <p>一方穴位清空時結算，金庫棋子多者獲勝。</p>
+          <p>每位玩家有 6 個小穴和 1 個金庫。</p>
+          <p>輪到你時，選自己一側有棋子的穴，逆時針逐格播下棋子。</p>
+          <p>最後一子落進自己的金庫，可以再行一手。</p>
+          <p>最後一子落在自己的空穴，且對面有棋子，就把兩邊棋子收進金庫。</p>
+          <p>任一方小穴清空時，對方剩餘棋子全數進入對方金庫，分數高者獲勝。</p>
         </div>
       </section>
     </div>
@@ -127,20 +135,29 @@
       <section class="floating-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
         <button class="floating-card-close" id="settingsCloseButton" type="button" aria-label="關閉設定">&times;</button>
         <p class="floating-card-kicker">設定</p>
-        <h2 id="settingsTitle">顯示偏好</h2>
+        <h2 id="settingsTitle">畫面設定</h2>
         <div class="setting-row">
           <div>
-            <strong>穴位數字</strong>
-            <small>切換棋穴右下角的計數樣式。</small>
+            <strong>棋子數字</strong>
+            <small>切換棋穴數量顯示，手機上可用阿拉伯數字提高可讀性。</small>
           </div>
-          <div class="segmented-control" role="group" aria-label="穴位數字樣式">
-            <button class="setting-option is-active" id="pitRomanButton" type="button" data-pit-number-style="roman">羅馬</button>
-            <button class="setting-option" id="pitArabicButton" type="button" data-pit-number-style="arabic">一般數字</button>
+          <div class="segmented-control" role="group" aria-label="棋子數字顯示">
+            <button class="setting-option is-active" id="pitRomanButton" type="button" data-pit-number-style="roman">羅馬數字</button>
+            <button class="setting-option" id="pitArabicButton" type="button" data-pit-number-style="arabic">阿拉伯數字</button>
           </div>
         </div>
       </section>
     </div>
 
-    <script type="module" src="script.js?v=20260616d"></script>
+    <script type="module" src="script.js?v=20260616e"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+            console.warn("Service worker registration failed.", error);
+          });
+        });
+      }
+    </script>
   </body>
 </html>

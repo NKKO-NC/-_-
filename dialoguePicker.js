@@ -1,4 +1,4 @@
-import { DIALOGUE_BANK } from "./dialogueBank.js?v=20260616d";
+import { DIALOGUE_BANK } from "./dialogueBank.js?v=20260616e";
 
 const recentLines = [];
 const MAX_RECENT = 8;

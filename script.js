@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260616d";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616d";
+import { CoinTossScene } from "./coin/index.js?v=20260616e";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616e";
 
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
@@ -81,7 +81,7 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
-const ASSET_VERSION = "20260616d";
+const ASSET_VERSION = "20260616e";
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");

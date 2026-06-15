@@ -1,0 +1,31 @@
+{
+  "id": "./",
+  "name": "Kalah \u64ad\u68cb",
+  "short_name": "Kalah",
+  "description": "\u53ef\u96e2\u7dda\u904a\u73a9\u7684 Kalah \u64ad\u68cb\u5c0d\u6230\u904a\u6232\u3002",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

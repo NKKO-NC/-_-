@@ -36,6 +36,8 @@ body {
     linear-gradient(315deg, rgba(82, 199, 184, 0.08), transparent 34%),
     repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
     linear-gradient(180deg, #0b0a0c 0%, #030304 100%);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body.turn-red {
@@ -68,8 +70,9 @@ button {
 .game-app {
   width: min(100%, 1180px);
   min-height: 100vh;
+  min-height: 100svh;
   margin: 0 auto;
-  padding: 28px 22px 32px;
+  padding: max(28px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left));
   display: grid;
   grid-template-rows: 1fr;
   gap: 18px;
@@ -97,6 +100,7 @@ button {
 .main-menu {
   width: min(100%, 720px);
   min-height: calc(100vh - 60px);
+  min-height: calc(100svh - 60px);
   margin: 0 auto;
   display: grid;
   align-content: center;
@@ -111,6 +115,7 @@ button {
 .game-screen {
   width: 100%;
   min-height: calc(100vh - 60px);
+  min-height: calc(100svh - 60px);
   display: grid;
   grid-template-rows: auto auto auto 1fr;
   gap: 14px;
@@ -125,6 +130,18 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.game-header .eyebrow {
+  font-family: "Brush Script MT", "Segoe Script", "Lucida Handwriting", cursive;
+  font-size: 2rem;
+  line-height: 0.95;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.game-header h1 {
+  display: none;
 }
 
 .game-actions {
@@ -851,7 +868,7 @@ h1 {
 }
 
 .coin-toss-button.is-fallback {
-  background-image: url("assets/Coin.png?v=20260616d");
+  background-image: url("assets/Coin.png?v=20260616e");
   background-size: cover;
   background-position: center;
   filter:
@@ -923,10 +940,12 @@ h1 {
 .floating-card {
   position: relative;
   width: min(92vw, 520px);
+  max-height: min(84vh, 680px);
+  max-height: min(84svh, 680px);
   display: grid;
   gap: 16px;
   padding: 32px 28px 28px;
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid rgba(255, 228, 161, 0.68);
   border-radius: 12px;
   background:
@@ -1345,7 +1364,7 @@ h1 {
 
 @media (max-width: 760px) {
   .game-app {
-    padding: 20px 12px 22px;
+    padding: max(18px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     gap: 14px;
   }
 
@@ -1359,9 +1378,19 @@ h1 {
   }
 
   .main-menu {
+    width: auto;
+    max-width: 100%;
+    justify-self: stretch;
     min-height: calc(100vh - 42px);
+    min-height: calc(100svh - 42px);
     align-content: start;
     padding-top: 12px;
+  }
+
+  .game-screen {
+    grid-template-rows: auto auto auto auto;
+    align-content: start;
+    min-width: 0;
   }
 
   .menu-options,
@@ -1369,23 +1398,48 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .game-header {
-    align-items: flex-start;
+  .menu-option,
+  .difficulty-button,
+  .menu-difficulty {
+    min-width: 0;
   }
 
+  .game-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+
+  .game-header .eyebrow {
+    margin-top: 4px;
+    font-size: 1.85rem;
+   }
+
   .game-actions {
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: repeat(3, 42px);
+    justify-content: end;
+    gap: 8px;
+  }
+
+  .icon-button {
+    width: 42px;
+    height: 42px;
+    font-size: 1.18rem;
   }
 
   .menu-return-button {
+    grid-column: 1 / -1;
+    width: 100%;
     min-height: 38px;
     padding: 0 10px;
     font-size: 0.86rem;
   }
 
   .ai-dialogue {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 8px 10px;
   }
 
   .player-score {
@@ -1416,6 +1470,11 @@ h1 {
     grid-template-rows: repeat(2, minmax(84px, 1fr));
     gap: 7px;
     padding: 12px;
+  }
+
+  .board-wrap {
+    place-items: start center;
+    padding-top: 4px;
   }
 
   .pit {
@@ -1476,14 +1535,150 @@ h1 {
   }
 }
 
+@media (max-width: 760px) and (orientation: portrait) {
+  .board {
+    width: min(100%, 430px);
+    height: clamp(286px, 78vw, 338px);
+    min-height: 0;
+    display: block;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .board::before {
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(82, 199, 184, 0.075), transparent 52%),
+      repeating-conic-gradient(from 45deg, transparent 0deg 14deg, rgba(217, 180, 100, 0.13) 14deg 15deg);
+  }
+
+  .board::after {
+    inset: 17px;
+  }
+
+  .board .pit,
+  .board .store {
+    position: absolute;
+    min-height: 0;
+  }
+
+  .board .pit {
+    width: 17.4%;
+    aspect-ratio: 1;
+  }
+
+  .board .store {
+    width: 14%;
+    height: 47%;
+    border-radius: 999px;
+  }
+
+  .board .store[data-index="13"] {
+    left: 4%;
+    top: 28%;
+  }
+
+  .board .store[data-index="6"] {
+    left: 82%;
+    top: 28%;
+  }
+
+  .board .pit[data-index="12"] {
+    left: 20%;
+    top: 23%;
+  }
+
+  .board .pit[data-index="11"] {
+    left: 31%;
+    top: 17%;
+  }
+
+  .board .pit[data-index="10"] {
+    left: 42%;
+    top: 14%;
+  }
+
+  .board .pit[data-index="9"] {
+    left: 53%;
+    top: 14%;
+  }
+
+  .board .pit[data-index="8"] {
+    left: 64%;
+    top: 17%;
+  }
+
+  .board .pit[data-index="7"] {
+    left: 75%;
+    top: 23%;
+  }
+
+  .board .pit[data-index="0"] {
+    left: 20%;
+    top: 58%;
+  }
+
+  .board .pit[data-index="1"] {
+    left: 31%;
+    top: 64%;
+  }
+
+  .board .pit[data-index="2"] {
+    left: 42%;
+    top: 67%;
+  }
+
+  .board .pit[data-index="3"] {
+    left: 53%;
+    top: 67%;
+  }
+
+  .board .pit[data-index="4"] {
+    left: 64%;
+    top: 64%;
+  }
+
+  .board .pit[data-index="5"] {
+    left: 75%;
+    top: 58%;
+  }
+
+  .board .pit:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .store-sigil {
+    width: 154%;
+  }
+
+  .pit-count {
+    right: 4px;
+    bottom: 4px;
+  }
+
+  .store-count {
+    bottom: 11px;
+  }
+}
+
 @media (max-width: 420px) {
   .game-app {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
   }
 
   .game-header {
     gap: 10px;
+  }
+
+  .game-actions {
+    grid-template-columns: repeat(3, 38px);
+    gap: 7px;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 38px;
+    font-size: 1.08rem;
   }
 
   .menu-option {
@@ -1495,12 +1690,26 @@ h1 {
   }
 
   .board {
-    gap: 5px;
-    padding: 9px;
+    gap: 4px;
+    padding: 7px;
   }
 
   .pit {
-    min-height: 72px;
+    min-height: 66px;
+  }
+
+  .store {
+    border-radius: 28px;
+  }
+
+  .pit::before,
+  .store::before {
+    inset: 5px;
+  }
+
+  .pit::after,
+  .store::after {
+    inset: 11px 9px auto;
   }
 
   .stone {
@@ -1517,5 +1726,15 @@ h1 {
 
   .coin-toss-status {
     top: calc(50% + 102px);
+  }
+
+  .floating-card {
+    width: min(94vw, 520px);
+    padding: 28px 16px 18px;
+  }
+
+  .result-actions,
+  .result-button {
+    width: 100%;
   }
 }
