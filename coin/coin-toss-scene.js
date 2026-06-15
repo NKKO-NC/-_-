@@ -177,8 +177,8 @@ class CoinTossScene {
     this.dragonSrc = dragonSrc;
     this.shieldSrc = shieldSrc;
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    this.camera.position.set(0, 0, 5.4);
+    this.camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    this.camera.position.set(0, 0, 5.7);
     this.loader = new THREE.TextureLoader();
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -210,6 +210,7 @@ class CoinTossScene {
     this.bodyRadius = 1.06;
     this.bodyThickness = 0.09;
     this.faceDepth = this.bodyThickness / 2 + 0.015;
+    this.restPositionY = -0.18;
     this.activeFace = "front";
     this.animationFrame = 0;
     this.animationToken = 0;
@@ -328,7 +329,7 @@ class CoinTossScene {
 
     if (immediate) {
       this.group.rotation.set(0, targetY, 0);
-      this.group.position.set(0, 0, 0);
+      this.group.position.set(0, this.restPositionY, 0);
       this.group.scale.setScalar(1);
       this.render();
       return;
@@ -374,8 +375,8 @@ class CoinTossScene {
     const endY = targetY + spinTurns * TAU;
     const xTilt = randomRange(0.9, 1.28) * (Math.random() < 0.5 ? 1 : -1);
     const zTilt = randomRange(0.48, 0.82) * (Math.random() < 0.5 ? 1 : -1);
-    const lift = randomRange(0.9, 1.1);
-    const squash = randomRange(0.03, 0.055);
+    const lift = randomRange(0.72, 0.86);
+    const squash = randomRange(0.025, 0.045);
     const wobbleTurns = randomRange(8.5, 11.5);
     const duration = randomRange(1300, 1480);
     const settleStart = 0.78;
@@ -423,7 +424,7 @@ class CoinTossScene {
         }
 
         this.group.rotation.set(0, targetY, 0);
-        this.group.position.set(0, 0, 0);
+        this.group.position.set(0, this.restPositionY, 0);
         this.group.scale.setScalar(1);
         this.activeFace = face;
         this.animationFrame = 0;
