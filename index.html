@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kalah &#25773;&#26827;</title>
-    <link rel="preload" as="image" href="assets/ruby-gem.png?v=20260616c" />
-    <link rel="preload" as="image" href="assets/amethyst-gem.png?v=20260616c" />
-    <link rel="preload" as="image" href="assets/Coin.png?v=20260616c" />
-    <link rel="preload" as="image" href="assets/Dragon.png?v=20260616c" />
-    <link rel="preload" as="image" href="assets/Shield.png?v=20260616c" />
+    <link rel="preload" as="image" href="assets/ruby-gem.png?v=20260616d" />
+    <link rel="preload" as="image" href="assets/amethyst-gem.png?v=20260616d" />
+    <link rel="preload" as="image" href="assets/Coin.png?v=20260616d" />
+    <link rel="preload" as="image" href="assets/Dragon.png?v=20260616d" />
+    <link rel="preload" as="image" href="assets/Shield.png?v=20260616d" />
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css?v=20260616c" />
+    <link rel="stylesheet" href="styles.css?v=20260616d" />
   </head>
   <body>
     <main class="game-app">
@@ -48,6 +48,12 @@
             <h1>&#25773;&#26827;</h1>
           </div>
           <div class="game-actions">
+            <button class="icon-button utility-button" id="rulesButton" type="button" aria-label="遊戲規則" title="遊戲規則">
+              ?
+            </button>
+            <button class="icon-button utility-button" id="settingsButton" type="button" aria-label="設定" title="設定">
+              &#9881;
+            </button>
             <button class="icon-button" id="resetButton" type="button" aria-label="&#37325;&#26032;&#19968;&#23616;" title="&#37325;&#26032;&#19968;&#23616;">
               &#8635;
             </button>
@@ -58,7 +64,6 @@
         <section class="ai-dialogue" id="aiDialogue" aria-live="polite">
           <p class="ai-dialogue-speaker" id="aiDialogueSpeaker">AI</p>
           <p class="ai-dialogue-line" id="aiDialogueLine"></p>
-          <p class="ai-badge" id="aiBadge" hidden>AI &#24605;&#32771;&#20013;...</p>
         </section>
 
         <section class="score-strip" aria-label="&#20998;&#25976;">
@@ -67,7 +72,7 @@
             <strong>0</strong>
           </div>
           <div class="turn-indicator" id="turnIndicator" aria-live="polite">
-            <img id="turnEmblem" src="assets/Coin.png?v=20260616c" alt="" aria-hidden="true" />
+            <img id="turnEmblem" src="assets/Coin.png?v=20260616d" alt="" aria-hidden="true" />
           </div>
           <div class="player-score player-one active" id="playerOneScore">
             <span>&#32005;&#26041;</span>
@@ -103,6 +108,39 @@
       </div>
     </div>
 
-    <script type="module" src="script.js?v=20260616c"></script>
+    <div class="floating-card-overlay" id="rulesOverlay" hidden aria-live="polite">
+      <section class="floating-card rules-card" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+        <button class="floating-card-close" id="rulesCloseButton" type="button" aria-label="關閉規則">&times;</button>
+        <p class="floating-card-kicker">遊戲規則</p>
+        <h2 id="rulesTitle">Kalah 播棋</h2>
+        <div class="rules-list">
+          <p>每位玩家各有 6 個穴與 1 個金庫。</p>
+          <p>輪到你時，選自己的穴，把棋子逆時針一顆顆播下。</p>
+          <p>最後一顆落進自己的金庫，可以再走一手。</p>
+          <p>最後一顆落在自己的空穴，會吃掉對面穴位的棋子。</p>
+          <p>一方穴位清空時結算，金庫棋子多者獲勝。</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="floating-card-overlay" id="settingsOverlay" hidden aria-live="polite">
+      <section class="floating-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <button class="floating-card-close" id="settingsCloseButton" type="button" aria-label="關閉設定">&times;</button>
+        <p class="floating-card-kicker">設定</p>
+        <h2 id="settingsTitle">顯示偏好</h2>
+        <div class="setting-row">
+          <div>
+            <strong>穴位數字</strong>
+            <small>切換棋穴右下角的計數樣式。</small>
+          </div>
+          <div class="segmented-control" role="group" aria-label="穴位數字樣式">
+            <button class="setting-option is-active" id="pitRomanButton" type="button" data-pit-number-style="roman">羅馬</button>
+            <button class="setting-option" id="pitArabicButton" type="button" data-pit-number-style="arabic">一般數字</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="script.js?v=20260616d"></script>
   </body>
 </html>

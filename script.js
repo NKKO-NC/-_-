@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260616c";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616c";
+import { CoinTossScene } from "./coin/index.js?v=20260616d";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616d";
 
 const STARTING_STONES = 6;
 const PLAYER_ONE_STORE = 6;
@@ -58,10 +58,17 @@ const difficultyEasyButton = document.querySelector("#difficultyEasyButton");
 const difficultyMediumButton = document.querySelector("#difficultyMediumButton");
 const difficultyHardButton = document.querySelector("#difficultyHardButton");
 const controlHint = document.querySelector("#controlHint");
-const aiBadge = document.querySelector("#aiBadge");
 const aiDialogue = document.querySelector("#aiDialogue");
 const aiDialogueSpeaker = document.querySelector("#aiDialogueSpeaker");
 const aiDialogueLine = document.querySelector("#aiDialogueLine");
+const rulesButton = document.querySelector("#rulesButton");
+const settingsButton = document.querySelector("#settingsButton");
+const rulesOverlay = document.querySelector("#rulesOverlay");
+const settingsOverlay = document.querySelector("#settingsOverlay");
+const rulesCloseButton = document.querySelector("#rulesCloseButton");
+const settingsCloseButton = document.querySelector("#settingsCloseButton");
+const pitRomanButton = document.querySelector("#pitRomanButton");
+const pitArabicButton = document.querySelector("#pitArabicButton");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
 const coinTossButton = document.querySelector("#coinTossButton");
 const coinCanvas = document.querySelector("#coinCanvas");
@@ -74,7 +81,7 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
-const ASSET_VERSION = "20260616c";
+const ASSET_VERSION = "20260616d";
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");
@@ -206,6 +213,7 @@ const state = {
   aiPlayer: 2,
   aiThinking: false,
   aiThinkDelayMs: 520,
+  pitNumberStyle: "roman",
   aiDialogue: {
     speaker: "\u65c1\u767d",
     line: "\u9078\u64c7\u6a21\u5f0f\u5f8c\uff0c\u95dc\u9375\u5c40\u9762\u6703\u5728\u9019\u88e1\u88dc\u4e0a\u53f0\u8a5e\u3002",
@@ -1167,9 +1175,49 @@ function renderInterfaceState() {
   controlHint.textContent =
     state.mode === "pve" ? `${TEXT.pveHint} \u00b7 ${getDifficultyLabel()}` : TEXT.pvpHint;
   aiDialogue.hidden = state.screen !== "game";
-  aiBadge.hidden = !(state.mode === "pve" && state.aiThinking);
   aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
   aiDialogueLine.textContent = state.aiDialogue.line;
+  renderSettingsState();
+}
+
+function renderSettingsState() {
+  const isRoman = state.pitNumberStyle === "roman";
+
+  pitRomanButton.classList.toggle("is-active", isRoman);
+  pitArabicButton.classList.toggle("is-active", !isRoman);
+  pitRomanButton.setAttribute("aria-pressed", String(isRoman));
+  pitArabicButton.setAttribute("aria-pressed", String(!isRoman));
+}
+
+function setPitNumberStyle(style) {
+  if (state.pitNumberStyle === style) return;
+
+  state.pitNumberStyle = style;
+  render();
+}
+
+function openFloatingCard(overlay) {
+  overlay.hidden = false;
+  requestAnimationFrame(() => {
+    overlay.classList.add("is-visible");
+  });
+}
+
+function closeFloatingCard(overlay) {
+  overlay.classList.remove("is-visible");
+  window.setTimeout(() => {
+    if (!overlay.classList.contains("is-visible")) {
+      overlay.hidden = true;
+    }
+  }, 180);
+}
+
+function closeOpenFloatingCards() {
+  for (const overlay of [rulesOverlay, settingsOverlay]) {
+    if (!overlay.hidden) {
+      closeFloatingCard(overlay);
+    }
+  }
 }
 
 function renderTurnIndicator() {
@@ -1329,7 +1377,7 @@ function createPit(index, owner, column, row) {
 
   button.innerHTML = `
     <span class="stones">${createStones(index, state.board[index], owner, "pit")}</span>
-    <span class="pit-count">${formatRomanCount(count)}</span>
+    <span class="pit-count">${formatPitCount(count)}</span>
   `;
 
   return button;
@@ -1583,6 +1631,10 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
+function formatPitCount(value) {
+  return state.pitNumberStyle === "arabic" ? String(value) : formatRomanCount(value);
+}
+
 function formatRomanCount(value) {
   if (value <= 0) return "N";
 
@@ -1668,6 +1720,42 @@ menuButton.addEventListener("click", showMainMenu);
 resultResetButton.addEventListener("click", resetGame);
 resultMenuButton.addEventListener("click", showMainMenu);
 
+rulesButton.addEventListener("click", () => {
+  openFloatingCard(rulesOverlay);
+});
+
+settingsButton.addEventListener("click", () => {
+  openFloatingCard(settingsOverlay);
+});
+
+rulesCloseButton.addEventListener("click", () => {
+  closeFloatingCard(rulesOverlay);
+});
+
+settingsCloseButton.addEventListener("click", () => {
+  closeFloatingCard(settingsOverlay);
+});
+
+rulesOverlay.addEventListener("click", (event) => {
+  if (event.target === rulesOverlay) {
+    closeFloatingCard(rulesOverlay);
+  }
+});
+
+settingsOverlay.addEventListener("click", (event) => {
+  if (event.target === settingsOverlay) {
+    closeFloatingCard(settingsOverlay);
+  }
+});
+
+pitRomanButton.addEventListener("click", () => {
+  setPitNumberStyle("roman");
+});
+
+pitArabicButton.addEventListener("click", () => {
+  setPitNumberStyle("arabic");
+});
+
 boardEl.addEventListener("click", (event) => {
   const pit = event.target.closest(".pit");
   if (!pit) return;
@@ -1675,5 +1763,11 @@ boardEl.addEventListener("click", (event) => {
 });
 
 coinTossButton.addEventListener("click", tossCoin);
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeOpenFloatingCards();
+  }
+});
 
 showMainMenu();

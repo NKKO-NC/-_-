@@ -166,6 +166,10 @@ h1 {
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
+.utility-button {
+  font-weight: 800;
+}
+
 .icon-button:hover {
   transform: translateY(-1px);
   border-color: var(--gold-bright);
@@ -178,7 +182,9 @@ h1 {
 .difficulty-button:focus-visible,
 .start-button:focus-visible,
 .menu-return-button:focus-visible,
-.result-button:focus-visible {
+.result-button:focus-visible,
+.floating-card-close:focus-visible,
+.setting-option:focus-visible {
   outline: 3px solid rgba(82, 199, 184, 0.72);
   outline-offset: 4px;
 }
@@ -340,28 +346,10 @@ h1 {
   filter: brightness(1.08);
 }
 
-.ai-badge {
-  min-height: 28px;
-  display: inline-grid;
-  place-items: center;
-  margin: 0;
-  padding: 0 10px;
-  border: 1px solid rgba(82, 199, 184, 0.45);
-  border-radius: 999px;
-  color: #b9fff6;
-  background:
-    linear-gradient(145deg, rgba(82, 199, 184, 0.16), rgba(255, 255, 255, 0.02)),
-    rgba(4, 16, 18, 0.72);
-  box-shadow:
-    inset 0 0 16px rgba(82, 199, 184, 0.08),
-    0 12px 24px rgba(0, 0, 0, 0.18);
-  white-space: nowrap;
-}
-
 .ai-dialogue {
   width: min(100%, 820px);
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
@@ -821,7 +809,8 @@ h1 {
 }
 
 .coin-toss-overlay,
-.result-overlay {
+.result-overlay,
+.floating-card-overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -841,7 +830,8 @@ h1 {
 }
 
 .coin-toss-overlay.is-visible,
-.result-overlay:not([hidden]) {
+.result-overlay:not([hidden]),
+.floating-card-overlay.is-visible {
   opacity: 1;
   pointer-events: auto;
 }
@@ -861,7 +851,7 @@ h1 {
 }
 
 .coin-toss-button.is-fallback {
-  background-image: url("assets/Coin.png?v=20260616c");
+  background-image: url("assets/Coin.png?v=20260616d");
   background-size: cover;
   background-position: center;
   filter:
@@ -917,8 +907,177 @@ h1 {
   box-shadow: 0 0 10px rgba(255, 228, 161, 0.42);
 }
 
-.result-overlay[hidden] {
+.result-overlay[hidden],
+.floating-card-overlay[hidden] {
   display: none;
+}
+
+.floating-card-overlay {
+  z-index: 115;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(255, 228, 161, 0.18), transparent 32%),
+    radial-gradient(circle at 50% 58%, rgba(82, 199, 184, 0.1), transparent 42%),
+    rgba(0, 0, 0, 0.72);
+}
+
+.floating-card {
+  position: relative;
+  width: min(92vw, 520px);
+  display: grid;
+  gap: 16px;
+  padding: 32px 28px 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 228, 161, 0.68);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 228, 161, 0.2), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(0, 0, 0, 0.24)),
+    rgba(5, 5, 8, 0.96);
+  box-shadow:
+    0 34px 80px rgba(0, 0, 0, 0.62),
+    inset 0 0 0 1px rgba(255, 228, 161, 0.16),
+    inset 0 0 42px rgba(255, 228, 161, 0.045);
+  transform: translateY(18px) scale(0.9);
+  opacity: 0;
+  transition: transform 220ms cubic-bezier(0.16, 0.82, 0.28, 1), opacity 180ms ease;
+}
+
+.floating-card::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(217, 180, 100, 0.24);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.floating-card-overlay.is-visible .floating-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.floating-card-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 228, 161, 0.5);
+  border-radius: 50%;
+  color: var(--gold-bright);
+  background:
+    linear-gradient(145deg, rgba(255, 228, 161, 0.16), rgba(255, 255, 255, 0.02)),
+    rgba(0, 0, 0, 0.66);
+  cursor: pointer;
+}
+
+.floating-card-close:hover {
+  border-color: var(--gold-bright);
+  filter: brightness(1.08);
+}
+
+.floating-card-kicker,
+.floating-card h2,
+.rules-list,
+.setting-row {
+  position: relative;
+  z-index: 1;
+}
+
+.floating-card-kicker {
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+}
+
+.floating-card h2 {
+  margin: -8px 0 0;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.rules-list {
+  display: grid;
+  gap: 10px;
+}
+
+.rules-list p {
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 228, 161, 0.22);
+  border-radius: 8px;
+  color: var(--text);
+  line-height: 1.5;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)),
+    rgba(0, 0, 0, 0.36);
+}
+
+.setting-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  border: 1px solid rgba(255, 228, 161, 0.24);
+  border-radius: 10px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)),
+    rgba(0, 0, 0, 0.42);
+}
+
+.setting-row strong,
+.setting-row small {
+  display: block;
+}
+
+.setting-row strong {
+  color: var(--gold-bright);
+}
+
+.setting-row small {
+  margin-top: 5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.segmented-control {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(82px, 1fr));
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgba(255, 228, 161, 0.26);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.setting-option {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.setting-option:hover {
+  transform: translateY(-1px);
+  color: var(--text);
+}
+
+.setting-option.is-active {
+  border-color: rgba(255, 228, 161, 0.64);
+  color: var(--gold-bright);
+  background:
+    linear-gradient(145deg, rgba(255, 228, 161, 0.22), rgba(255, 255, 255, 0.04)),
+    rgba(18, 13, 4, 0.78);
+  box-shadow: inset 0 0 16px rgba(255, 228, 161, 0.08);
 }
 
 .result-panel {
@@ -1229,11 +1388,6 @@ h1 {
     grid-template-columns: auto 1fr;
   }
 
-  .ai-badge {
-    grid-column: 1 / -1;
-    justify-self: start;
-  }
-
   .player-score {
     min-height: 58px;
     padding: 10px 12px;
@@ -1307,6 +1461,18 @@ h1 {
 
   .result-panel h2 {
     font-size: 1.85rem;
+  }
+
+  .floating-card {
+    padding: 30px 20px 22px;
+  }
+
+  .setting-row {
+    grid-template-columns: 1fr;
+  }
+
+  .segmented-control {
+    width: 100%;
   }
 }
 

@@ -1,4 +1,4 @@
-import * as THREE from "../vendor/three/build/three.module.js?v=20260616c";
+import * as THREE from "../vendor/three/build/three.module.js?v=20260616d";
 
 const TAU = Math.PI * 2;
 
@@ -277,8 +277,8 @@ class CoinTossScene {
       offsetY: -0.01,
     });
     this.shieldFaceTexture = createFaceOverlayTexture(shieldTexture, anisotropy, {
-      scale: 0.46,
-      offsetY: 0.015,
+      scale: 0.42,
+      offsetY: 0.02,
     });
     this.edgeTexture = createCoinEdgeTexture(anisotropy);
     this.buildCoin();
@@ -317,7 +317,7 @@ class CoinTossScene {
       map: this.edgeTexture,
     });
 
-    this.bodyMesh = new THREE.Mesh(bodyGeometry, [capMaterial, capMaterial.clone(), edgeMaterial]);
+    this.bodyMesh = new THREE.Mesh(bodyGeometry, [edgeMaterial, capMaterial, capMaterial.clone()]);
     this.bodyMesh.rotation.x = Math.PI / 2;
     this.group.add(this.bodyMesh);
 
