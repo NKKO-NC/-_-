@@ -49,8 +49,8 @@ const TEXT = {
   capture: "\u5403\u5b50",
   draw: "\u5e73\u5c40",
   win: "\u52dd",
-  store: "\u91d1\u5eab",
-  pit: "\u7a74",
+  store: "\u68cb\u5eab",
+  pit: "\u68cb\u5751",
   stones: "\u5b50",
   coinReady: "\u9ede\u64ca\u9280\u5e63\u6c7a\u5b9a\u5148\u624b",
   coinFlipping: "\u9280\u5e63\u7ffb\u8f49\u4e2d",
@@ -98,6 +98,8 @@ const rulesOverlay = document.querySelector("#rulesOverlay");
 const settingsOverlay = document.querySelector("#settingsOverlay");
 const rulesCloseButton = document.querySelector("#rulesCloseButton");
 const settingsCloseButton = document.querySelector("#settingsCloseButton");
+const rulesList = document.querySelector("#rulesList");
+const rulesDemo = document.querySelector("#rulesDemo");
 const pitRomanButton = document.querySelector("#pitRomanButton");
 const pitArabicButton = document.querySelector("#pitArabicButton");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
@@ -243,6 +245,102 @@ const difficultyButtons = {
   easy: difficultyEasyButton,
   medium: difficultyMediumButton,
   hard: difficultyHardButton,
+};
+
+const RULE_DEMO_MODEL = {
+  boardSize: 6,
+  pits: {
+    [PLAYER_ONE]: [0, 1],
+    [PLAYER_TWO]: [3, 4],
+  },
+  stores: {
+    [PLAYER_ONE]: 2,
+    [PLAYER_TWO]: 5,
+  },
+  oppositePits: {
+    0: 4,
+    1: 3,
+    3: 1,
+    4: 0,
+  },
+};
+
+const RULE_DEMOS = [
+  {
+    id: "setup",
+    title: "開局",
+    summary: "每個棋坑放 6 顆，棋庫先空。",
+    action: "setup",
+    initial: [0, 0, 0, 0, 0, 0],
+    target: [3, 3, 0, 3, 3, 0],
+    outcome: "正式棋盤每坑 6 顆；這裡用少量棋子示範。",
+  },
+  {
+    id: "sow",
+    title: "撒棋",
+    summary: "選自己的棋坑，一格一顆逆時針放。",
+    action: "sow",
+    player: PLAYER_ONE,
+    startIndex: 0,
+    initial: [3, 0, 0, 0, 0, 0],
+    outcome: "棋子依序落進下一格。",
+  },
+  {
+    id: "store",
+    title: "棋庫",
+    summary: "會進自己的棋庫，會跳過對手棋庫。",
+    action: "sow",
+    player: PLAYER_ONE,
+    startIndex: 0,
+    initial: [5, 0, 0, 0, 0, 0],
+    outcome: "自己的棋庫可得分，對手棋庫不放棋。",
+  },
+  {
+    id: "extra",
+    title: "再走",
+    summary: "最後一顆進自己的棋庫，再行一手。",
+    action: "sow",
+    player: PLAYER_ONE,
+    startIndex: 1,
+    initial: [0, 1, 0, 0, 0, 0],
+    outcome: "最後落點是棋庫，所以保留回合。",
+  },
+  {
+    id: "capture",
+    title: "吃子",
+    summary: "最後落在自己的空棋坑，收走對面棋子。",
+    action: "sow",
+    player: PLAYER_ONE,
+    startIndex: 0,
+    initial: [1, 0, 0, 3, 0, 0],
+    capture: true,
+    outcome: "自己的最後一顆和對面棋子一起進棋庫。",
+  },
+  {
+    id: "finish",
+    title: "結算",
+    summary: "一方棋坑清空，剩子全部進棋庫。",
+    action: "sow",
+    player: PLAYER_ONE,
+    startIndex: 1,
+    initial: [0, 1, 5, 2, 1, 4],
+    collect: true,
+    outcome: "清空後比棋庫數量，較多者勝。",
+  },
+];
+
+const RULE_DEMO_CELLS = [
+  { index: 5, label: "對手棋庫", type: "store", owner: PLAYER_TWO },
+  { index: 4, label: "對手棋坑", type: "pit", owner: PLAYER_TWO },
+  { index: 3, label: "對手棋坑", type: "pit", owner: PLAYER_TWO },
+  { index: 0, label: "我的棋坑", type: "pit", owner: PLAYER_ONE },
+  { index: 1, label: "我的棋坑", type: "pit", owner: PLAYER_ONE },
+  { index: 2, label: "我的棋庫", type: "store", owner: PLAYER_ONE },
+];
+
+const ruleDemoState = {
+  activeId: RULE_DEMOS[0].id,
+  token: 0,
 };
 
 const NARRATOR = "\u65c1\u767d";
@@ -1194,6 +1292,279 @@ function setPitNumberStyle(style) {
   render();
 }
 
+function initializeRulesPanel() {
+  renderRulesList();
+
+  const rule = getRuleDemo(ruleDemoState.activeId);
+  renderRuleDemoBoard(rule, rule.target ?? rule.initial, { note: rule.summary });
+}
+
+function renderRulesList() {
+  if (!rulesList) return;
+
+  rulesList.innerHTML = "";
+
+  for (const rule of RULE_DEMOS) {
+    const button = document.createElement("button");
+    const isActive = rule.id === ruleDemoState.activeId;
+
+    button.type = "button";
+    button.className = `rule-item${isActive ? " is-active" : ""}`;
+    button.setAttribute("role", "listitem");
+    button.setAttribute("aria-pressed", String(isActive));
+    button.innerHTML = `
+      <span class="rule-title">${rule.title}</span>
+      <span class="rule-summary">${rule.summary}</span>
+    `;
+    button.addEventListener("click", () => {
+      void playRuleDemo(rule.id);
+    });
+
+    rulesList.appendChild(button);
+  }
+}
+
+function getRuleDemo(ruleId) {
+  return RULE_DEMOS.find((rule) => rule.id === ruleId) ?? RULE_DEMOS[0];
+}
+
+async function playRuleDemo(ruleId = ruleDemoState.activeId) {
+  const rule = getRuleDemo(ruleId);
+  const token = ruleDemoState.token + 1;
+
+  ruleDemoState.activeId = rule.id;
+  ruleDemoState.token = token;
+  renderRulesList();
+
+  if (rule.action === "setup") {
+    await runRuleSetupDemo(rule, token);
+  } else {
+    await runRuleSowDemo(rule, token);
+  }
+}
+
+async function runRuleSetupDemo(rule, token) {
+  const board = rule.initial.slice();
+  const target = rule.target.slice();
+  const pitIndices = [...RULE_DEMO_MODEL.pits[PLAYER_TWO], ...RULE_DEMO_MODEL.pits[PLAYER_ONE]];
+
+  renderRuleDemoBoard(rule, board, { note: "棋庫先空。" });
+  await sleep(180);
+
+  const maxCount = Math.max(...target);
+  for (let count = 1; count <= maxCount; count += 1) {
+    for (const index of pitIndices) {
+      if (!isRuleDemoCurrent(token)) return;
+      if (target[index] < count) continue;
+
+      board[index] = count;
+      renderRuleDemoBoard(rule, board, {
+        activeIndices: [index],
+        note: "棋子先放進棋坑。",
+      });
+      await sleep(120);
+    }
+  }
+
+  if (!isRuleDemoCurrent(token)) return;
+  renderRuleDemoBoard(rule, board, { note: rule.outcome });
+}
+
+async function runRuleSowDemo(rule, token) {
+  const board = rule.initial.slice();
+  const player = rule.player;
+  const ownStore = RULE_DEMO_MODEL.stores[player];
+  const opponentStore = getRuleDemoOpponentStore(player);
+  let currentIndex = rule.startIndex;
+  let stones = board[rule.startIndex];
+
+  renderRuleDemoBoard(rule, board, {
+    activeIndices: [rule.startIndex],
+    note: "選這個棋坑。",
+  });
+  await sleep(260);
+
+  if (!isRuleDemoCurrent(token)) return;
+  board[rule.startIndex] = 0;
+  renderRuleDemoBoard(rule, board, {
+    activeIndices: [rule.startIndex],
+    note: "拿起棋子，開始撒棋。",
+  });
+  await sleep(240);
+
+  while (stones > 0) {
+    if (!isRuleDemoCurrent(token)) return;
+
+    const nextIndex = (currentIndex + 1) % RULE_DEMO_MODEL.boardSize;
+    currentIndex = nextIndex;
+
+    if (nextIndex === opponentStore) {
+      renderRuleDemoBoard(rule, board, {
+        skippedIndex: nextIndex,
+        note: "跳過對手棋庫。",
+      });
+      await sleep(260);
+      continue;
+    }
+
+    board[nextIndex] += 1;
+    stones -= 1;
+    renderRuleDemoBoard(rule, board, {
+      activeIndices: [nextIndex],
+      note: getRuleDemoDropNote(nextIndex, player),
+    });
+    await sleep(340);
+  }
+
+  if (rule.capture) {
+    await maybeRunRuleCapture(rule, board, currentIndex, token);
+  }
+
+  if (rule.collect) {
+    await maybeCollectRuleDemoRemainder(rule, board, token);
+  }
+
+  if (!isRuleDemoCurrent(token)) return;
+  renderRuleDemoBoard(rule, board, {
+    activeIndices: currentIndex === ownStore ? [ownStore] : [],
+    note: rule.outcome,
+  });
+}
+
+async function maybeRunRuleCapture(rule, board, landingIndex, token) {
+  const player = rule.player;
+  const ownStore = RULE_DEMO_MODEL.stores[player];
+  const oppositeIndex = RULE_DEMO_MODEL.oppositePits[landingIndex];
+
+  if (
+    oppositeIndex == null ||
+    !isRuleDemoPit(landingIndex, player) ||
+    board[landingIndex] !== 1 ||
+    board[oppositeIndex] <= 0
+  ) {
+    return;
+  }
+
+  await sleep(220);
+  if (!isRuleDemoCurrent(token)) return;
+
+  renderRuleDemoBoard(rule, board, {
+    activeIndices: [landingIndex, oppositeIndex],
+    note: "最後一顆落在自己的空棋坑。",
+  });
+  await sleep(420);
+
+  if (!isRuleDemoCurrent(token)) return;
+  board[ownStore] += board[landingIndex] + board[oppositeIndex];
+  board[landingIndex] = 0;
+  board[oppositeIndex] = 0;
+  renderRuleDemoBoard(rule, board, {
+    activeIndices: [ownStore],
+    note: "兩邊棋子收進棋庫。",
+  });
+  await sleep(380);
+}
+
+async function maybeCollectRuleDemoRemainder(rule, board, token) {
+  const playerOneEmpty = RULE_DEMO_MODEL.pits[PLAYER_ONE].every((index) => board[index] === 0);
+  const playerTwoEmpty = RULE_DEMO_MODEL.pits[PLAYER_TWO].every((index) => board[index] === 0);
+
+  if (!playerOneEmpty && !playerTwoEmpty) return;
+
+  const collectingPlayer = playerOneEmpty ? PLAYER_TWO : PLAYER_ONE;
+  const collectingStore = RULE_DEMO_MODEL.stores[collectingPlayer];
+
+  await sleep(260);
+
+  for (const pitIndex of RULE_DEMO_MODEL.pits[collectingPlayer]) {
+    if (!isRuleDemoCurrent(token)) return;
+    if (board[pitIndex] <= 0) continue;
+
+    board[collectingStore] += board[pitIndex];
+    board[pitIndex] = 0;
+    renderRuleDemoBoard(rule, board, {
+      activeIndices: [pitIndex, collectingStore],
+      note: "剩下棋子進自己的棋庫。",
+    });
+    await sleep(360);
+  }
+}
+
+function renderRuleDemoBoard(rule, board, options = {}) {
+  if (!rulesDemo) return;
+
+  const activeIndices = new Set(options.activeIndices ?? []);
+  const skippedIndex = options.skippedIndex;
+  const note = options.note ?? rule.summary;
+
+  rulesDemo.innerHTML = `
+    <div class="rules-demo-copy">
+      <strong>${rule.title}</strong>
+      <span>${note}</span>
+    </div>
+    <div class="rule-demo-board" aria-label="簡式規則示範棋盤">
+      ${RULE_DEMO_CELLS.map((cell) => createRuleDemoCell(cell, board, activeIndices, skippedIndex)).join("")}
+    </div>
+  `;
+}
+
+function createRuleDemoCell(cell, board, activeIndices, skippedIndex) {
+  const count = board[cell.index] ?? 0;
+  const classes = [
+    "rule-demo-cell",
+    cell.type,
+    cell.owner === PLAYER_ONE ? "player-one-demo" : "player-two-demo",
+    activeIndices.has(cell.index) ? "is-active" : "",
+    skippedIndex === cell.index ? "is-skipped" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return `
+    <div class="${classes}" data-index="${cell.index}" role="group" aria-label="${cell.label}，${count} 顆棋子">
+      <span class="rule-demo-label">${cell.label}</span>
+      <span class="rule-demo-stones" aria-hidden="true">${createRuleDemoStones(count, cell.owner)}</span>
+      <span class="rule-demo-count">${count}</span>
+    </div>
+  `;
+}
+
+function createRuleDemoStones(count, owner) {
+  let html = "";
+  const visibleCount = Math.min(count, 8);
+  const ownerClass = owner === PLAYER_ONE ? "red" : "purple";
+
+  for (let i = 0; i < visibleCount; i += 1) {
+    html += `<span class="rule-demo-stone ${ownerClass}"></span>`;
+  }
+
+  return html;
+}
+
+function getRuleDemoDropNote(index, player) {
+  if (index === RULE_DEMO_MODEL.stores[player]) {
+    return "放進自己的棋庫。";
+  }
+
+  if (isRuleDemoPit(index, player)) {
+    return "落在自己的棋坑。";
+  }
+
+  return "落在對手棋坑。";
+}
+
+function isRuleDemoPit(index, player) {
+  return RULE_DEMO_MODEL.pits[player].includes(index);
+}
+
+function getRuleDemoOpponentStore(player) {
+  return RULE_DEMO_MODEL.stores[otherPlayer(player)];
+}
+
+function isRuleDemoCurrent(token) {
+  return token === ruleDemoState.token;
+}
+
 function openFloatingCard(overlay) {
   overlay.hidden = false;
   requestAnimationFrame(() => {
@@ -1210,9 +1581,17 @@ function closeFloatingCard(overlay) {
   }, 180);
 }
 
+function closeRulesCard() {
+  ruleDemoState.token += 1;
+  closeFloatingCard(rulesOverlay);
+}
+
 function closeOpenFloatingCards() {
   for (const overlay of [rulesOverlay, settingsOverlay]) {
     if (!overlay.hidden) {
+      if (overlay === rulesOverlay) {
+        ruleDemoState.token += 1;
+      }
       closeFloatingCard(overlay);
     }
   }
@@ -1717,6 +2096,7 @@ resultMenuButton.addEventListener("click", showMainMenu);
 
 rulesButton.addEventListener("click", () => {
   openFloatingCard(rulesOverlay);
+  void playRuleDemo(ruleDemoState.activeId);
 });
 
 settingsButton.addEventListener("click", () => {
@@ -1724,7 +2104,7 @@ settingsButton.addEventListener("click", () => {
 });
 
 rulesCloseButton.addEventListener("click", () => {
-  closeFloatingCard(rulesOverlay);
+  closeRulesCard();
 });
 
 settingsCloseButton.addEventListener("click", () => {
@@ -1733,7 +2113,7 @@ settingsCloseButton.addEventListener("click", () => {
 
 rulesOverlay.addEventListener("click", (event) => {
   if (event.target === rulesOverlay) {
-    closeFloatingCard(rulesOverlay);
+    closeRulesCard();
   }
 });
 
@@ -1758,6 +2138,8 @@ boardEl.addEventListener("click", (event) => {
 });
 
 coinTossButton.addEventListener("click", tossCoin);
+
+initializeRulesPanel();
 
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
