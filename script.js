@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260617a";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260617a";
+import { CoinTossScene } from "./coin/index.js?v=20260617b";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260617b";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -15,20 +15,20 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260617a";
+} from "./core/object-model.js?v=20260617b";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
   STONE_PLACEMENT_PHYSICS,
   selectCountCurveValue,
-} from "./core/object-physics.js?v=20260617a";
+} from "./core/object-physics.js?v=20260617b";
 import {
   getAssetUrl,
   getCoinFace,
   getNeutralSkin,
   getPlayerSkin,
-} from "./core/object-pack-manifest.js?v=20260617a";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260617a";
+} from "./core/object-pack-manifest.js?v=20260617b";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260617b";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const ACTIVE_OBJECT_PACK = CRYSTAL_OBJECT_PACK;
@@ -99,7 +99,18 @@ const settingsOverlay = document.querySelector("#settingsOverlay");
 const rulesCloseButton = document.querySelector("#rulesCloseButton");
 const settingsCloseButton = document.querySelector("#settingsCloseButton");
 const rulesList = document.querySelector("#rulesList");
-const rulesDemo = document.querySelector("#rulesDemo");
+const ruleDemoOverlay = document.querySelector("#ruleDemoOverlay");
+const ruleDemoTitle = document.querySelector("#ruleDemoTitle");
+const ruleDemoContent = document.querySelector("#ruleDemoContent");
+const ruleDemoCloseButton = document.querySelector("#ruleDemoCloseButton");
+const ruleDemoReplayButton = document.querySelector("#ruleDemoReplayButton");
+const ruleDemoControls = document.querySelector("#ruleDemoControls");
+const ruleAutoButton = document.querySelector("#ruleAutoButton");
+const ruleStepButton = document.querySelector("#ruleStepButton");
+const ruleStepControls = document.querySelector("#ruleStepControls");
+const rulePrevButton = document.querySelector("#rulePrevButton");
+const ruleNextButton = document.querySelector("#ruleNextButton");
+const ruleStepIndicator = document.querySelector("#ruleStepIndicator");
 const pitRomanButton = document.querySelector("#pitRomanButton");
 const pitArabicButton = document.querySelector("#pitArabicButton");
 const coinTossOverlay = document.querySelector("#coinTossOverlay");
@@ -247,85 +258,100 @@ const difficultyButtons = {
   hard: difficultyHardButton,
 };
 
-const RULE_DEMO_MODEL = {
-  boardSize: 6,
-  pits: {
-    [PLAYER_ONE]: [0, 1],
-    [PLAYER_TWO]: [3, 4],
-  },
-  stores: {
-    [PLAYER_ONE]: 2,
-    [PLAYER_TWO]: 5,
-  },
-  oppositePits: {
-    0: 4,
-    1: 3,
-    3: 1,
-    4: 0,
-  },
-};
+const RULE_AUTO_START_DELAY_MS = 260;
+const RULE_FRAME_DELAY_MS = 840;
 
 const RULE_DEMOS = [
   {
     id: "setup",
-    title: "開局",
-    summary: "每個棋坑放 6 顆，棋庫先空。",
-    action: "setup",
-    initial: [0, 0, 0, 0, 0, 0],
-    target: [3, 3, 0, 3, 3, 0],
-    outcome: "正式棋盤每坑 6 顆；這裡用少量棋子示範。",
+    title: "遊戲初始設置",
+    summary: "認識棋坑、棋庫與起始棋子。",
+    type: "setup",
+    board: [3, 3, 0, 3, 3, 0],
+    setupInfo: [
+      {
+        id: "my-pit",
+        label: "我的棋坑",
+        indices: [0, 1],
+        description: "輪到你時，只能選自己這側有棋子的棋坑。正式棋盤每個棋坑開局放 6 顆。",
+      },
+      {
+        id: "my-store",
+        label: "我的棋庫",
+        indices: [2],
+        description: "自己的棋庫是得分區。棋子進自己的棋庫就會加分。",
+      },
+      {
+        id: "opponent-pit",
+        label: "對手棋坑",
+        indices: [3, 4],
+        description: "撒棋時可以落進對手棋坑；吃子規則會看對面的棋坑是否有棋子。",
+      },
+      {
+        id: "opponent-store",
+        label: "對手棋庫",
+        indices: [5],
+        description: "撒棋會跳過對手棋庫，不會幫對手加分。",
+      },
+    ],
   },
   {
-    id: "sow",
-    title: "撒棋",
-    summary: "選自己的棋坑，一格一顆逆時針放。",
-    action: "sow",
-    player: PLAYER_ONE,
-    startIndex: 0,
-    initial: [3, 0, 0, 0, 0, 0],
-    outcome: "棋子依序落進下一格。",
-  },
-  {
-    id: "store",
-    title: "棋庫",
-    summary: "會進自己的棋庫，會跳過對手棋庫。",
-    action: "sow",
-    player: PLAYER_ONE,
-    startIndex: 0,
-    initial: [5, 0, 0, 0, 0, 0],
-    outcome: "自己的棋庫可得分，對手棋庫不放棋。",
+    id: "basic",
+    title: "基本操作",
+    summary: "選自己的棋坑，棋子依序落進下一格。",
+    type: "animation",
+    header: "選自己的棋坑，棋子依序落進下一格。",
+    legend: ["自己的棋坑", "自己的棋庫 (+1分)", "對方的棋坑", "對方的棋庫(跳過)"],
+    frames: [
+      { board: [5, 0, 0, 0, 0, 0], activeIndices: [0], note: "選自己的棋坑。" },
+      { board: [0, 0, 0, 0, 0, 0], activeIndices: [0], note: "拿起棋子，準備依序撒下。" },
+      { board: [0, 1, 0, 0, 0, 0], activeIndices: [1], note: "自己的棋坑。" },
+      { board: [0, 1, 1, 0, 0, 0], activeIndices: [2], note: "自己的棋庫 +1 分。" },
+      { board: [0, 1, 1, 1, 0, 0], activeIndices: [3], note: "對方的棋坑。" },
+      { board: [0, 1, 1, 1, 1, 0], activeIndices: [4], note: "對方的棋坑。" },
+      { board: [0, 1, 1, 1, 1, 0], skippedIndex: 5, note: "對方的棋庫，跳過。" },
+      { board: [1, 1, 1, 1, 1, 0], activeIndices: [0], note: "繼續回到自己的棋坑。" },
+    ],
   },
   {
     id: "extra",
-    title: "再走",
-    summary: "最後一顆進自己的棋庫，再行一手。",
-    action: "sow",
-    player: PLAYER_ONE,
-    startIndex: 1,
-    initial: [0, 1, 0, 0, 0, 0],
-    outcome: "最後落點是棋庫，所以保留回合。",
+    title: "額外的回合!",
+    summary: "最後一子落在自己的棋庫，可以再來一次。",
+    type: "animation",
+    header: "最後一子落在自己的棋庫，可以取得額外回合。",
+    frames: [
+      { board: [0, 1, 0, 0, 0, 0], activeIndices: [1], note: "選這個棋坑。" },
+      { board: [0, 0, 0, 0, 0, 0], activeIndices: [1], note: "拿起最後一顆棋子。" },
+      { board: [0, 0, 1, 0, 0, 0], activeIndices: [2], note: "落進自己的棋庫。" },
+      { board: [0, 0, 1, 0, 0, 0], activeIndices: [2], note: "額外的回合! 可以再走一步。" },
+    ],
   },
   {
     id: "capture",
     title: "吃子",
     summary: "最後落在自己的空棋坑，收走對面棋子。",
-    action: "sow",
-    player: PLAYER_ONE,
-    startIndex: 0,
-    initial: [1, 0, 0, 3, 0, 0],
-    capture: true,
-    outcome: "自己的最後一顆和對面棋子一起進棋庫。",
+    type: "animation",
+    header: "最後一子落在自己的空棋坑，且對面有棋子，就吃子。",
+    frames: [
+      { board: [1, 0, 0, 3, 0, 0], activeIndices: [0], note: "選自己的棋坑。" },
+      { board: [0, 0, 0, 3, 0, 0], activeIndices: [0], note: "拿起棋子。" },
+      { board: [0, 1, 0, 3, 0, 0], activeIndices: [1], note: "最後一顆落在自己的空棋坑。" },
+      { board: [0, 1, 0, 3, 0, 0], activeIndices: [1, 3], note: "對面棋坑有棋子，可以吃。" },
+      { board: [0, 0, 4, 0, 0, 0], activeIndices: [2], note: "兩邊棋子一起收進棋庫。" },
+    ],
   },
   {
     id: "finish",
     title: "結算",
     summary: "一方棋坑清空，剩子全部進棋庫。",
-    action: "sow",
-    player: PLAYER_ONE,
-    startIndex: 1,
-    initial: [0, 1, 5, 2, 1, 4],
-    collect: true,
-    outcome: "清空後比棋庫數量，較多者勝。",
+    type: "animation",
+    header: "一方棋坑清空，剩下棋子全部進自己的棋庫。",
+    frames: [
+      { board: [0, 1, 5, 2, 1, 4], activeIndices: [1], note: "這一步會讓我的棋坑清空。" },
+      { board: [0, 0, 6, 2, 1, 4], activeIndices: [2], note: "最後一顆進棋庫，我方棋坑清空。" },
+      { board: [0, 0, 6, 0, 1, 6], activeIndices: [3, 5], note: "對手剩下的棋子收進對手棋庫。" },
+      { board: [0, 0, 6, 0, 0, 7], activeIndices: [4, 5], note: "全部收完後，比棋庫分數。" },
+    ],
   },
 ];
 
@@ -341,6 +367,10 @@ const RULE_DEMO_CELLS = [
 const ruleDemoState = {
   activeId: RULE_DEMOS[0].id,
   token: 0,
+  mode: "auto",
+  frameIndex: 0,
+  completed: false,
+  setupInfoId: "my-pit",
 };
 
 const NARRATOR = "\u65c1\u767d";
@@ -1294,9 +1324,6 @@ function setPitNumberStyle(style) {
 
 function initializeRulesPanel() {
   renderRulesList();
-
-  const rule = getRuleDemo(ruleDemoState.activeId);
-  renderRuleDemoBoard(rule, rule.target ?? rule.initial, { note: rule.summary });
 }
 
 function renderRulesList() {
@@ -1317,7 +1344,7 @@ function renderRulesList() {
       <span class="rule-summary">${rule.summary}</span>
     `;
     button.addEventListener("click", () => {
-      void playRuleDemo(rule.id);
+      openRuleDemoCard(rule.id);
     });
 
     rulesList.appendChild(button);
@@ -1328,200 +1355,200 @@ function getRuleDemo(ruleId) {
   return RULE_DEMOS.find((rule) => rule.id === ruleId) ?? RULE_DEMOS[0];
 }
 
-async function playRuleDemo(ruleId = ruleDemoState.activeId) {
+function openRuleDemoCard(ruleId = ruleDemoState.activeId) {
   const rule = getRuleDemo(ruleId);
-  const token = ruleDemoState.token + 1;
 
   ruleDemoState.activeId = rule.id;
-  ruleDemoState.token = token;
+  ruleDemoState.token += 1;
+  ruleDemoState.mode = rule.type === "setup" ? "setup" : "auto";
+  ruleDemoState.frameIndex = 0;
+  ruleDemoState.completed = rule.type === "setup";
+  ruleDemoState.setupInfoId = rule.setupInfo?.[0]?.id ?? ruleDemoState.setupInfoId;
+
   renderRulesList();
+  renderRuleDemoCard();
+  openFloatingCard(ruleDemoOverlay);
 
-  if (rule.action === "setup") {
-    await runRuleSetupDemo(rule, token);
-  } else {
-    await runRuleSowDemo(rule, token);
+  if (rule.type !== "setup") {
+    void playRuleDemoAuto(ruleDemoState.token);
   }
 }
 
-async function runRuleSetupDemo(rule, token) {
-  const board = rule.initial.slice();
-  const target = rule.target.slice();
-  const pitIndices = [...RULE_DEMO_MODEL.pits[PLAYER_TWO], ...RULE_DEMO_MODEL.pits[PLAYER_ONE]];
+async function playRuleDemoAuto(token = ruleDemoState.token) {
+  const rule = getRuleDemo(ruleDemoState.activeId);
+  const frames = getRuleFrames(rule);
 
-  renderRuleDemoBoard(rule, board, { note: "棋庫先空。" });
-  await sleep(180);
+  if (!frames.length) return;
 
-  const maxCount = Math.max(...target);
-  for (let count = 1; count <= maxCount; count += 1) {
-    for (const index of pitIndices) {
-      if (!isRuleDemoCurrent(token)) return;
-      if (target[index] < count) continue;
+  ruleDemoState.mode = "auto";
+  ruleDemoState.completed = false;
+  ruleDemoState.frameIndex = 0;
+  renderRuleDemoCard();
+  await sleep(RULE_AUTO_START_DELAY_MS);
 
-      board[index] = count;
-      renderRuleDemoBoard(rule, board, {
-        activeIndices: [index],
-        note: "棋子先放進棋坑。",
-      });
-      await sleep(120);
-    }
+  for (let index = 0; index < frames.length; index += 1) {
+    if (!isRuleDemoCurrent(token) || ruleDemoState.mode !== "auto") return;
+    ruleDemoState.frameIndex = index;
+    renderRuleDemoCard();
+    await sleep(RULE_FRAME_DELAY_MS);
   }
 
-  if (!isRuleDemoCurrent(token)) return;
-  renderRuleDemoBoard(rule, board, { note: rule.outcome });
+  if (!isRuleDemoCurrent(token) || ruleDemoState.mode !== "auto") return;
+  ruleDemoState.completed = true;
+  renderRuleDemoCard();
 }
 
-async function runRuleSowDemo(rule, token) {
-  const board = rule.initial.slice();
-  const player = rule.player;
-  const ownStore = RULE_DEMO_MODEL.stores[player];
-  const opponentStore = getRuleDemoOpponentStore(player);
-  let currentIndex = rule.startIndex;
-  let stones = board[rule.startIndex];
+function replayRuleDemoAuto() {
+  const rule = getRuleDemo(ruleDemoState.activeId);
+  if (rule.type === "setup") return;
 
-  renderRuleDemoBoard(rule, board, {
-    activeIndices: [rule.startIndex],
-    note: "選這個棋坑。",
-  });
-  await sleep(260);
-
-  if (!isRuleDemoCurrent(token)) return;
-  board[rule.startIndex] = 0;
-  renderRuleDemoBoard(rule, board, {
-    activeIndices: [rule.startIndex],
-    note: "拿起棋子，開始撒棋。",
-  });
-  await sleep(240);
-
-  while (stones > 0) {
-    if (!isRuleDemoCurrent(token)) return;
-
-    const nextIndex = (currentIndex + 1) % RULE_DEMO_MODEL.boardSize;
-    currentIndex = nextIndex;
-
-    if (nextIndex === opponentStore) {
-      renderRuleDemoBoard(rule, board, {
-        skippedIndex: nextIndex,
-        note: "跳過對手棋庫。",
-      });
-      await sleep(260);
-      continue;
-    }
-
-    board[nextIndex] += 1;
-    stones -= 1;
-    renderRuleDemoBoard(rule, board, {
-      activeIndices: [nextIndex],
-      note: getRuleDemoDropNote(nextIndex, player),
-    });
-    await sleep(340);
-  }
-
-  if (rule.capture) {
-    await maybeRunRuleCapture(rule, board, currentIndex, token);
-  }
-
-  if (rule.collect) {
-    await maybeCollectRuleDemoRemainder(rule, board, token);
-  }
-
-  if (!isRuleDemoCurrent(token)) return;
-  renderRuleDemoBoard(rule, board, {
-    activeIndices: currentIndex === ownStore ? [ownStore] : [],
-    note: rule.outcome,
-  });
+  ruleDemoState.token += 1;
+  void playRuleDemoAuto(ruleDemoState.token);
 }
 
-async function maybeRunRuleCapture(rule, board, landingIndex, token) {
-  const player = rule.player;
-  const ownStore = RULE_DEMO_MODEL.stores[player];
-  const oppositeIndex = RULE_DEMO_MODEL.oppositePits[landingIndex];
+function setRuleDemoMode(mode) {
+  const rule = getRuleDemo(ruleDemoState.activeId);
+  if (rule.type === "setup") return;
 
-  if (
-    oppositeIndex == null ||
-    !isRuleDemoPit(landingIndex, player) ||
-    board[landingIndex] !== 1 ||
-    board[oppositeIndex] <= 0
-  ) {
-    return;
-  }
+  ruleDemoState.token += 1;
+  ruleDemoState.mode = mode;
+  ruleDemoState.frameIndex = 0;
+  ruleDemoState.completed = false;
+  renderRuleDemoCard();
 
-  await sleep(220);
-  if (!isRuleDemoCurrent(token)) return;
-
-  renderRuleDemoBoard(rule, board, {
-    activeIndices: [landingIndex, oppositeIndex],
-    note: "最後一顆落在自己的空棋坑。",
-  });
-  await sleep(420);
-
-  if (!isRuleDemoCurrent(token)) return;
-  board[ownStore] += board[landingIndex] + board[oppositeIndex];
-  board[landingIndex] = 0;
-  board[oppositeIndex] = 0;
-  renderRuleDemoBoard(rule, board, {
-    activeIndices: [ownStore],
-    note: "兩邊棋子收進棋庫。",
-  });
-  await sleep(380);
-}
-
-async function maybeCollectRuleDemoRemainder(rule, board, token) {
-  const playerOneEmpty = RULE_DEMO_MODEL.pits[PLAYER_ONE].every((index) => board[index] === 0);
-  const playerTwoEmpty = RULE_DEMO_MODEL.pits[PLAYER_TWO].every((index) => board[index] === 0);
-
-  if (!playerOneEmpty && !playerTwoEmpty) return;
-
-  const collectingPlayer = playerOneEmpty ? PLAYER_TWO : PLAYER_ONE;
-  const collectingStore = RULE_DEMO_MODEL.stores[collectingPlayer];
-
-  await sleep(260);
-
-  for (const pitIndex of RULE_DEMO_MODEL.pits[collectingPlayer]) {
-    if (!isRuleDemoCurrent(token)) return;
-    if (board[pitIndex] <= 0) continue;
-
-    board[collectingStore] += board[pitIndex];
-    board[pitIndex] = 0;
-    renderRuleDemoBoard(rule, board, {
-      activeIndices: [pitIndex, collectingStore],
-      note: "剩下棋子進自己的棋庫。",
-    });
-    await sleep(360);
+  if (mode === "auto") {
+    void playRuleDemoAuto(ruleDemoState.token);
   }
 }
 
-function renderRuleDemoBoard(rule, board, options = {}) {
-  if (!rulesDemo) return;
+function moveRuleDemoStep(delta) {
+  const rule = getRuleDemo(ruleDemoState.activeId);
+  const frames = getRuleFrames(rule);
+  if (ruleDemoState.mode !== "step" || !frames.length) return;
 
-  const activeIndices = new Set(options.activeIndices ?? []);
-  const skippedIndex = options.skippedIndex;
-  const note = options.note ?? rule.summary;
+  ruleDemoState.frameIndex = clamp(ruleDemoState.frameIndex + delta, 0, frames.length - 1);
+  ruleDemoState.completed = ruleDemoState.frameIndex === frames.length - 1;
+  renderRuleDemoCard();
+}
 
-  rulesDemo.innerHTML = `
-    <div class="rules-demo-copy">
-      <strong>${rule.title}</strong>
-      <span>${note}</span>
+function closeRuleDemoCard() {
+  ruleDemoState.token += 1;
+  closeFloatingCard(ruleDemoOverlay);
+}
+
+function renderRuleDemoCard() {
+  const rule = getRuleDemo(ruleDemoState.activeId);
+  if (!ruleDemoTitle || !ruleDemoContent) return;
+
+  ruleDemoTitle.textContent = rule.title;
+  ruleDemoContent.innerHTML = rule.type === "setup" ? createRuleSetupCard(rule) : createRuleAnimationCard(rule);
+  renderRuleDemoControls(rule);
+}
+
+function renderRuleDemoControls(rule) {
+  const isSetup = rule.type === "setup";
+  const frames = getRuleFrames(rule);
+  const isStep = ruleDemoState.mode === "step";
+
+  if (ruleDemoControls) {
+    ruleDemoControls.hidden = isSetup;
+  }
+
+  if (ruleDemoReplayButton) {
+    ruleDemoReplayButton.hidden = isSetup || !ruleDemoState.completed;
+  }
+
+  ruleAutoButton?.classList.toggle("is-active", !isSetup && ruleDemoState.mode === "auto");
+  ruleStepButton?.classList.toggle("is-active", !isSetup && isStep);
+  ruleAutoButton?.setAttribute("aria-pressed", String(!isSetup && ruleDemoState.mode === "auto"));
+  ruleStepButton?.setAttribute("aria-pressed", String(!isSetup && isStep));
+
+  if (ruleStepControls) {
+    ruleStepControls.hidden = isSetup || !isStep;
+  }
+
+  if (rulePrevButton) {
+    rulePrevButton.disabled = !isStep || ruleDemoState.frameIndex <= 0;
+  }
+
+  if (ruleNextButton) {
+    ruleNextButton.disabled = !isStep || ruleDemoState.frameIndex >= frames.length - 1;
+  }
+
+  if (ruleStepIndicator) {
+    ruleStepIndicator.textContent = frames.length
+      ? `${ruleDemoState.frameIndex + 1} / ${frames.length}`
+      : "";
+  }
+}
+
+function createRuleSetupCard(rule) {
+  const activeInfo = getActiveSetupInfo(rule);
+  const highlightedIndices = new Set(activeInfo?.indices ?? []);
+
+  return `
+    <div class="rule-demo-guidance">
+      <p class="rule-demo-primary">遊戲版面認識</p>
+      <p class="rule-demo-secondary">點每個區域右上角的 ! 看說明。</p>
     </div>
-    <div class="rule-demo-board" aria-label="簡式規則示範棋盤">
-      ${RULE_DEMO_CELLS.map((cell) => createRuleDemoCell(cell, board, activeIndices, skippedIndex)).join("")}
+    <div class="rule-setup-layout">
+      <div class="rule-demo-board setup-board" aria-label="遊戲初始設置示範">
+        ${RULE_DEMO_CELLS.map((cell) =>
+          createRuleDemoCell(cell, rule.board, {
+            activeIndices: highlightedIndices,
+            infoId: getSetupInfoForCell(rule, cell.index)?.id,
+          })
+        ).join("")}
+      </div>
+      <div class="rule-setup-info" aria-live="polite">
+        <strong>${activeInfo?.label ?? "版面"}</strong>
+        <p>${activeInfo?.description ?? ""}</p>
+      </div>
     </div>
   `;
 }
 
-function createRuleDemoCell(cell, board, activeIndices, skippedIndex) {
+function createRuleAnimationCard(rule) {
+  const frames = getRuleFrames(rule);
+  const frame = frames[ruleDemoState.frameIndex] ?? frames[0];
+  const legend = rule.legend?.length
+    ? `<div class="rule-demo-legend">${rule.legend.map((item) => `<span>${item}</span>`).join("")}</div>`
+    : "";
+
+  return `
+    <div class="rule-demo-guidance">
+      <p class="rule-demo-primary">${rule.header ?? rule.summary}</p>
+      ${legend}
+    </div>
+    <div class="rule-demo-board" aria-label="規則示範棋盤">
+      ${RULE_DEMO_CELLS.map((cell) => createRuleDemoCell(cell, frame.board, frame)).join("")}
+    </div>
+    <p class="rule-demo-note">${frame.note}</p>
+  `;
+}
+
+function createRuleDemoCell(cell, board, options = {}) {
+  const activeIndices = new Set(options.activeIndices ?? []);
+  const infoId = options.infoId;
+  const skippedIndex = options.skippedIndex;
   const count = board[cell.index] ?? 0;
+  const infoButton = infoId
+    ? `<button class="setup-info-button" type="button" data-info-id="${infoId}" aria-label="${cell.label}說明">!</button>`
+    : "";
   const classes = [
     "rule-demo-cell",
     cell.type,
     cell.owner === PLAYER_ONE ? "player-one-demo" : "player-two-demo",
     activeIndices.has(cell.index) ? "is-active" : "",
     skippedIndex === cell.index ? "is-skipped" : "",
+    infoId && ruleDemoState.setupInfoId === infoId ? "is-info-active" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
   return `
     <div class="${classes}" data-index="${cell.index}" role="group" aria-label="${cell.label}，${count} 顆棋子">
+      ${infoButton}
       <span class="rule-demo-label">${cell.label}</span>
       <span class="rule-demo-stones" aria-hidden="true">${createRuleDemoStones(count, cell.owner)}</span>
       <span class="rule-demo-count">${count}</span>
@@ -1541,24 +1568,16 @@ function createRuleDemoStones(count, owner) {
   return html;
 }
 
-function getRuleDemoDropNote(index, player) {
-  if (index === RULE_DEMO_MODEL.stores[player]) {
-    return "放進自己的棋庫。";
-  }
-
-  if (isRuleDemoPit(index, player)) {
-    return "落在自己的棋坑。";
-  }
-
-  return "落在對手棋坑。";
+function getRuleFrames(rule) {
+  return rule.frames ?? [];
 }
 
-function isRuleDemoPit(index, player) {
-  return RULE_DEMO_MODEL.pits[player].includes(index);
+function getActiveSetupInfo(rule) {
+  return rule.setupInfo?.find((info) => info.id === ruleDemoState.setupInfoId) ?? rule.setupInfo?.[0];
 }
 
-function getRuleDemoOpponentStore(player) {
-  return RULE_DEMO_MODEL.stores[otherPlayer(player)];
+function getSetupInfoForCell(rule, index) {
+  return rule.setupInfo?.find((info) => info.indices.includes(index));
 }
 
 function isRuleDemoCurrent(token) {
@@ -1583,13 +1602,14 @@ function closeFloatingCard(overlay) {
 
 function closeRulesCard() {
   ruleDemoState.token += 1;
+  closeFloatingCard(ruleDemoOverlay);
   closeFloatingCard(rulesOverlay);
 }
 
 function closeOpenFloatingCards() {
-  for (const overlay of [rulesOverlay, settingsOverlay]) {
+  for (const overlay of [ruleDemoOverlay, rulesOverlay, settingsOverlay]) {
     if (!overlay.hidden) {
-      if (overlay === rulesOverlay) {
+      if (overlay === ruleDemoOverlay || overlay === rulesOverlay) {
         ruleDemoState.token += 1;
       }
       closeFloatingCard(overlay);
@@ -2096,7 +2116,6 @@ resultMenuButton.addEventListener("click", showMainMenu);
 
 rulesButton.addEventListener("click", () => {
   openFloatingCard(rulesOverlay);
-  void playRuleDemo(ruleDemoState.activeId);
 });
 
 settingsButton.addEventListener("click", () => {
@@ -2111,6 +2130,34 @@ settingsCloseButton.addEventListener("click", () => {
   closeFloatingCard(settingsOverlay);
 });
 
+ruleDemoCloseButton.addEventListener("click", closeRuleDemoCard);
+
+ruleDemoReplayButton.addEventListener("click", replayRuleDemoAuto);
+
+ruleAutoButton.addEventListener("click", () => {
+  setRuleDemoMode("auto");
+});
+
+ruleStepButton.addEventListener("click", () => {
+  setRuleDemoMode("step");
+});
+
+rulePrevButton.addEventListener("click", () => {
+  moveRuleDemoStep(-1);
+});
+
+ruleNextButton.addEventListener("click", () => {
+  moveRuleDemoStep(1);
+});
+
+ruleDemoContent.addEventListener("click", (event) => {
+  const infoButton = event.target.closest(".setup-info-button");
+  if (!infoButton) return;
+
+  ruleDemoState.setupInfoId = infoButton.dataset.infoId;
+  renderRuleDemoCard();
+});
+
 rulesOverlay.addEventListener("click", (event) => {
   if (event.target === rulesOverlay) {
     closeRulesCard();
@@ -2120,6 +2167,12 @@ rulesOverlay.addEventListener("click", (event) => {
 settingsOverlay.addEventListener("click", (event) => {
   if (event.target === settingsOverlay) {
     closeFloatingCard(settingsOverlay);
+  }
+});
+
+ruleDemoOverlay.addEventListener("click", (event) => {
+  if (event.target === ruleDemoOverlay) {
+    closeRuleDemoCard();
   }
 });
 

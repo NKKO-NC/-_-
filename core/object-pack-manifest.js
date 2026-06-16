@@ -100,7 +100,13 @@ function getAssetUrl(pack, assetId) {
     throw new Error(`Object pack "${pack.id}" is missing asset "${assetId}".`);
   }
 
-  return `${path}?v=${pack.assetVersion}`;
+  const versionedPath = `${path}?v=${pack.assetVersion}`;
+
+  if (globalThis.document?.baseURI) {
+    return new URL(versionedPath, document.baseURI).href;
+  }
+
+  return versionedPath;
 }
 
 function deepFreeze(value) {

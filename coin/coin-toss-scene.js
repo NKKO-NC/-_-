@@ -1,4 +1,4 @@
-import * as THREE from "../vendor/three/build/three.module.js?v=20260617a";
+import * as THREE from "../vendor/three/build/three.module.js?v=20260617b";
 
 const TAU = Math.PI * 2;
 
@@ -71,11 +71,37 @@ function createFallbackTexture(label, anisotropy) {
   ctx.arc(size / 2, size / 2, size * 0.38, 0, TAU);
   ctx.stroke();
 
-  ctx.fillStyle = "rgba(255, 248, 221, 0.94)";
-  ctx.font = "700 92px Segoe UI, sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(label, size / 2, size / 2 + 4);
+  if (label === "dragon") {
+    ctx.strokeStyle = "rgba(255, 248, 221, 0.9)";
+    ctx.lineWidth = 12;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(size * 0.34, size * 0.62);
+    ctx.bezierCurveTo(size * 0.3, size * 0.38, size * 0.55, size * 0.3, size * 0.61, size * 0.48);
+    ctx.bezierCurveTo(size * 0.68, size * 0.7, size * 0.42, size * 0.76, size * 0.4, size * 0.56);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(255, 248, 221, 0.94)";
+    ctx.beginPath();
+    ctx.arc(size * 0.66, size * 0.4, 7, 0, TAU);
+    ctx.fill();
+  } else if (label === "shield") {
+    ctx.fillStyle = "rgba(255, 248, 221, 0.9)";
+    ctx.beginPath();
+    ctx.moveTo(size * 0.5, size * 0.28);
+    ctx.lineTo(size * 0.68, size * 0.38);
+    ctx.lineTo(size * 0.62, size * 0.66);
+    ctx.lineTo(size * 0.5, size * 0.76);
+    ctx.lineTo(size * 0.38, size * 0.66);
+    ctx.lineTo(size * 0.32, size * 0.38);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.fillStyle = "rgba(255, 248, 221, 0.94)";
+    ctx.font = "700 92px Segoe UI, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, size / 2, size / 2 + 4);
+  }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -264,9 +290,18 @@ class CoinTossScene {
   async init() {
     const anisotropy = this.renderer.capabilities.getMaxAnisotropy();
     const [coinTexture, dragonTexture, shieldTexture] = await Promise.all([
-      loadTexture(this.loader, this.coinSrc, anisotropy).catch(() => createFallbackTexture("C", anisotropy)),
-      loadTexture(this.loader, this.dragonSrc, anisotropy).catch(() => createFallbackTexture("D", anisotropy)),
-      loadTexture(this.loader, this.shieldSrc, anisotropy).catch(() => createFallbackTexture("S", anisotropy)),
+      loadTexture(this.loader, this.coinSrc, anisotropy).catch((error) => {
+        console.warn("Coin body texture failed to load.", this.coinSrc, error);
+        return createFallbackTexture("C", anisotropy);
+      }),
+      loadTexture(this.loader, this.dragonSrc, anisotropy).catch((error) => {
+        console.warn("Dragon coin texture failed to load.", this.dragonSrc, error);
+        return createFallbackTexture("dragon", anisotropy);
+      }),
+      loadTexture(this.loader, this.shieldSrc, anisotropy).catch((error) => {
+        console.warn("Shield coin texture failed to load.", this.shieldSrc, error);
+        return createFallbackTexture("shield", anisotropy);
+      }),
     ]);
 
     this.coinTexture = coinTexture;
