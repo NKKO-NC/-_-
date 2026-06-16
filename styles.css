@@ -871,7 +871,7 @@ h1 {
 }
 
 .coin-toss-button.is-fallback {
-  background-image: url("assets/Coin.png?v=20260616f");
+  background-image: var(--coin-fallback-image);
   background-size: cover;
   background-position: center;
   filter:

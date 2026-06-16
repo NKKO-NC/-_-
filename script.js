@@ -1,12 +1,43 @@
-import { CoinTossScene } from "./coin/index.js?v=20260616f";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616f";
+import { CoinTossScene } from "./coin/index.js?v=20260616g";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616g";
+import {
+  KALAH_BOARD_MODEL,
+  PLAYER_ONE,
+  PLAYER_TWO,
+  createCellLayoutSalt,
+  createInitialObjectBoard,
+  createLayoutSalt,
+  getBoardSpaceOwner,
+  getOpponentPlayer,
+  getOpponentStoreIndex,
+  getOppositePitIndex,
+  getPlayerPitIndices,
+  getStoreIndex,
+  getVisiblePitNumber,
+  isStoreIndex,
+} from "./core/object-model.js?v=20260616g";
+import {
+  PARTICLE_PHYSICS,
+  STONE_FLIGHT_PHYSICS,
+  STONE_PLACEMENT_PHYSICS,
+  selectCountCurveValue,
+} from "./core/object-physics.js?v=20260616g";
+import {
+  getAssetUrl,
+  getCoinFace,
+  getNeutralSkin,
+  getPlayerSkin,
+} from "./core/object-pack-manifest.js?v=20260616g";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260616g";
 
-const STARTING_STONES = 6;
-const PLAYER_ONE_STORE = 6;
-const PLAYER_TWO_STORE = 13;
-const BOARD_SIZE = 14;
-const RUBY_SRC = "assets/ruby-gem.png";
-const AMETHYST_SRC = "assets/amethyst-gem.png";
+const BOARD_MODEL = KALAH_BOARD_MODEL;
+const ACTIVE_OBJECT_PACK = CRYSTAL_OBJECT_PACK;
+const PLAYER_ONE_STORE = getStoreIndex(BOARD_MODEL, PLAYER_ONE);
+const PLAYER_TWO_STORE = getStoreIndex(BOARD_MODEL, PLAYER_TWO);
+const BOARD_SIZE = BOARD_MODEL.boardSize;
+const topPits = BOARD_MODEL.layout.topPits;
+const bottomPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_ONE);
+const playerTwoPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_TWO);
 
 const TEXT = {
   red: "\u7d05\u65b9",
@@ -81,7 +112,39 @@ const resultScore = document.querySelector("#resultScore");
 const resultResetButton = document.querySelector("#resultResetButton");
 const resultMenuButton = document.querySelector("#resultMenuButton");
 const particleField = document.querySelector("#particleField");
-const ASSET_VERSION = "20260616f";
+
+function getPackAssetUrl(assetId) {
+  return getAssetUrl(ACTIVE_OBJECT_PACK, assetId);
+}
+
+function getPlayerStoneUrl(player) {
+  return getPackAssetUrl(getPlayerSkin(ACTIVE_OBJECT_PACK, player).stoneAsset);
+}
+
+function getPlayerStoreSigilUrl(player) {
+  return getPackAssetUrl(getPlayerSkin(ACTIVE_OBJECT_PACK, player).storeSigilAsset);
+}
+
+function getPlayerCssClass(player, className) {
+  return getPlayerSkin(ACTIVE_OBJECT_PACK, player).classes[className];
+}
+
+function getTurnBodyClasses() {
+  return Object.values(ACTIVE_OBJECT_PACK.players).map((player) => player.classes.bodyTurn);
+}
+
+function applyObjectPackSkin() {
+  document.documentElement.dataset.objectPack = ACTIVE_OBJECT_PACK.id;
+
+  for (const [name, value] of Object.entries(ACTIVE_OBJECT_PACK.cssVars)) {
+    document.documentElement.style.setProperty(`--${name}`, value);
+  }
+
+  coinTossButton.style.setProperty(
+    "--coin-fallback-image",
+    `url("${getPackAssetUrl(ACTIVE_OBJECT_PACK.coin.fallbackAsset)}")`
+  );
+}
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");
@@ -103,9 +166,9 @@ function createCoinScene() {
   try {
     const scene = new CoinTossScene({
       canvas: coinCanvas,
-      coinSrc: `assets/Coin.png?v=${ASSET_VERSION}`,
-      dragonSrc: `assets/Dragon.png?v=${ASSET_VERSION}`,
-      shieldSrc: `assets/Shield.png?v=${ASSET_VERSION}`,
+      coinSrc: getPackAssetUrl(ACTIVE_OBJECT_PACK.coin.bodyAsset),
+      dragonSrc: getPackAssetUrl(getCoinFace(ACTIVE_OBJECT_PACK, "front").faceAsset),
+      shieldSrc: getPackAssetUrl(getCoinFace(ACTIVE_OBJECT_PACK, "back").faceAsset),
     });
 
     scene.ready = scene.ready.catch((error) => {
@@ -139,57 +202,8 @@ function createCoinScene() {
   }
 }
 
+applyObjectPackSkin();
 const coinScene = createCoinScene();
-
-const topPits = [12, 11, 10, 9, 8, 7];
-const bottomPits = [0, 1, 2, 3, 4, 5];
-const playerTwoPits = [7, 8, 9, 10, 11, 12];
-
-const pitSlots = [
-  [50, 50],
-  [36, 38],
-  [62, 37],
-  [64, 60],
-  [37, 63],
-  [50, 29],
-  [73, 49],
-  [50, 74],
-  [25, 49],
-  [35, 25],
-  [65, 25],
-  [76, 66],
-  [25, 67],
-  [50, 18],
-  [82, 41],
-  [50, 84],
-  [18, 42],
-  [70, 78],
-];
-
-const storeSlots = [
-  [50, 26],
-  [38, 35],
-  [62, 35],
-  [50, 44],
-  [37, 52],
-  [63, 52],
-  [50, 60],
-  [36, 68],
-  [64, 68],
-  [50, 76],
-  [29, 42],
-  [71, 42],
-  [28, 58],
-  [72, 58],
-  [50, 18],
-  [40, 82],
-  [60, 82],
-  [27, 28],
-  [73, 28],
-  [26, 73],
-  [74, 73],
-  [50, 90],
-];
 
 const state = {
   board: createInitialBoard(),
@@ -205,7 +219,7 @@ const state = {
   lastDropIndex: null,
   lastDropKey: 0,
   message: "",
-  layoutSalt: Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000),
+  layoutSalt: createLayoutSalt(BOARD_MODEL),
   screen: "menu",
   mode: "pve",
   aiDifficulty: "medium",
@@ -232,24 +246,10 @@ const difficultyButtons = {
 };
 
 const NARRATOR = "\u65c1\u767d";
-const SIDE_LABELS = {
-  1: "\u7d05\u5bf6\u77f3\u65b9",
-  2: "\u7d2b\u6c34\u6676\u65b9",
-};
 const LOW_SIDE_THRESHOLD = 8;
 
 function createInitialBoard() {
-  return Array.from({ length: BOARD_SIZE }, (_, index) => {
-    if (index >= 0 && index <= 5) {
-      return Array(STARTING_STONES).fill(1);
-    }
-
-    if (index >= 7 && index <= 12) {
-      return Array(STARTING_STONES).fill(2);
-    }
-
-    return [];
-  });
+  return createInitialObjectBoard(BOARD_MODEL);
 }
 
 function resetGame() {
@@ -267,7 +267,7 @@ function resetGame() {
   state.lastDropIndex = null;
   state.lastDropKey = 0;
   state.aiThinking = false;
-  state.layoutSalt = Array.from({ length: BOARD_SIZE }, () => Math.random() * 100000);
+  state.layoutSalt = createLayoutSalt(BOARD_MODEL);
   state.message = TEXT.coinReady;
   resetDialogueHistory();
   setAiDialogue(NARRATOR, getDialogue("coin.beforeToss"));
@@ -293,36 +293,32 @@ function showMainMenu() {
   resetCoinVisual();
   coinTossOverlay.hidden = true;
   coinTossOverlay.classList.remove("is-visible");
-  document.body.classList.remove("turn-red", "turn-purple");
+  document.body.classList.remove(...getTurnBodyClasses());
   renderInterfaceState();
 }
 
 function otherPlayer(player) {
-  return player === 1 ? 2 : 1;
+  return getOpponentPlayer(BOARD_MODEL, player);
 }
 
 function getOwner(index) {
-  if (index >= 0 && index <= 5) return 1;
-  if (index >= 7 && index <= 12) return 2;
-  if (index === PLAYER_ONE_STORE) return 1;
-  if (index === PLAYER_TWO_STORE) return 2;
-  return 0;
+  return getBoardSpaceOwner(BOARD_MODEL, index);
 }
 
 function isStore(index) {
-  return index === PLAYER_ONE_STORE || index === PLAYER_TWO_STORE;
+  return isStoreIndex(BOARD_MODEL, index);
 }
 
 function getStore(player) {
-  return player === 1 ? PLAYER_ONE_STORE : PLAYER_TWO_STORE;
+  return getStoreIndex(BOARD_MODEL, player);
 }
 
 function getOpponentStore(player) {
-  return player === 1 ? PLAYER_TWO_STORE : PLAYER_ONE_STORE;
+  return getOpponentStoreIndex(BOARD_MODEL, player);
 }
 
 function getPlayerPits(player) {
-  return player === 1 ? bottomPits : playerTwoPits;
+  return getPlayerPitIndices(BOARD_MODEL, player);
 }
 
 function getStoneCount(index) {
@@ -359,11 +355,11 @@ function getPlayerName(player) {
     return player === 1 ? TEXT.player : TEXT.ai;
   }
 
-  return player === 1 ? TEXT.red : TEXT.purple;
+  return getPlayerSkin(ACTIVE_OBJECT_PACK, player)?.label ?? "";
 }
 
 function getSideName(player) {
-  return SIDE_LABELS[player] ?? "";
+  return getPlayerSkin(ACTIVE_OBJECT_PACK, player)?.sideLabel ?? "";
 }
 
 function getSideStoneCount(board, player) {
@@ -477,7 +473,7 @@ function getScoreLabel(player) {
     return player === 1 ? `${TEXT.player}` : `${TEXT.ai}`;
   }
 
-  return player === 1 ? TEXT.red : TEXT.purple;
+  return getPlayerSkin(ACTIVE_OBJECT_PACK, player)?.label ?? "";
 }
 
 function getDifficultyLabel() {
@@ -489,13 +485,8 @@ function getModeSummary() {
 }
 
 function getCoinResultText(result) {
-  if (state.mode !== "pve") {
-    return result === "front" ? TEXT.coinFront : TEXT.coinBack;
-  }
-
-  return result === "front"
-    ? "\u6b63\u9762\u897f\u6d0b\u9f8d\uff0c\u73a9\u5bb6\u5148\u624b"
-    : "\u53cd\u9762\u76fe\u528d\uff0cAI \u5148\u624b";
+  const face = getCoinFace(ACTIVE_OBJECT_PACK, result);
+  return face?.resultText?.[state.mode] ?? face?.resultText?.pvp ?? "";
 }
 
 function toCountBoard(stoneBoard) {
@@ -561,7 +552,7 @@ function simulateCountMove(countBoard, player, startIndex) {
   const landedInOwnPit = !isStore(currentIndex) && getOwner(currentIndex) === player;
 
   if (landedInOwnPit && nextBoard[currentIndex] === 1) {
-    const oppositeIndex = 12 - currentIndex;
+    const oppositeIndex = getOppositePitIndex(BOARD_MODEL, currentIndex);
     const oppositeCount = nextBoard[oppositeIndex];
 
     if (oppositeCount > 0) {
@@ -1007,7 +998,7 @@ async function makeMove(startIndex) {
   state.lastDropIndex = null;
   state.message = `${getPlayerName(movingPlayer)}${TEXT.turn}`;
   render();
-  await sleep(90);
+  await sleep(STONE_FLIGHT_PHYSICS.preSowDelayMs);
 
   while (stones.length > 0) {
     if (token !== state.animationToken) return;
@@ -1024,20 +1015,23 @@ async function makeMove(startIndex) {
     markDrop(currentIndex);
     randomizeCell(currentIndex);
     render();
-    await sleep(72 + Math.random() * 44);
+    await sleep(
+      STONE_FLIGHT_PHYSICS.postDropDelayMs.base +
+        Math.random() * STONE_FLIGHT_PHYSICS.postDropDelayMs.random
+    );
   }
 
   let captureCount = 0;
   const landedInOwnPit = !isStore(currentIndex) && getOwner(currentIndex) === movingPlayer;
 
   if (landedInOwnPit && getStoneCount(currentIndex) === 1) {
-    const oppositeIndex = 12 - currentIndex;
+    const oppositeIndex = getOppositePitIndex(BOARD_MODEL, currentIndex);
     const oppositeCount = getStoneCount(oppositeIndex);
 
     if (oppositeCount > 0) {
       const capturedStones = [...state.board[currentIndex], ...state.board[oppositeIndex]];
       captureCount = capturedStones.length;
-      await sleep(130);
+      await sleep(STONE_FLIGHT_PHYSICS.captureDelayMs);
       state.board[ownStore].push(...capturedStones);
       state.board[currentIndex] = [];
       state.board[oppositeIndex] = [];
@@ -1046,7 +1040,7 @@ async function makeMove(startIndex) {
       randomizeCell(oppositeIndex);
       markDrop(ownStore);
       render();
-      await sleep(170);
+      await sleep(STONE_FLIGHT_PHYSICS.postCaptureDelayMs);
     }
   }
 
@@ -1133,23 +1127,27 @@ function render() {
   boardEl.innerHTML = "";
   boardEl.classList.toggle("is-sowing", state.animating);
   boardEl.classList.toggle("is-locked", state.awaitingCoinToss || state.aiThinking || isAiTurn());
-  boardEl.appendChild(createStore(PLAYER_TWO_STORE, `${getPlayerName(2)}${TEXT.store}`, "p2-store"));
+  boardEl.appendChild(
+    createStore(PLAYER_TWO_STORE, `${getPlayerName(PLAYER_TWO)}${TEXT.store}`, getPlayerCssClass(PLAYER_TWO, "store"))
+  );
 
   topPits.forEach((index, position) => {
-    boardEl.appendChild(createPit(index, 2, position + 2, 1));
+    boardEl.appendChild(createPit(index, PLAYER_TWO, position + 2, 1));
   });
 
   bottomPits.forEach((index, position) => {
-    boardEl.appendChild(createPit(index, 1, position + 2, 2));
+    boardEl.appendChild(createPit(index, PLAYER_ONE, position + 2, 2));
   });
 
-  boardEl.appendChild(createStore(PLAYER_ONE_STORE, `${getPlayerName(1)}${TEXT.store}`, "p1-store"));
-  playerOneLabel.textContent = getScoreLabel(1);
-  playerTwoLabel.textContent = getScoreLabel(2);
+  boardEl.appendChild(
+    createStore(PLAYER_ONE_STORE, `${getPlayerName(PLAYER_ONE)}${TEXT.store}`, getPlayerCssClass(PLAYER_ONE, "store"))
+  );
+  playerOneLabel.textContent = getScoreLabel(PLAYER_ONE);
+  playerTwoLabel.textContent = getScoreLabel(PLAYER_TWO);
   playerOneScore.querySelector("strong").textContent = getStoneCount(PLAYER_ONE_STORE);
   playerTwoScore.querySelector("strong").textContent = getStoneCount(PLAYER_TWO_STORE);
-  playerOneScore.classList.toggle("active", state.activePlayer === 1 && !state.gameOver);
-  playerTwoScore.classList.toggle("active", state.activePlayer === 2 && !state.gameOver);
+  playerOneScore.classList.toggle("active", state.activePlayer === PLAYER_ONE && !state.gameOver);
+  playerTwoScore.classList.toggle("active", state.activePlayer === PLAYER_TWO && !state.gameOver);
   renderTurnIndicator();
   renderInterfaceState();
   statusEl.textContent = state.message;
@@ -1223,21 +1221,20 @@ function closeOpenFloatingCards() {
 function renderTurnIndicator() {
   const showingTurn = !state.awaitingCoinToss && !state.gameOver;
   const activePlayer = showingTurn ? state.activePlayer : 0;
+  const neutralSkin = getNeutralSkin(ACTIVE_OBJECT_PACK);
 
-  document.body.classList.toggle("turn-red", activePlayer === 1);
-  document.body.classList.toggle("turn-purple", activePlayer === 2);
-  turnIndicator.classList.toggle("red", activePlayer === 1);
-  turnIndicator.classList.toggle("purple", activePlayer === 2);
-  turnIndicator.classList.toggle("pending", !showingTurn);
+  for (const player of BOARD_MODEL.players) {
+    document.body.classList.toggle(getPlayerCssClass(player, "bodyTurn"), activePlayer === player);
+    turnIndicator.classList.toggle(getPlayerCssClass(player, "turnIndicator"), activePlayer === player);
+  }
 
-  if (activePlayer === 2) {
-    turnEmblem.src = `assets/Shield.png?v=${ASSET_VERSION}`;
-    turnIndicator.setAttribute("aria-label", `${getPlayerName(2)}${TEXT.turn}`);
-  } else if (activePlayer === 1) {
-    turnEmblem.src = `assets/Dragon.png?v=${ASSET_VERSION}`;
-    turnIndicator.setAttribute("aria-label", `${getPlayerName(1)}${TEXT.turn}`);
+  turnIndicator.classList.toggle(neutralSkin.turnIndicatorClass, !showingTurn);
+
+  if (activePlayer) {
+    turnEmblem.src = getPlayerStoreSigilUrl(activePlayer);
+    turnIndicator.setAttribute("aria-label", `${getPlayerName(activePlayer)}${TEXT.turn}`);
   } else {
-    turnEmblem.src = `assets/Coin.png?v=${ASSET_VERSION}`;
+    turnEmblem.src = getPackAssetUrl(neutralSkin.turnAsset);
     turnIndicator.setAttribute("aria-label", state.gameOver ? getEndMessage() : TEXT.coinReady);
   }
 }
@@ -1247,7 +1244,8 @@ async function tossCoin() {
 
   const token = state.animationToken;
   const result = Math.random() < 0.5 ? "front" : "back";
-  const firstPlayer = result === "front" ? 1 : 2;
+  const face = getCoinFace(ACTIVE_OBJECT_PACK, result);
+  const firstPlayer = face.player;
 
   state.coinTossing = true;
   state.coinResult = result;
@@ -1262,9 +1260,9 @@ async function tossCoin() {
   state.coinTossing = false;
   state.coinResultHolding = true;
   state.message = `${getPlayerName(firstPlayer)}${TEXT.turn}`;
-  setAiDialogue(NARRATOR, getDialogue(result === "front" ? "coin.redFirst" : "coin.purpleFirst"));
+  setAiDialogue(NARRATOR, getDialogue(face.dialogueKey));
   coinTossStatus.textContent = getCoinResultText(result);
-  launchParticles(coinTossOverlay, 24, firstPlayer);
+  launchParticles(coinTossOverlay, PARTICLE_PHYSICS.coinTossCount, firstPlayer);
   render();
 
   await sleep(1000);
@@ -1314,7 +1312,11 @@ function showResultOverlay() {
 
   requestAnimationFrame(() => {
     resultPanel.classList.add("is-visible");
-    launchParticles(resultPanel, winner === 0 ? 18 : 34, winner);
+    launchParticles(
+      resultPanel,
+      winner === 0 ? PARTICLE_PHYSICS.resultCounts.draw : PARTICLE_PHYSICS.resultCounts.winner,
+      winner
+    );
   });
 }
 
@@ -1332,13 +1334,15 @@ function launchParticles(anchor, count, player) {
   const anchorRect = anchor.getBoundingClientRect();
   const originX = anchorRect.left + anchorRect.width / 2 - hostRect.left;
   const originY = anchorRect.top + anchorRect.height / 2 - hostRect.top;
-  const colorClass = player === 1 ? "red" : player === 2 ? "purple" : "gold";
+  const colorClass = player
+    ? getPlayerCssClass(player, "particle")
+    : getNeutralSkin(ACTIVE_OBJECT_PACK).particleClass;
 
   for (let i = 0; i < count; i += 1) {
     const particle = document.createElement("span");
-    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.34;
-    const distance = randomBetween(Math.random() * 1000, 58, 170);
-    const size = randomBetween(Math.random() * 1000, 5, 12);
+    const angle = (Math.PI * 2 * i) / count + Math.random() * PARTICLE_PHYSICS.angleJitter;
+    const distance = randomBetween(Math.random() * 1000, PARTICLE_PHYSICS.distance.min, PARTICLE_PHYSICS.distance.max);
+    const size = randomBetween(Math.random() * 1000, PARTICLE_PHYSICS.size.min, PARTICLE_PHYSICS.size.max);
 
     particle.className = `particle ${colorClass}`;
     particle.style.left = `${originX}px`;
@@ -1347,18 +1351,20 @@ function launchParticles(anchor, count, player) {
     particle.style.height = `${size}px`;
     particle.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
     particle.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
-    particle.style.setProperty("--spin", `${randomBetween(Math.random() * 1000, -220, 220)}deg`);
+    particle.style.setProperty(
+      "--spin",
+      `${randomBetween(Math.random() * 1000, PARTICLE_PHYSICS.spinDegrees.min, PARTICLE_PHYSICS.spinDegrees.max)}deg`
+    );
     host.appendChild(particle);
 
-    window.setTimeout(() => particle.remove(), 920);
+    window.setTimeout(() => particle.remove(), PARTICLE_PHYSICS.lifetimeMs);
   }
 }
 
 function createPit(index, owner, column, row) {
   const button = document.createElement("button");
   const count = getStoneCount(index);
-  const pitNumber = owner === 1 ? index + 1 : index - 6;
-  const visibleNumber = owner === 1 ? pitNumber : 7 - pitNumber;
+  const visibleNumber = getVisiblePitNumber(BOARD_MODEL, index, owner);
 
   button.type = "button";
   button.className = `pit cell${state.lastDropIndex === index ? " just-dropped" : ""}`;
@@ -1387,8 +1393,7 @@ function createStore(index, label, className) {
   const store = document.createElement("div");
   const owner = getOwner(index);
   const count = getStoneCount(index);
-  const sigil =
-    owner === 1 ? `assets/Dragon.png?v=${ASSET_VERSION}` : `assets/Shield.png?v=${ASSET_VERSION}`;
+  const sigil = getPlayerStoreSigilUrl(owner);
 
   store.className = `store cell ${className}${state.lastDropIndex === index ? " just-dropped" : ""}`;
   store.dataset.index = String(index);
@@ -1411,10 +1416,7 @@ function createStones(index, stones, owner, type) {
 
   layouts.forEach((layout, i) => {
     const stoneOwner = visibleStones[i] || owner;
-    const src =
-      stoneOwner === 1
-        ? `${RUBY_SRC}?v=${ASSET_VERSION}`
-        : `${AMETHYST_SRC}?v=${ASSET_VERSION}`;
+    const src = getPlayerStoneUrl(stoneOwner);
     const entering = i === newStoneIndex ? " entering" : "";
 
     html += `
@@ -1432,19 +1434,22 @@ function createStones(index, stones, owner, type) {
 }
 
 function getStoneLayouts(index, count, owner, type) {
-  const slots = type === "store" ? storeSlots : pitSlots;
+  const physics = STONE_PLACEMENT_PHYSICS[type];
+  const slots = physics.slots;
   const visibleCount = Math.min(count, slots.length);
   const scale = getStoneScale(count, type);
-  const jitter = type === "store" ? 4.8 : 6.8;
+  const jitter = physics.jitter;
   const minDistance = getCollisionDistance(count, type);
   const salt = state.layoutSalt[index] || 1;
   const layouts = [];
+  const [leftMin, leftMax] = physics.placementBounds.left;
+  const [topMin, topMax] = physics.placementBounds.top;
 
   for (let i = 0; i < visibleCount; i += 1) {
     const [slotLeft, slotTop] = slots[i];
     const seed = salt + owner * 113 + i * 37 + count * 19;
-    const left = clamp(slotLeft + randomBetween(seed, -jitter, jitter), 12, 88);
-    const top = clamp(slotTop + randomBetween(seed + 17, -jitter, jitter), 14, 90);
+    const left = clamp(slotLeft + randomBetween(seed, -jitter, jitter), leftMin, leftMax);
+    const top = clamp(slotTop + randomBetween(seed + 17, -jitter, jitter), topMin, topMax);
 
     layouts.push({
       left,
@@ -1457,12 +1462,15 @@ function getStoneLayouts(index, count, owner, type) {
     });
   }
 
-  relaxStoneCollisions(layouts, minDistance);
+  relaxStoneCollisions(layouts, minDistance, physics);
   return layouts;
 }
 
-function relaxStoneCollisions(layouts, minDistance) {
-  for (let pass = 0; pass < 8; pass += 1) {
+function relaxStoneCollisions(layouts, minDistance, physics) {
+  const [leftMin, leftMax] = physics.collisionBounds.left;
+  const [topMin, topMax] = physics.collisionBounds.top;
+
+  for (let pass = 0; pass < physics.collisionPasses; pass += 1) {
     for (let i = 0; i < layouts.length; i += 1) {
       for (let j = i + 1; j < layouts.length; j += 1) {
         const first = layouts[i];
@@ -1483,48 +1491,28 @@ function relaxStoneCollisions(layouts, minDistance) {
         const nx = dx / distance;
         const ny = dy / distance;
 
-        first.left = clamp(first.left - nx * push, 10, 90);
-        first.top = clamp(first.top - ny * push, 13, 91);
-        second.left = clamp(second.left + nx * push, 10, 90);
-        second.top = clamp(second.top + ny * push, 13, 91);
+        first.left = clamp(first.left - nx * push, leftMin, leftMax);
+        first.top = clamp(first.top - ny * push, topMin, topMax);
+        second.left = clamp(second.left + nx * push, leftMin, leftMax);
+        second.top = clamp(second.top + ny * push, topMin, topMax);
       }
     }
   }
 }
 
 function getCollisionDistance(count, type) {
-  if (type === "store") {
-    if (count > 24) return 7.8;
-    if (count > 16) return 9.4;
-    if (count > 9) return 11.4;
-    return 13.2;
-  }
-
-  if (count > 14) return 9.2;
-  if (count > 9) return 11.5;
-  if (count > 5) return 14.2;
-  return 17;
+  return selectCountCurveValue(STONE_PLACEMENT_PHYSICS[type].collisionDistances, count);
 }
 
 function getStoneScale(count, type) {
-  if (type === "store") {
-    if (count > 24) return 0.54;
-    if (count > 16) return 0.64;
-    if (count > 9) return 0.78;
-    return 0.94;
-  }
-
-  if (count > 14) return 0.56;
-  if (count > 9) return 0.68;
-  if (count > 5) return 0.84;
-  return 1;
+  return selectCountCurveValue(STONE_PLACEMENT_PHYSICS[type].scales, count);
 }
 
 async function animateStoneBetween(fromIndex, toIndex, stoneOwner, token) {
   const fromCell = getCell(fromIndex);
   const toCell = getCell(toIndex);
   if (!fromCell || !toCell) {
-    await sleep(120);
+    await sleep(STONE_FLIGHT_PHYSICS.missingCellDelayMs);
     return;
   }
 
@@ -1533,17 +1521,24 @@ async function animateStoneBetween(fromIndex, toIndex, stoneOwner, token) {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const distance = Math.hypot(dx, dy);
-  const arc = Math.min(96, Math.max(38, distance * 0.22));
-  const duration = 230 + Math.random() * 120;
+  const arc = Math.min(
+    STONE_FLIGHT_PHYSICS.arc.max,
+    Math.max(STONE_FLIGHT_PHYSICS.arc.min, distance * STONE_FLIGHT_PHYSICS.arc.distanceFactor)
+  );
+  const duration = STONE_FLIGHT_PHYSICS.durationMs.base + Math.random() * STONE_FLIGHT_PHYSICS.durationMs.random;
   const image = document.createElement("img");
-  const roll = (stoneOwner === 1 ? 1 : -1) * randomBetween(Math.random() * 1000, 210, 340);
-  const size = clamp(Math.min(from.width, from.height) * 0.33, 30, 58);
+  const rollDirection = stoneOwner === PLAYER_ONE ? 1 : -1;
+  const roll =
+    rollDirection *
+    randomBetween(Math.random() * 1000, STONE_FLIGHT_PHYSICS.rollDegrees.min, STONE_FLIGHT_PHYSICS.rollDegrees.max);
+  const size = clamp(
+    Math.min(from.width, from.height) * STONE_FLIGHT_PHYSICS.size.cellFactor,
+    STONE_FLIGHT_PHYSICS.size.min,
+    STONE_FLIGHT_PHYSICS.size.max
+  );
 
   image.className = "flying-stone";
-  image.src =
-    stoneOwner === 1
-      ? `${RUBY_SRC}?v=${ASSET_VERSION}`
-      : `${AMETHYST_SRC}?v=${ASSET_VERSION}`;
+  image.src = getPlayerStoneUrl(stoneOwner);
   image.alt = "";
   image.setAttribute("aria-hidden", "true");
   image.style.left = `${from.x}px`;
@@ -1615,7 +1610,7 @@ function markDrop(index) {
 }
 
 function randomizeCell(index) {
-  state.layoutSalt[index] = Math.random() * 100000;
+  state.layoutSalt[index] = createCellLayoutSalt();
 }
 
 function randomBetween(seed, min, max) {

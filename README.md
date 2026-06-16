@@ -33,7 +33,12 @@ Then visit `http://127.0.0.1:8123/`.
 
 - `index.html` - page shell
 - `styles.css` - board and animation styling
-- `script.js` - Kalah rules and rendering
+- `script.js` - Kalah rules, UI orchestration, and rendering
+- `core/object-model.js` - board indices, player ids, initial object state, and model helpers
+- `core/object-physics.js` - stone placement, collision, flight, and particle tuning
+- `core/object-pack-manifest.js` - expected object-pack contract and validation helpers
+- `object-packs/crystal.js` - current skin/theme object pack
+- `docs/object-pack-architecture.md` - notes for adding or swapping object packs
 - `serve.mjs` - tiny local static server for module-based offline use
 - `vendor/three/` - local Three.js build files
 - `assets/` - generated gemstone assets used by the game
