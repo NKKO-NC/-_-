@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260617b";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260617b";
+import { CoinTossScene } from "./coin/index.js?v=20260617c";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260617c";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -15,20 +15,20 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260617b";
+} from "./core/object-model.js?v=20260617c";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
   STONE_PLACEMENT_PHYSICS,
   selectCountCurveValue,
-} from "./core/object-physics.js?v=20260617b";
+} from "./core/object-physics.js?v=20260617c";
 import {
   getAssetUrl,
   getCoinFace,
   getNeutralSkin,
   getPlayerSkin,
-} from "./core/object-pack-manifest.js?v=20260617b";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260617b";
+} from "./core/object-pack-manifest.js?v=20260617c";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260617c";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const ACTIVE_OBJECT_PACK = CRYSTAL_OBJECT_PACK;
@@ -270,28 +270,16 @@ const RULE_DEMOS = [
     board: [3, 3, 0, 3, 3, 0],
     setupInfo: [
       {
-        id: "my-pit",
-        label: "我的棋坑",
-        indices: [0, 1],
-        description: "輪到你時，只能選自己這側有棋子的棋坑。正式棋盤每個棋坑開局放 6 顆。",
+        id: "opponent-side",
+        label: "對手區",
+        indices: [3, 4, 5],
+        description: "上半邊是對手區：對手棋坑可以落子，對手棋庫要跳過。",
       },
       {
-        id: "my-store",
-        label: "我的棋庫",
-        indices: [2],
-        description: "自己的棋庫是得分區。棋子進自己的棋庫就會加分。",
-      },
-      {
-        id: "opponent-pit",
-        label: "對手棋坑",
-        indices: [3, 4],
-        description: "撒棋時可以落進對手棋坑；吃子規則會看對面的棋坑是否有棋子。",
-      },
-      {
-        id: "opponent-store",
-        label: "對手棋庫",
-        indices: [5],
-        description: "撒棋會跳過對手棋庫，不會幫對手加分。",
+        id: "player-side",
+        label: "玩家區",
+        indices: [0, 1, 2],
+        description: "下半邊是玩家區：輪到你時選自己的棋坑，棋子進自己的棋庫就得分。",
       },
     ],
   },
@@ -318,12 +306,13 @@ const RULE_DEMOS = [
     title: "額外的回合!",
     summary: "最後一子落在自己的棋庫，可以再來一次。",
     type: "animation",
-    header: "最後一子落在自己的棋庫，可以取得額外回合。",
+    header: "最後一子落在自己的棋庫，就觸發額外回合，可以多動一下。",
     frames: [
-      { board: [0, 1, 0, 0, 0, 0], activeIndices: [1], note: "選這個棋坑。" },
-      { board: [0, 0, 0, 0, 0, 0], activeIndices: [1], note: "拿起最後一顆棋子。" },
-      { board: [0, 0, 1, 0, 0, 0], activeIndices: [2], note: "落進自己的棋庫。" },
-      { board: [0, 0, 1, 0, 0, 0], activeIndices: [2], note: "額外的回合! 可以再走一步。" },
+      { board: [3, 1, 0, 0, 0, 0], activeIndices: [0], note: "如果先取 3，最後不會停在棋庫，沒有額外回合。" },
+      { board: [0, 2, 1, 1, 0, 0], activeIndices: [3], note: "取 3 後換對手，不能立刻再動。" },
+      { board: [3, 1, 0, 0, 0, 0], activeIndices: [1], note: "如果先取 1，最後一子會進自己的棋庫。" },
+      { board: [3, 0, 1, 0, 0, 0], activeIndices: [2], note: "你觸發了額外回合，所以可以多動一下。" },
+      { board: [3, 0, 1, 0, 0, 0], activeIndices: [0], note: "因此可以接著取 3。" },
     ],
   },
   {
@@ -370,7 +359,7 @@ const ruleDemoState = {
   mode: "auto",
   frameIndex: 0,
   completed: false,
-  setupInfoId: "my-pit",
+  setupInfoId: "opponent-side",
 };
 
 const NARRATOR = "\u65c1\u767d";
@@ -1484,27 +1473,41 @@ function renderRuleDemoControls(rule) {
 
 function createRuleSetupCard(rule) {
   const activeInfo = getActiveSetupInfo(rule);
-  const highlightedIndices = new Set(activeInfo?.indices ?? []);
 
   return `
     <div class="rule-demo-guidance">
       <p class="rule-demo-primary">遊戲版面認識</p>
-      <p class="rule-demo-secondary">點每個區域右上角的 ! 看說明。</p>
+      <p class="rule-demo-secondary">正式棋盤每個棋坑放 6 顆；這裡用少量棋子示範。</p>
     </div>
     <div class="rule-setup-layout">
       <div class="rule-demo-board setup-board" aria-label="遊戲初始設置示範">
         ${RULE_DEMO_CELLS.map((cell) =>
-          createRuleDemoCell(cell, rule.board, {
-            activeIndices: highlightedIndices,
-            infoId: getSetupInfoForCell(rule, cell.index)?.id,
-          })
+          createRuleDemoCell(cell, rule.board)
         ).join("")}
+        ${rule.setupInfo.map((info) => createSetupSideFrame(info)).join("")}
       </div>
       <div class="rule-setup-info" aria-live="polite">
         <strong>${activeInfo?.label ?? "版面"}</strong>
         <p>${activeInfo?.description ?? ""}</p>
       </div>
     </div>
+  `;
+}
+
+function createSetupSideFrame(info) {
+  const isActive = ruleDemoState.setupInfoId === info.id;
+  const sideClass = info.id === "opponent-side" ? "opponent" : "player";
+
+  return `
+    <button
+      class="setup-side-frame ${sideClass}${isActive ? " is-active" : ""}"
+      type="button"
+      data-info-id="${info.id}"
+      aria-label="${info.label}說明"
+    >
+      <span>${info.label}</span>
+      <b aria-hidden="true">!</b>
+    </button>
   `;
 }
 
@@ -1529,27 +1532,20 @@ function createRuleAnimationCard(rule) {
 
 function createRuleDemoCell(cell, board, options = {}) {
   const activeIndices = new Set(options.activeIndices ?? []);
-  const infoId = options.infoId;
   const skippedIndex = options.skippedIndex;
   const count = board[cell.index] ?? 0;
-  const infoButton = infoId
-    ? `<button class="setup-info-button" type="button" data-info-id="${infoId}" aria-label="${cell.label}說明">!</button>`
-    : "";
   const classes = [
     "rule-demo-cell",
     cell.type,
     cell.owner === PLAYER_ONE ? "player-one-demo" : "player-two-demo",
     activeIndices.has(cell.index) ? "is-active" : "",
     skippedIndex === cell.index ? "is-skipped" : "",
-    infoId && ruleDemoState.setupInfoId === infoId ? "is-info-active" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
   return `
     <div class="${classes}" data-index="${cell.index}" role="group" aria-label="${cell.label}，${count} 顆棋子">
-      ${infoButton}
-      <span class="rule-demo-label">${cell.label}</span>
       <span class="rule-demo-stones" aria-hidden="true">${createRuleDemoStones(count, cell.owner)}</span>
       <span class="rule-demo-count">${count}</span>
     </div>
@@ -1574,10 +1570,6 @@ function getRuleFrames(rule) {
 
 function getActiveSetupInfo(rule) {
   return rule.setupInfo?.find((info) => info.id === ruleDemoState.setupInfoId) ?? rule.setupInfo?.[0];
-}
-
-function getSetupInfoForCell(rule, index) {
-  return rule.setupInfo?.find((info) => info.indices.includes(index));
 }
 
 function isRuleDemoCurrent(token) {
@@ -2151,7 +2143,7 @@ ruleNextButton.addEventListener("click", () => {
 });
 
 ruleDemoContent.addEventListener("click", (event) => {
-  const infoButton = event.target.closest(".setup-info-button");
+  const infoButton = event.target.closest(".setup-side-frame");
   if (!infoButton) return;
 
   ruleDemoState.setupInfoId = infoButton.dataset.infoId;

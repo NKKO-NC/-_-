@@ -207,7 +207,7 @@ h1 {
 .rule-item:focus-visible,
 .rule-demo-replay:focus-visible,
 .rule-step-button:focus-visible,
-.setup-info-button:focus-visible,
+.setup-side-frame:focus-visible,
 .setting-option:focus-visible {
   outline: 3px solid rgba(82, 199, 184, 0.72);
   outline-offset: 4px;
@@ -1087,7 +1087,13 @@ h1 {
   width: min(94vw, 960px);
   max-height: min(88vh, 760px);
   max-height: min(88svh, 760px);
+  gap: 10px;
+  padding: 28px 22px 18px;
   overflow: auto;
+}
+
+.rule-demo-card h2 {
+  font-size: 1.62rem;
 }
 
 .rule-demo-content {
@@ -1099,8 +1105,8 @@ h1 {
 
 .rule-demo-guidance {
   display: grid;
-  gap: 8px;
-  padding: 13px 14px;
+  gap: 6px;
+  padding: 9px 12px;
   border: 1px solid rgba(82, 199, 184, 0.28);
   border-radius: 8px;
   background:
@@ -1116,16 +1122,16 @@ h1 {
 
 .rule-demo-primary {
   color: var(--gold-bright);
-  font-size: 1.04rem;
+  font-size: 0.96rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.28;
 }
 
 .rule-demo-secondary,
 .rule-demo-note {
   color: var(--text);
-  font-size: 0.94rem;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  line-height: 1.34;
 }
 
 .rule-demo-legend {
@@ -1135,7 +1141,7 @@ h1 {
 }
 
 .rule-demo-legend span {
-  min-height: 34px;
+  min-height: 28px;
   display: grid;
   place-items: center;
   padding: 0 8px;
@@ -1150,12 +1156,13 @@ h1 {
 }
 
 .rule-demo-board {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(90px, 0.76fr) repeat(2, minmax(120px, 1fr)) minmax(90px, 0.76fr);
-  grid-template-rows: repeat(2, minmax(142px, 1fr));
-  gap: 12px;
-  min-height: 312px;
-  padding: 18px;
+  grid-template-columns: minmax(74px, 0.74fr) repeat(2, minmax(104px, 1fr)) minmax(74px, 0.74fr);
+  grid-template-rows: repeat(2, minmax(98px, 1fr));
+  gap: 8px;
+  min-height: 226px;
+  padding: 22px 12px 18px;
   border: 1px solid rgba(82, 199, 184, 0.32);
   border-radius: 8px;
   background:
@@ -1163,12 +1170,34 @@ h1 {
     linear-gradient(135deg, rgba(12, 18, 18, 0.92), rgba(0, 0, 0, 0.82));
 }
 
+.rule-demo-board::before,
+.rule-demo-board::after {
+  position: absolute;
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.rule-demo-board::before {
+  content: "對方";
+  top: 5px;
+}
+
+.rule-demo-board::after {
+  content: "我方";
+  bottom: 4px;
+}
+
 .rule-demo-cell {
   position: relative;
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 228, 161, 0.38);
@@ -1244,17 +1273,9 @@ h1 {
   filter: saturate(0.55) brightness(0.62);
 }
 
-.rule-demo-label {
-  max-width: calc(100% - 12px);
-  color: var(--muted);
-  font-size: 0.86rem;
-  line-height: 1.15;
-  text-align: center;
-}
-
 .rule-demo-stones {
-  width: min(72%, 88px);
-  min-height: 38px;
+  width: min(72%, 78px);
+  min-height: 30px;
   display: flex;
   flex-wrap: wrap;
   align-content: center;
@@ -1263,7 +1284,7 @@ h1 {
 }
 
 .rule-demo-stone {
-  width: 14px;
+  width: 12px;
   aspect-ratio: 1;
   border-radius: 50%;
   box-shadow:
@@ -1280,8 +1301,8 @@ h1 {
 }
 
 .rule-demo-count {
-  min-width: 34px;
-  height: 28px;
+  min-width: 30px;
+  height: 24px;
   display: inline-grid;
   place-items: center;
   padding: 0 8px;
@@ -1289,13 +1310,13 @@ h1 {
   border-radius: 999px;
   color: var(--gold-bright);
   background: rgba(0, 0, 0, 0.56);
-  font-size: 0.98rem;
+  font-size: 0.88rem;
   font-weight: 700;
   line-height: 1;
 }
 
 .rule-demo-note {
-  padding: 12px 14px;
+  padding: 9px 12px;
   border: 1px solid rgba(255, 228, 161, 0.24);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.34);
@@ -1333,7 +1354,7 @@ h1 {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
 }
 
 .rule-demo-controls[hidden],
@@ -1381,33 +1402,74 @@ h1 {
 
 .rule-setup-layout {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
-.setup-info-button {
+.setup-side-frame {
   position: absolute;
   z-index: 4;
-  top: 10px;
-  right: 10px;
-  width: 26px;
-  height: 26px;
+  left: 24%;
+  right: 24%;
+  display: block;
+  border: 1px solid rgba(255, 228, 161, 0.62);
+  border-radius: 8px;
+  color: var(--gold-bright);
+  background: transparent;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255, 228, 161, 0.08);
+}
+
+.setup-side-frame.opponent {
+  top: 13%;
+  height: 34%;
+}
+
+.setup-side-frame.player {
+  bottom: 13%;
+  height: 34%;
+}
+
+.setup-side-frame span,
+.setup-side-frame b {
+  position: absolute;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255, 228, 161, 0.62);
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.setup-side-frame span {
+  left: 10px;
+  top: -11px;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.setup-side-frame b {
+  right: -11px;
+  top: -11px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 228, 161, 0.68);
   border-radius: 50%;
   color: var(--gold-bright);
-  background: rgba(0, 0, 0, 0.62);
-  cursor: pointer;
-  font-weight: 800;
+  font-size: 1.1rem;
+  font-style: normal;
   line-height: 1;
 }
 
-.setup-info-button:hover {
+.setup-side-frame:hover,
+.setup-side-frame.is-active {
   border-color: var(--gold-bright);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 228, 161, 0.16),
+    0 0 0 1px rgba(255, 228, 161, 0.18);
 }
 
 .rule-setup-info {
-  padding: 14px 16px;
+  padding: 10px 12px;
   border: 1px solid rgba(255, 228, 161, 0.28);
   border-radius: 8px;
   background:
@@ -1418,13 +1480,14 @@ h1 {
 .rule-setup-info strong {
   display: block;
   color: var(--gold-bright);
-  font-size: 1rem;
+  font-size: 0.92rem;
 }
 
 .rule-setup-info p {
-  margin: 7px 0 0;
+  margin: 5px 0 0;
   color: var(--text);
-  line-height: 1.45;
+  font-size: 0.86rem;
+  line-height: 1.34;
 }
 
 .setting-row {
@@ -1923,34 +1986,83 @@ h1 {
 
   .rule-demo-card {
     width: min(94vw, 620px);
-    max-height: min(88vh, 760px);
-    max-height: min(88svh, 760px);
+    max-height: min(90vh, 760px);
+    max-height: min(90svh, 760px);
+    padding: 24px 14px 16px;
+    gap: 8px;
+  }
+
+  .rule-demo-card h2 {
+    font-size: 1.36rem;
+  }
+
+  .rule-demo-guidance {
+    padding: 8px 10px;
+  }
+
+  .rule-demo-primary {
+    font-size: 0.88rem;
+  }
+
+  .rule-demo-secondary,
+  .rule-demo-note {
+    font-size: 0.8rem;
   }
 
   .rule-demo-legend {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .rule-demo-legend span {
+    min-height: 24px;
+    font-size: 0.7rem;
   }
 
   .rule-demo-board {
-    grid-template-columns: minmax(48px, 0.72fr) repeat(2, minmax(64px, 1fr)) minmax(48px, 0.72fr);
-    grid-template-rows: repeat(2, minmax(78px, 1fr));
-    min-height: 170px;
-    padding: 10px;
+    grid-template-columns: minmax(42px, 0.72fr) repeat(2, minmax(56px, 1fr)) minmax(42px, 0.72fr);
+    grid-template-rows: repeat(2, minmax(62px, 1fr));
+    min-height: 142px;
+    padding: 19px 8px 15px;
     gap: 6px;
   }
 
-  .rule-demo-label {
-    font-size: 0.66rem;
-  }
-
   .rule-demo-stone {
-    width: 10px;
+    width: 9px;
   }
 
   .rule-demo-count {
-    min-width: 28px;
-    height: 24px;
-    font-size: 0.82rem;
+    min-width: 24px;
+    height: 21px;
+    font-size: 0.72rem;
+  }
+
+  .rule-demo-note,
+  .rule-setup-info {
+    padding: 8px 10px;
+  }
+
+  .rule-setup-info strong {
+    font-size: 0.84rem;
+  }
+
+  .rule-setup-info p {
+    font-size: 0.78rem;
+  }
+
+  .setup-side-frame {
+    left: 23%;
+    right: 23%;
+  }
+
+  .setup-side-frame span {
+    min-height: 19px;
+    font-size: 0.66rem;
+  }
+
+  .setup-side-frame b {
+    width: 26px;
+    height: 26px;
   }
 
   .rule-demo-controls {
