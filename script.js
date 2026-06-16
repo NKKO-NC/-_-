@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260616g";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260616g";
+import { CoinTossScene } from "./coin/index.js?v=20260617a";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260617a";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -15,20 +15,20 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260616g";
+} from "./core/object-model.js?v=20260617a";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
   STONE_PLACEMENT_PHYSICS,
   selectCountCurveValue,
-} from "./core/object-physics.js?v=20260616g";
+} from "./core/object-physics.js?v=20260617a";
 import {
   getAssetUrl,
   getCoinFace,
   getNeutralSkin,
   getPlayerSkin,
-} from "./core/object-pack-manifest.js?v=20260616g";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260616g";
+} from "./core/object-pack-manifest.js?v=20260617a";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260617a";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const ACTIVE_OBJECT_PACK = CRYSTAL_OBJECT_PACK;
