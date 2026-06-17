@@ -1,9 +1,9 @@
-import { defineObjectPack } from "../core/object-pack-manifest.js?v=20260618a";
+import { defineObjectPack } from "../core/object-pack-manifest.js?v=20260618b";
 
 const CRYSTAL_OBJECT_PACK = defineObjectPack({
   id: "crystal-childhood",
   displayName: "Crystal Childhood",
-  assetVersion: "20260618a",
+  assetVersion: "20260618b",
   assets: {
     rubyStone: "assets/ruby-gem.png",
     amethystStone: "assets/amethyst-gem.png",

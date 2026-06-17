@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260618a";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260618a";
+import { CoinTossScene } from "./coin/index.js?v=20260618b";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260618b";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -15,20 +15,20 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260618a";
+} from "./core/object-model.js?v=20260618b";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
   STONE_PLACEMENT_PHYSICS,
   selectCountCurveValue,
-} from "./core/object-physics.js?v=20260618a";
+} from "./core/object-physics.js?v=20260618b";
 import {
   getAssetUrl,
   getCoinFace,
   getNeutralSkin,
   getPlayerSkin,
-} from "./core/object-pack-manifest.js?v=20260618a";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260618a";
+} from "./core/object-pack-manifest.js?v=20260618b";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260618b";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const ACTIVE_OBJECT_PACK = CRYSTAL_OBJECT_PACK;
@@ -259,10 +259,34 @@ const difficultyButtons = {
 };
 
 const RULE_AUTO_START_DELAY_MS = 320;
-const RULE_FRAME_HOLD_MS = 1280;
-const RULE_NOTE_FADE_MS = 260;
+const RULE_FRAME_HOLD_MS = 1700;
+const RULE_NOTE_FADE_MS = 420;
 
 const RULE_DEMOS = [
+  {
+    id: "intro",
+    title: "遊戲簡介",
+    summary: "出處、年代、背景與特色。",
+    type: "text",
+    header: "Kalah 是播棋家族的現代版本。",
+    sections: [
+      { label: "出處", text: "源自古老的 mancala 播棋家族；現代 Kalah 由 William J. Champion Jr. 整理推廣。" },
+      { label: "年代", text: "約 1940 年代在美國出現，後來成為常見的商業版本。" },
+      { label: "背景", text: "用棋坑、棋庫與棋子，表現撒種、分配、收成的抽象思路。" },
+      { label: "特色", text: "規則短，但每一步都牽動得分、連手、吃子與結算。" },
+    ],
+  },
+  {
+    id: "goal",
+    title: "遊戲目標",
+    summary: "看懂如何鬥智，以及最後比什麼。",
+    type: "text",
+    header: "讓更多棋子進自己的棋庫。",
+    sections: [
+      { label: "如何鬥智", text: "每回合都在取捨：現在得分、製造額外回合，或留下吃子的機會。" },
+      { label: "最終目標", text: "一方棋坑清空後結算；自己的棋庫棋子比對方多，就獲勝。" },
+    ],
+  },
   {
     id: "setup",
     title: "遊戲初始設置",
@@ -271,16 +295,32 @@ const RULE_DEMOS = [
     board: [3, 3, 0, 3, 3, 0],
     setupInfo: [
       {
-        id: "opponent-side",
-        label: "對手棋坑 / 對手棋庫",
-        indices: [3, 4, 5],
-        description: "上半邊包含對手棋坑與對手棋庫；撒棋時可以進對手棋坑，但會跳過對手棋庫。",
+        id: "player-pits",
+        label: "我的棋坑",
+        frameClass: "player-pits",
+        indices: [0, 1],
+        description: "輪到你時，從自己的棋坑取起全部棋子，依序往下一格撒。",
       },
       {
-        id: "player-side",
-        label: "我的棋坑 / 我的棋庫",
-        indices: [0, 1, 2],
-        description: "下半邊包含我的棋坑與我的棋庫；輪到你時選自己的棋坑，進自己的棋庫就得分。",
+        id: "player-store",
+        label: "我的棋庫",
+        frameClass: "player-store",
+        indices: [2],
+        description: "棋子進自己的棋庫就得分；最後一顆落在這裡，會得到額外回合。",
+      },
+      {
+        id: "opponent-pits",
+        label: "對方棋坑",
+        frameClass: "opponent-pits",
+        indices: [3, 4],
+        description: "撒棋會經過對方棋坑，棋子照樣放進去；也可能成為之後吃子的目標。",
+      },
+      {
+        id: "opponent-store",
+        label: "對方棋庫",
+        frameClass: "opponent-store",
+        indices: [5],
+        description: "撒棋時會跳過對方棋庫，不替對方加分。",
       },
     ],
   },
@@ -369,7 +409,7 @@ const ruleDemoState = {
   frameIndex: 0,
   completed: false,
   notePhase: "in",
-  setupInfoId: "opponent-side",
+  setupInfoId: "player-pits",
 };
 
 const NARRATOR = "\u65c1\u767d";
@@ -1359,9 +1399,9 @@ function openRuleDemoCard(ruleId = ruleDemoState.activeId) {
 
   ruleDemoState.activeId = rule.id;
   ruleDemoState.token += 1;
-  ruleDemoState.mode = rule.type === "setup" ? "setup" : "auto";
+  ruleDemoState.mode = isAnimatedRule(rule) ? "auto" : rule.type;
   ruleDemoState.frameIndex = 0;
-  ruleDemoState.completed = rule.type === "setup";
+  ruleDemoState.completed = !isAnimatedRule(rule);
   ruleDemoState.notePhase = "in";
   ruleDemoState.setupInfoId = rule.setupInfo?.[0]?.id ?? ruleDemoState.setupInfoId;
 
@@ -1369,7 +1409,7 @@ function openRuleDemoCard(ruleId = ruleDemoState.activeId) {
   renderRuleDemoCard();
   openFloatingCard(ruleDemoOverlay);
 
-  if (rule.type !== "setup") {
+  if (isAnimatedRule(rule)) {
     void playRuleDemoAuto(ruleDemoState.token, true);
   }
 }
@@ -1414,7 +1454,7 @@ async function playRuleDemoAuto(token = ruleDemoState.token, initialFrameRendere
 
 function replayRuleDemoAuto() {
   const rule = getRuleDemo(ruleDemoState.activeId);
-  if (rule.type === "setup") return;
+  if (!isAnimatedRule(rule)) return;
 
   ruleDemoState.token += 1;
   void playRuleDemoAuto(ruleDemoState.token);
@@ -1422,7 +1462,7 @@ function replayRuleDemoAuto() {
 
 function setRuleDemoMode(mode) {
   const rule = getRuleDemo(ruleDemoState.activeId);
-  if (rule.type === "setup") return;
+  if (!isAnimatedRule(rule)) return;
 
   ruleDemoState.token += 1;
   ruleDemoState.mode = mode;
@@ -1457,30 +1497,30 @@ function renderRuleDemoCard() {
   if (!ruleDemoTitle || !ruleDemoContent) return;
 
   ruleDemoTitle.textContent = rule.title;
-  ruleDemoContent.innerHTML = rule.type === "setup" ? createRuleSetupCard(rule) : createRuleAnimationCard(rule);
+  ruleDemoContent.innerHTML = createRuleDemoContent(rule);
   renderRuleDemoControls(rule);
 }
 
 function renderRuleDemoControls(rule) {
-  const isSetup = rule.type === "setup";
+  const isAnimation = isAnimatedRule(rule);
   const frames = getRuleFrames(rule);
   const isStep = ruleDemoState.mode === "step";
 
   if (ruleDemoControls) {
-    ruleDemoControls.hidden = isSetup;
+    ruleDemoControls.hidden = !isAnimation;
   }
 
   if (ruleDemoReplayButton) {
-    ruleDemoReplayButton.hidden = isSetup || !ruleDemoState.completed;
+    ruleDemoReplayButton.hidden = !isAnimation || !ruleDemoState.completed;
   }
 
-  ruleAutoButton?.classList.toggle("is-active", !isSetup && ruleDemoState.mode === "auto");
-  ruleStepButton?.classList.toggle("is-active", !isSetup && isStep);
-  ruleAutoButton?.setAttribute("aria-pressed", String(!isSetup && ruleDemoState.mode === "auto"));
-  ruleStepButton?.setAttribute("aria-pressed", String(!isSetup && isStep));
+  ruleAutoButton?.classList.toggle("is-active", isAnimation && ruleDemoState.mode === "auto");
+  ruleStepButton?.classList.toggle("is-active", isAnimation && isStep);
+  ruleAutoButton?.setAttribute("aria-pressed", String(isAnimation && ruleDemoState.mode === "auto"));
+  ruleStepButton?.setAttribute("aria-pressed", String(isAnimation && isStep));
 
   if (ruleStepControls) {
-    ruleStepControls.hidden = isSetup || !isStep;
+    ruleStepControls.hidden = !isAnimation || !isStep;
   }
 
   if (rulePrevButton) {
@@ -1498,6 +1538,16 @@ function renderRuleDemoControls(rule) {
   }
 }
 
+function createRuleDemoContent(rule) {
+  if (rule.type === "setup") return createRuleSetupCard(rule);
+  if (isAnimatedRule(rule)) return createRuleAnimationCard(rule);
+  return createRuleTextCard(rule);
+}
+
+function isAnimatedRule(rule) {
+  return rule.type === "animation";
+}
+
 function createRuleSetupCard(rule) {
   const activeInfo = getActiveSetupInfo(rule);
 
@@ -1509,7 +1559,7 @@ function createRuleSetupCard(rule) {
     <div class="rule-setup-layout">
       <div class="rule-demo-board setup-board" aria-label="遊戲初始設置示範">
         ${RULE_DEMO_CELLS.map((cell) =>
-          createRuleDemoCell(cell, rule.board)
+          createRuleDemoCell(cell, rule.board, { activeIndices: activeInfo?.indices ?? [] })
         ).join("")}
         ${rule.setupInfo.map((info) => createSetupSideFrame(info)).join("")}
       </div>
@@ -1523,11 +1573,11 @@ function createRuleSetupCard(rule) {
 
 function createSetupSideFrame(info) {
   const isActive = ruleDemoState.setupInfoId === info.id;
-  const sideClass = info.id === "opponent-side" ? "opponent" : "player";
+  const frameClass = info.frameClass ?? info.id;
 
   return `
     <button
-      class="setup-side-frame ${sideClass}${isActive ? " is-active" : ""}"
+      class="setup-side-frame ${frameClass}${isActive ? " is-active" : ""}"
       type="button"
       data-info-id="${info.id}"
       aria-label="${info.label}說明"
@@ -1535,6 +1585,26 @@ function createSetupSideFrame(info) {
       <span>${info.label}</span>
       <b aria-hidden="true">!</b>
     </button>
+  `;
+}
+
+function createRuleTextCard(rule) {
+  return `
+    <div class="rule-demo-guidance rule-text-card">
+      <p class="rule-demo-primary">${escapeHtml(rule.header ?? rule.summary)}</p>
+      <div class="rule-text-grid">
+        ${(rule.sections ?? [])
+          .map(
+            (section) => `
+              <section class="rule-text-item">
+                <strong>${escapeHtml(section.label)}</strong>
+                <p>${escapeHtml(section.text)}</p>
+              </section>
+            `
+          )
+          .join("")}
+      </div>
+    </div>
   `;
 }
 
@@ -1553,7 +1623,7 @@ function createRuleAnimationCard(rule) {
     <div class="rule-demo-board" aria-label="規則示範棋盤">
       ${RULE_DEMO_CELLS.map((cell) => createRuleDemoCell(cell, frame.board, frame)).join("")}
     </div>
-    <p class="rule-demo-note ${ruleDemoState.notePhase === "out" ? "is-fading-out" : "is-visible"}">${frame.note}</p>
+    <p class="rule-demo-note ${ruleDemoState.notePhase === "out" ? "is-fading-out" : "is-visible"}">${createRuleNoteText(frame.note)}</p>
   `;
 }
 
@@ -1593,6 +1663,24 @@ function createRuleDemoStones(count, owner) {
 
 function getRuleFrames(rule) {
   return rule.frames ?? [];
+}
+
+function createRuleNoteText(text = "") {
+  return Array.from(text)
+    .map((char, index) => {
+      const safeChar = char === " " ? "&nbsp;" : escapeHtml(char);
+      return `<span class="rule-note-char" style="--char-index:${index};">${safeChar}</span>`;
+    })
+    .join("");
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function getActiveSetupInfo(rule) {
