@@ -1,5 +1,5 @@
-import { CoinTossScene } from "./coin/index.js?v=20260617c";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260617c";
+import { CoinTossScene } from "./coin/index.js?v=20260618a";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260618a";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -15,20 +15,20 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260617c";
+} from "./core/object-model.js?v=20260618a";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
   STONE_PLACEMENT_PHYSICS,
   selectCountCurveValue,
-} from "./core/object-physics.js?v=20260617c";
+} from "./core/object-physics.js?v=20260618a";
 import {
   getAssetUrl,
   getCoinFace,
   getNeutralSkin,
   getPlayerSkin,
-} from "./core/object-pack-manifest.js?v=20260617c";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260617c";
+} from "./core/object-pack-manifest.js?v=20260618a";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260618a";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const ACTIVE_OBJECT_PACK = CRYSTAL_OBJECT_PACK;
@@ -258,8 +258,9 @@ const difficultyButtons = {
   hard: difficultyHardButton,
 };
 
-const RULE_AUTO_START_DELAY_MS = 260;
-const RULE_FRAME_DELAY_MS = 840;
+const RULE_AUTO_START_DELAY_MS = 320;
+const RULE_FRAME_HOLD_MS = 1280;
+const RULE_NOTE_FADE_MS = 260;
 
 const RULE_DEMOS = [
   {
@@ -271,15 +272,15 @@ const RULE_DEMOS = [
     setupInfo: [
       {
         id: "opponent-side",
-        label: "對手區",
+        label: "對手棋坑 / 對手棋庫",
         indices: [3, 4, 5],
-        description: "上半邊是對手區：對手棋坑可以落子，對手棋庫要跳過。",
+        description: "上半邊包含對手棋坑與對手棋庫；撒棋時可以進對手棋坑，但會跳過對手棋庫。",
       },
       {
         id: "player-side",
-        label: "玩家區",
+        label: "我的棋坑 / 我的棋庫",
         indices: [0, 1, 2],
-        description: "下半邊是玩家區：輪到你時選自己的棋坑，棋子進自己的棋庫就得分。",
+        description: "下半邊包含我的棋坑與我的棋庫；輪到你時選自己的棋坑，進自己的棋庫就得分。",
       },
     ],
   },
@@ -308,11 +309,19 @@ const RULE_DEMOS = [
     type: "animation",
     header: "最後一子落在自己的棋庫，就觸發額外回合，可以多動一下。",
     frames: [
-      { board: [3, 1, 0, 0, 0, 0], activeIndices: [0], note: "如果先取 3，最後不會停在棋庫，沒有額外回合。" },
-      { board: [0, 2, 1, 1, 0, 0], activeIndices: [3], note: "取 3 後換對手，不能立刻再動。" },
-      { board: [3, 1, 0, 0, 0, 0], activeIndices: [1], note: "如果先取 1，最後一子會進自己的棋庫。" },
-      { board: [3, 0, 1, 0, 0, 0], activeIndices: [2], note: "你觸發了額外回合，所以可以多動一下。" },
-      { board: [3, 0, 1, 0, 0, 0], activeIndices: [0], note: "因此可以接著取 3。" },
+      { board: [3, 1, 0, 0, 0, 0], activeIndices: [0], note: "先試著取 3。" },
+      { board: [0, 1, 0, 0, 0, 0], activeIndices: [0], note: "拿起 3 顆，開始逐格放。" },
+      { board: [0, 2, 0, 0, 0, 0], activeIndices: [1], note: "第 1 顆落在自己的棋坑。" },
+      { board: [0, 2, 1, 0, 0, 0], activeIndices: [2], note: "第 2 顆進自己的棋庫，先加 1 分。" },
+      { board: [0, 2, 1, 1, 0, 0], activeIndices: [3], note: "第 3 顆落在對手棋坑，沒有額外回合。" },
+      { board: [3, 1, 0, 0, 0, 0], activeIndices: [1], note: "改成先取 1。" },
+      { board: [3, 0, 0, 0, 0, 0], activeIndices: [1], note: "拿起 1 顆。" },
+      { board: [3, 0, 1, 0, 0, 0], activeIndices: [2], note: "最後一顆進棋庫，觸發額外回合。" },
+      { board: [3, 0, 1, 0, 0, 0], activeIndices: [0], note: "你觸發了額外回合，所以可以多動一下。" },
+      { board: [0, 0, 1, 0, 0, 0], activeIndices: [0], note: "接著取 3，繼續逐格放。" },
+      { board: [0, 1, 1, 0, 0, 0], activeIndices: [1], note: "第 1 顆落在自己的棋坑。" },
+      { board: [0, 1, 2, 0, 0, 0], activeIndices: [2], note: "第 2 顆再進棋庫，又多 1 分。" },
+      { board: [0, 1, 2, 1, 0, 0], activeIndices: [3], note: "第 3 顆落到對手棋坑，連手多拿了分數。" },
     ],
   },
   {
@@ -359,6 +368,7 @@ const ruleDemoState = {
   mode: "auto",
   frameIndex: 0,
   completed: false,
+  notePhase: "in",
   setupInfoId: "opponent-side",
 };
 
@@ -1352,6 +1362,7 @@ function openRuleDemoCard(ruleId = ruleDemoState.activeId) {
   ruleDemoState.mode = rule.type === "setup" ? "setup" : "auto";
   ruleDemoState.frameIndex = 0;
   ruleDemoState.completed = rule.type === "setup";
+  ruleDemoState.notePhase = "in";
   ruleDemoState.setupInfoId = rule.setupInfo?.[0]?.id ?? ruleDemoState.setupInfoId;
 
   renderRulesList();
@@ -1359,11 +1370,11 @@ function openRuleDemoCard(ruleId = ruleDemoState.activeId) {
   openFloatingCard(ruleDemoOverlay);
 
   if (rule.type !== "setup") {
-    void playRuleDemoAuto(ruleDemoState.token);
+    void playRuleDemoAuto(ruleDemoState.token, true);
   }
 }
 
-async function playRuleDemoAuto(token = ruleDemoState.token) {
+async function playRuleDemoAuto(token = ruleDemoState.token, initialFrameRendered = false) {
   const rule = getRuleDemo(ruleDemoState.activeId);
   const frames = getRuleFrames(rule);
 
@@ -1372,18 +1383,32 @@ async function playRuleDemoAuto(token = ruleDemoState.token) {
   ruleDemoState.mode = "auto";
   ruleDemoState.completed = false;
   ruleDemoState.frameIndex = 0;
-  renderRuleDemoCard();
+  ruleDemoState.notePhase = "in";
+  if (!initialFrameRendered) {
+    renderRuleDemoCard();
+  }
   await sleep(RULE_AUTO_START_DELAY_MS);
 
   for (let index = 0; index < frames.length; index += 1) {
     if (!isRuleDemoCurrent(token) || ruleDemoState.mode !== "auto") return;
     ruleDemoState.frameIndex = index;
-    renderRuleDemoCard();
-    await sleep(RULE_FRAME_DELAY_MS);
+    ruleDemoState.notePhase = "in";
+    if (!initialFrameRendered || index > 0) {
+      renderRuleDemoCard();
+    }
+    await sleep(RULE_FRAME_HOLD_MS);
+
+    if (index < frames.length - 1) {
+      if (!isRuleDemoCurrent(token) || ruleDemoState.mode !== "auto") return;
+      ruleDemoState.notePhase = "out";
+      renderRuleDemoCard();
+      await sleep(RULE_NOTE_FADE_MS);
+    }
   }
 
   if (!isRuleDemoCurrent(token) || ruleDemoState.mode !== "auto") return;
   ruleDemoState.completed = true;
+  ruleDemoState.notePhase = "in";
   renderRuleDemoCard();
 }
 
@@ -1403,10 +1428,11 @@ function setRuleDemoMode(mode) {
   ruleDemoState.mode = mode;
   ruleDemoState.frameIndex = 0;
   ruleDemoState.completed = false;
+  ruleDemoState.notePhase = "in";
   renderRuleDemoCard();
 
   if (mode === "auto") {
-    void playRuleDemoAuto(ruleDemoState.token);
+    void playRuleDemoAuto(ruleDemoState.token, true);
   }
 }
 
@@ -1417,6 +1443,7 @@ function moveRuleDemoStep(delta) {
 
   ruleDemoState.frameIndex = clamp(ruleDemoState.frameIndex + delta, 0, frames.length - 1);
   ruleDemoState.completed = ruleDemoState.frameIndex === frames.length - 1;
+  ruleDemoState.notePhase = "in";
   renderRuleDemoCard();
 }
 
@@ -1526,7 +1553,7 @@ function createRuleAnimationCard(rule) {
     <div class="rule-demo-board" aria-label="規則示範棋盤">
       ${RULE_DEMO_CELLS.map((cell) => createRuleDemoCell(cell, frame.board, frame)).join("")}
     </div>
-    <p class="rule-demo-note">${frame.note}</p>
+    <p class="rule-demo-note ${ruleDemoState.notePhase === "out" ? "is-fading-out" : "is-visible"}">${frame.note}</p>
   `;
 }
 

@@ -1320,6 +1320,40 @@ h1 {
   border: 1px solid rgba(255, 228, 161, 0.24);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.34);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rule-demo-note.is-visible {
+  animation: rule-note-fade-in 0.24s ease both;
+}
+
+.rule-demo-note.is-fading-out {
+  animation: rule-note-fade-out 0.24s ease both;
+}
+
+@keyframes rule-note-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rule-note-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
 .rule-demo-replay {
@@ -1377,8 +1411,9 @@ h1 {
 }
 
 .rule-step-button {
-  width: 42px;
+  min-width: 86px;
   height: 38px;
+  padding: 0 12px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(255, 228, 161, 0.48);
@@ -1440,11 +1475,16 @@ h1 {
 .setup-side-frame span {
   left: 10px;
   top: -11px;
+  max-width: calc(100% - 52px);
   min-height: 22px;
   padding: 0 8px;
   border-radius: 999px;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .setup-side-frame b {
@@ -2057,7 +2097,7 @@ h1 {
 
   .setup-side-frame span {
     min-height: 19px;
-    font-size: 0.66rem;
+    font-size: 0.58rem;
   }
 
   .setup-side-frame b {
@@ -2076,6 +2116,13 @@ h1 {
 
   .rule-step-controls {
     justify-content: space-between;
+  }
+
+  .rule-step-button {
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px;
+    font-size: 0.78rem;
   }
 
   .setting-row {
