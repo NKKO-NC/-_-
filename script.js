@@ -28,13 +28,13 @@ import {
 } from "./core/object-physics.js?v=20260619a";
 import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
 import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260619a";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260619b";
+import { OBSIDIAN_OBJECT_PACK } from "./object-packs/obsidian.js?v=20260619b";
 import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
-const objectPack = createObjectPackRuntime(CRYSTAL_OBJECT_PACK);
+const objectPack = createObjectPackRuntime(OBSIDIAN_OBJECT_PACK);
 const visualPack = createVisualPackRuntime({
-  manifestUrl: "./visual-packs/crystal-childhood/manifest.json",
+  manifestUrl: "./visual-packs/obsidian-childhood/manifest.json",
 });
 const sound = createSoundPackRuntime({
   manifestUrl: "./sound-packs/procedural-crystal/manifest.json",

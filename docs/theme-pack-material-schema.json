@@ -1,0 +1,1243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kalah-childhood.local/schemas/theme-pack-material-request.schema.json",
+  "title": "Kalah Childhood Memories Theme Material Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "pack",
+    "themeDirection",
+    "naming",
+    "palette",
+    "typography",
+    "players",
+    "visualPack",
+    "objectPack",
+    "generationRules",
+    "acceptance"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "pack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "themeSlug",
+        "displayName",
+        "assetVersion",
+        "engineCompatibility",
+        "baseUrl",
+        "targetRoot"
+      ],
+      "properties": {
+        "themeSlug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Kebab-case theme slug. Example: mooncake-memory."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assetVersion": {
+          "type": "string",
+          "pattern": "^20[0-9]{6}-[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Use yyyymmdd plus a short suffix. Example: 20260619-visual-a."
+        },
+        "engineCompatibility": {
+          "const": "^1.0.0"
+        },
+        "baseUrl": {
+          "const": "./assets/"
+        },
+        "targetRoot": {
+          "type": "string",
+          "pattern": "^visual-packs/[a-z0-9]+(?:-[a-z0-9]+)*/$"
+        }
+      }
+    },
+    "themeDirection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coreTheme",
+        "moodKeywords",
+        "boardLanguage",
+        "textSurfaceLanguage",
+        "backgroundLanguage",
+        "accentPolicy",
+        "avoid"
+      ],
+      "properties": {
+        "coreTheme": {
+          "type": "string",
+          "minLength": 10
+        },
+        "moodKeywords": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 8,
+          "items": {
+            "type": "string"
+          }
+        },
+        "boardLanguage": {
+          "$ref": "#/$defs/languageBlock"
+        },
+        "textSurfaceLanguage": {
+          "$ref": "#/$defs/languageBlock"
+        },
+        "backgroundLanguage": {
+          "$ref": "#/$defs/languageBlock"
+        },
+        "accentPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "playerOne",
+            "playerTwo",
+            "neutral",
+            "utility"
+          ],
+          "properties": {
+            "playerOne": {
+              "type": "string"
+            },
+            "playerTwo": {
+              "type": "string"
+            },
+            "neutral": {
+              "type": "string"
+            },
+            "utility": {
+              "type": "string"
+            }
+          }
+        },
+        "avoid": {
+          "type": "array",
+          "minItems": 6,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assetIdStyle",
+        "fileNameStyle",
+        "playerOneKey",
+        "playerTwoKey",
+        "neutralKey"
+      ],
+      "properties": {
+        "assetIdStyle": {
+          "const": "dot.case semantic ids matching runtime bindings"
+        },
+        "fileNameStyle": {
+          "const": "lowercase kebab-case png filenames"
+        },
+        "playerOneKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "playerTwoKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "neutralKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "background",
+        "boardBase",
+        "boardTrim",
+        "textSurface",
+        "textInk",
+        "playerOne",
+        "playerTwo",
+        "neutral",
+        "utility"
+      ],
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "boardBase": {
+          "$ref": "#/$defs/color"
+        },
+        "boardTrim": {
+          "$ref": "#/$defs/color"
+        },
+        "textSurface": {
+          "$ref": "#/$defs/color"
+        },
+        "textInk": {
+          "$ref": "#/$defs/color"
+        },
+        "playerOne": {
+          "$ref": "#/$defs/color"
+        },
+        "playerTwo": {
+          "$ref": "#/$defs/color"
+        },
+        "neutral": {
+          "$ref": "#/$defs/color"
+        },
+        "utility": {
+          "$ref": "#/$defs/color"
+        }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bodyFontStack",
+        "displayFontStack",
+        "textReadabilityRule"
+      ],
+      "properties": {
+        "bodyFontStack": {
+          "type": "string",
+          "minLength": 1
+        },
+        "displayFontStack": {
+          "type": "string",
+          "minLength": 1
+        },
+        "textReadabilityRule": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
+    },
+    "players": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "one",
+        "two",
+        "neutral"
+      ],
+      "properties": {
+        "one": {
+          "$ref": "#/$defs/player"
+        },
+        "two": {
+          "$ref": "#/$defs/player"
+        },
+        "neutral": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "particleTheme"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "particleTheme": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "visualPack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest",
+        "assets",
+        "nineSlice"
+      ],
+      "properties": {
+        "manifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "id",
+            "displayName",
+            "assetVersion",
+            "engineCompatibility",
+            "baseUrl",
+            "compliance",
+            "layouts"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*-visual$"
+            },
+            "displayName": {
+              "type": "string"
+            },
+            "assetVersion": {
+              "$ref": "#/properties/pack/properties/assetVersion"
+            },
+            "engineCompatibility": {
+              "const": "^1.0.0"
+            },
+            "baseUrl": {
+              "const": "./assets/"
+            },
+            "compliance": {
+              "$ref": "#/$defs/compliance"
+            },
+            "layouts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "landscape",
+                "portrait"
+              ],
+              "properties": {
+                "landscape": {
+                  "$ref": "#/$defs/landscapeLayout"
+                },
+                "portrait": {
+                  "$ref": "#/$defs/portraitLayout"
+                }
+              }
+            }
+          }
+        },
+        "assets": {
+          "type": "array",
+          "minItems": 43,
+          "items": {
+            "$ref": "#/$defs/visualAsset"
+          },
+          "allOf": [
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.landscape.base"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.landscape.rim"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.landscape.shadow"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.landscape.slot-mask"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.portrait.base"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.portrait.rim"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.portrait.shadow"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/board.portrait.slot-mask"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/pit.albedo"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/ui.score.panel"
+              }
+            },
+            {
+              "contains": {
+                "$ref": "#/$defs/requiredVisualAssets/background.landscape.idle"
+              }
+            }
+          ]
+        },
+        "nineSlice": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ui.score.panel",
+            "ui.dialogue.panel",
+            "ui.modal.panel",
+            "ui.result.panel",
+            "ui.button.primary",
+            "ui.button.secondary"
+          ],
+          "properties": {
+            "ui.score.panel": {
+              "$ref": "#/$defs/nineSlice"
+            },
+            "ui.dialogue.panel": {
+              "$ref": "#/$defs/nineSlice"
+            },
+            "ui.modal.panel": {
+              "$ref": "#/$defs/nineSlice"
+            },
+            "ui.result.panel": {
+              "$ref": "#/$defs/nineSlice"
+            },
+            "ui.button.primary": {
+              "$ref": "#/$defs/nineSlice"
+            },
+            "ui.button.secondary": {
+              "$ref": "#/$defs/nineSlice"
+            }
+          }
+        }
+      }
+    },
+    "objectPack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "assetVersion",
+        "assets",
+        "players",
+        "neutral",
+        "coin",
+        "cssVars"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "assetVersion": {
+          "$ref": "#/properties/pack/properties/assetVersion"
+        },
+        "assets": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(assets|visual-packs/[a-z0-9-]+/assets)/[a-z0-9-]+\\.png$"
+          },
+          "required": [
+            "playerOneStone",
+            "playerTwoStone",
+            "coinBody",
+            "playerOneSigil",
+            "playerTwoSigil"
+          ]
+        },
+        "players": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "1",
+            "2"
+          ],
+          "properties": {
+            "1": {
+              "$ref": "#/$defs/objectPlayer"
+            },
+            "2": {
+              "$ref": "#/$defs/objectPlayer"
+            }
+          }
+        },
+        "neutral": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "turnAsset",
+            "particleClass",
+            "turnIndicatorClass"
+          ],
+          "properties": {
+            "turnAsset": {
+              "type": "string"
+            },
+            "particleClass": {
+              "type": "string"
+            },
+            "turnIndicatorClass": {
+              "type": "string"
+            }
+          }
+        },
+        "coin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bodyAsset",
+            "fallbackAsset",
+            "faces"
+          ],
+          "properties": {
+            "bodyAsset": {
+              "type": "string"
+            },
+            "fallbackAsset": {
+              "type": "string"
+            },
+            "faces": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "front",
+                "back"
+              ],
+              "properties": {
+                "front": {
+                  "$ref": "#/$defs/coinFace"
+                },
+                "back": {
+                  "$ref": "#/$defs/coinFace"
+                }
+              }
+            }
+          }
+        },
+        "cssVars": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(#[0-9a-fA-F]{3,8}|rgba?\\([^)]+\\)|[a-zA-Z][a-zA-Z0-9 -]*)$"
+          },
+          "required": [
+            "ruby",
+            "ruby-soft",
+            "amethyst",
+            "amethyst-soft",
+            "gold",
+            "gold-bright",
+            "teal"
+          ]
+        }
+      }
+    },
+    "generationRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "colorSpace",
+        "alpha",
+        "textPolicy",
+        "rightsPolicy",
+        "globalNegativePrompt"
+      ],
+      "properties": {
+        "format": {
+          "const": "png"
+        },
+        "colorSpace": {
+          "const": "sRGB"
+        },
+        "alpha": {
+          "const": "straight alpha for transparent PNG assets"
+        },
+        "textPolicy": {
+          "const": "no baked text, numbers, labels, logos, signatures, or watermarks"
+        },
+        "rightsPolicy": {
+          "const": "original generated art or project-owned source only"
+        },
+        "globalNegativePrompt": {
+          "type": "string",
+          "minLength": 50
+        }
+      }
+    },
+    "acceptance": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "languageBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "materials",
+        "surfaceBehavior",
+        "composition",
+        "avoid"
+      ],
+      "properties": {
+        "materials": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "surfaceBehavior": {
+          "type": "string"
+        },
+        "composition": {
+          "type": "string"
+        },
+        "avoid": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+    "player": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "sideLabel",
+        "stoneTheme",
+        "sigilTheme",
+        "particleTheme"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "sideLabel": {
+          "type": "string"
+        },
+        "stoneTheme": {
+          "type": "string"
+        },
+        "sigilTheme": {
+          "type": "string"
+        },
+        "particleTheme": {
+          "type": "string"
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "commercialUseIntended",
+        "commercialUse",
+        "thirdPartySourceAssets",
+        "attributionRequired",
+        "licenseNote"
+      ],
+      "properties": {
+        "source": {
+          "enum": [
+            "original-generated",
+            "original-procedural-generated",
+            "project-owned-source"
+          ]
+        },
+        "commercialUseIntended": {
+          "const": true
+        },
+        "commercialUse": {
+          "const": true
+        },
+        "thirdPartySourceAssets": {
+          "const": false
+        },
+        "attributionRequired": {
+          "const": false
+        },
+        "licenseNote": {
+          "type": "string"
+        }
+      }
+    },
+    "landscapeLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canvas",
+        "physicalModel"
+      ],
+      "properties": {
+        "canvas": {
+          "const": [
+            2048,
+            1024
+          ]
+        },
+        "physicalModel": {
+          "const": "kalah-6x6-landscape"
+        }
+      }
+    },
+    "portraitLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canvas",
+        "physicalModel"
+      ],
+      "properties": {
+        "canvas": {
+          "const": [
+            1536,
+            2048
+          ]
+        },
+        "physicalModel": {
+          "const": "kalah-6x6-portrait"
+        }
+      }
+    },
+    "visualAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "src",
+        "type",
+        "width",
+        "height",
+        "alpha",
+        "role",
+        "source",
+        "license",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:\\.[a-z0-9-]+)+$"
+        },
+        "src": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.png$"
+        },
+        "type": {
+          "const": "image/png"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "alpha": {
+          "type": "boolean"
+        },
+        "role": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "original-generated",
+            "original-procedural-generated",
+            "project-owned-source"
+          ]
+        },
+        "license": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^([a-f0-9]{64}|pending)$"
+        }
+      }
+    },
+    "nineSlice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "left",
+        "right",
+        "top",
+        "bottom"
+      ],
+      "properties": {
+        "left": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "right": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "top": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bottom": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "objectPlayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "sideLabel",
+        "stoneAsset",
+        "storeSigilAsset",
+        "classes"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "sideLabel": {
+          "type": "string"
+        },
+        "stoneAsset": {
+          "type": "string"
+        },
+        "storeSigilAsset": {
+          "type": "string"
+        },
+        "classes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bodyTurn",
+            "turnIndicator",
+            "particle",
+            "store"
+          ],
+          "properties": {
+            "bodyTurn": {
+              "type": "string"
+            },
+            "turnIndicator": {
+              "type": "string"
+            },
+            "particle": {
+              "type": "string"
+            },
+            "store": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "coinFace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "player",
+        "faceAsset",
+        "dialogueKey",
+        "resultText"
+      ],
+      "properties": {
+        "player": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "faceAsset": {
+          "type": "string"
+        },
+        "dialogueKey": {
+          "type": "string"
+        },
+        "resultText": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pvp",
+            "pve"
+          ],
+          "properties": {
+            "pvp": {
+              "type": "string"
+            },
+            "pve": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "requiredVisualAssets": {
+      "board.landscape.base": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.landscape.base"
+          },
+          "src": {
+            "const": "board-landscape-base.png"
+          },
+          "width": {
+            "const": 2048
+          },
+          "height": {
+            "const": 1024
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-base"
+          }
+        }
+      },
+      "board.landscape.rim": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.landscape.rim"
+          },
+          "src": {
+            "const": "board-landscape-rim-overlay.png"
+          },
+          "width": {
+            "const": 2048
+          },
+          "height": {
+            "const": 1024
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-rim-overlay"
+          }
+        }
+      },
+      "board.landscape.shadow": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.landscape.shadow"
+          },
+          "src": {
+            "const": "board-landscape-shadow.png"
+          },
+          "width": {
+            "const": 2048
+          },
+          "height": {
+            "const": 1024
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-shadow"
+          }
+        }
+      },
+      "board.landscape.slot-mask": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.landscape.slot-mask"
+          },
+          "src": {
+            "const": "board-landscape-slot-mask.png"
+          },
+          "width": {
+            "const": 2048
+          },
+          "height": {
+            "const": 1024
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-slot-mask"
+          }
+        }
+      },
+      "board.portrait.base": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.portrait.base"
+          },
+          "src": {
+            "const": "board-portrait-base.png"
+          },
+          "width": {
+            "const": 1536
+          },
+          "height": {
+            "const": 2048
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-base"
+          }
+        }
+      },
+      "board.portrait.rim": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.portrait.rim"
+          },
+          "src": {
+            "const": "board-portrait-rim-overlay.png"
+          },
+          "width": {
+            "const": 1536
+          },
+          "height": {
+            "const": 2048
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-rim-overlay"
+          }
+        }
+      },
+      "board.portrait.shadow": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.portrait.shadow"
+          },
+          "src": {
+            "const": "board-portrait-shadow.png"
+          },
+          "width": {
+            "const": 1536
+          },
+          "height": {
+            "const": 2048
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-shadow"
+          }
+        }
+      },
+      "board.portrait.slot-mask": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "board.portrait.slot-mask"
+          },
+          "src": {
+            "const": "board-portrait-slot-mask.png"
+          },
+          "width": {
+            "const": 1536
+          },
+          "height": {
+            "const": 2048
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "board-slot-mask"
+          }
+        }
+      },
+      "pit.albedo": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "pit.albedo"
+          },
+          "src": {
+            "const": "pit-well-albedo.png"
+          },
+          "width": {
+            "const": 512
+          },
+          "height": {
+            "const": 512
+          },
+          "alpha": {
+            "const": false
+          },
+          "role": {
+            "const": "pit-material"
+          }
+        }
+      },
+      "ui.score.panel": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "ui.score.panel"
+          },
+          "src": {
+            "const": "ui-score-panel-9slice.png"
+          },
+          "width": {
+            "const": 1024
+          },
+          "height": {
+            "const": 256
+          },
+          "alpha": {
+            "const": true
+          },
+          "role": {
+            "const": "ui-score-panel"
+          }
+        }
+      },
+      "background.landscape.idle": {
+        "type": "object",
+        "required": [
+          "id",
+          "src",
+          "width",
+          "height",
+          "alpha",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "const": "background.landscape.idle"
+          },
+          "src": {
+            "const": "background-landscape-idle.png"
+          },
+          "width": {
+            "const": 2560
+          },
+          "height": {
+            "const": 1440
+          },
+          "alpha": {
+            "const": false
+          },
+          "role": {
+            "const": "background"
+          }
+        }
+      }
+    }
+  }
+}
