@@ -1,8 +1,8 @@
 ﻿import { CoinTossScene } from "./coin/index.js?v=20260619a";
 import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260619a";
 import { createKalahAi } from "./game/ai.js?v=20260619a";
-import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260619a";
-import { getGameDomRefs } from "./ui/dom.js?v=20260619a";
+import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260619b";
+import { getGameDomRefs } from "./ui/dom.js?v=20260619b";
 import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260619a";
 import {
   KALAH_BOARD_MODEL,
@@ -28,8 +28,8 @@ import {
 } from "./core/object-physics.js?v=20260619a";
 import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
 import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260619a";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260619a";
-import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619a";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260619b";
+import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const objectPack = createObjectPackRuntime(CRYSTAL_OBJECT_PACK);
@@ -94,6 +94,9 @@ const {
   ruleStepIndicator,
   pitRomanButton,
   pitArabicButton,
+  volumeSlider,
+  volumeValue,
+  playerHintToggle,
   coinTossOverlay,
   coinTossButton,
   coinCanvas,
@@ -199,6 +202,9 @@ const state = {
   aiThinking: false,
   aiThinkDelayMs: 520,
   pitNumberStyle: "roman",
+  volumePercent: 100,
+  playerHintsEnabled: false,
+  moveHint: null,
   aiDialogue: {
     speaker: "\u65c1\u767d",
     line: "\u9078\u64c7\u6a21\u5f0f\u5f8c\uff0c\u95dc\u9375\u5c40\u9762\u6703\u5728\u9019\u88e1\u88dc\u4e0a\u53f0\u8a5e\u3002",
@@ -266,6 +272,7 @@ function resetGame() {
   state.lastDropKey = 0;
   state.aiThinking = false;
   state.layoutSalt = createLayoutSalt(BOARD_MODEL);
+  state.moveHint = null;
   state.message = TEXT.coinReady;
   resetDialogueHistory();
   setAiDialogue(NARRATOR, getDialogue("coin.beforeToss"));
@@ -286,6 +293,7 @@ function showMainMenu() {
   state.aiThinking = false;
   state.resultShown = false;
   state.lastDropIndex = null;
+  state.moveHint = null;
   state.message = "";
   setAiDialogue("", "");
   hideResultOverlay();
@@ -347,6 +355,82 @@ function canSelect(index) {
     getStoneCount(index) > 0 &&
     !isAiTurn()
   );
+}
+
+function canPreviewMove(index) {
+  return state.playerHintsEnabled && canSelect(index);
+}
+
+function showMoveHint(startIndex) {
+  state.moveHint = createMoveHint(startIndex, state.activePlayer);
+  render();
+}
+
+function clearMoveHint() {
+  if (!state.moveHint) return;
+
+  state.moveHint = null;
+  render();
+}
+
+function createMoveHint(startIndex, player) {
+  const opponentStore = getOpponentStore(player);
+  const cells = new Map();
+  const drops = [];
+  let currentIndex = startIndex;
+
+  for (let i = 0; i < getStoneCount(startIndex); i += 1) {
+    currentIndex = (currentIndex + 1) % BOARD_SIZE;
+    if (currentIndex === opponentStore) {
+      currentIndex = (currentIndex + 1) % BOARD_SIZE;
+    }
+
+    const visit = (cells.get(currentIndex)?.visits ?? 0) + 1;
+    const entry = {
+      index: currentIndex,
+      visits: visit,
+      order: drops.length + 1,
+      landing: false,
+    };
+    cells.set(currentIndex, entry);
+    drops.push(entry);
+  }
+
+  if (drops.length) {
+    drops[drops.length - 1].landing = true;
+    cells.set(drops[drops.length - 1].index, drops[drops.length - 1]);
+  }
+
+  return { startIndex, player, cells };
+}
+
+function getMoveHintCell(index) {
+  return state.moveHint?.cells?.get(index) ?? null;
+}
+
+function createMoveHintRings(index) {
+  const hint = getMoveHintCell(index);
+  if (!hint) return "";
+
+  const ringCount = Math.min(hint.visits, 6);
+  let html = `<span class="move-hint-rings" aria-hidden="true">`;
+  for (let i = 0; i < ringCount; i += 1) {
+    html += `<span class="move-hint-ring" style="--ring-index: ${i};"></span>`;
+  }
+  html += `</span>`;
+  return html;
+}
+
+function getMoveHintClasses(index) {
+  const hint = getMoveHintCell(index);
+  if (!hint) return "";
+
+  const playerClass = hint.landing
+    ? " hint-landing"
+    : state.moveHint.player === PLAYER_ONE
+      ? " hint-player-one"
+      : " hint-player-two";
+  return ` move-hint-cell${playerClass}`;
 }
 
 function getPlayerName(player) {
@@ -541,6 +625,7 @@ async function makeMove(startIndex) {
   const token = state.animationToken + 1;
   state.animationToken = token;
   state.animating = true;
+  state.moveHint = null;
   boardEl.classList.add("is-sowing");
 
   const movingPlayer = state.activePlayer;
@@ -752,12 +837,29 @@ function renderSettingsState() {
   pitArabicButton.classList.toggle("is-active", !isRoman);
   pitRomanButton.setAttribute("aria-pressed", String(isRoman));
   pitArabicButton.setAttribute("aria-pressed", String(!isRoman));
+  volumeSlider.value = String(state.volumePercent);
+  volumeValue.textContent = `${state.volumePercent}%`;
+  playerHintToggle.checked = state.playerHintsEnabled;
 }
 
 function setPitNumberStyle(style) {
   if (state.pitNumberStyle === style) return;
 
   state.pitNumberStyle = style;
+  render();
+}
+
+function setVolumePercent(value) {
+  state.volumePercent = Math.round(clamp(Number(value), 0, 100));
+  sound.setMasterVolume(state.volumePercent / 100);
+  renderSettingsState();
+}
+
+function setPlayerHintsEnabled(enabled) {
+  state.playerHintsEnabled = Boolean(enabled);
+  if (!state.playerHintsEnabled) {
+    state.moveHint = null;
+  }
   render();
 }
 
@@ -1283,7 +1385,7 @@ function createPit(index, owner, column, row) {
   const visibleNumber = getVisiblePitNumber(BOARD_MODEL, index, owner);
 
   button.type = "button";
-  button.className = `pit cell${state.lastDropIndex === index ? " just-dropped" : ""}`;
+  button.className = `pit cell${state.lastDropIndex === index ? " just-dropped" : ""}${getMoveHintClasses(index)}`;
   button.dataset.index = String(index);
   button.style.gridColumn = String(column);
   button.style.gridRow = String(row);
@@ -1298,6 +1400,7 @@ function createPit(index, owner, column, row) {
   }
 
   button.innerHTML = `
+    ${createMoveHintRings(index)}
     <span class="stones">${createStones(index, state.board[index], owner, "pit")}</span>
     <span class="pit-count">${formatPitCount(count)}</span>
   `;
@@ -1311,11 +1414,12 @@ function createStore(index, label, className) {
   const count = getStoneCount(index);
   const sigil = getPlayerStoreSigilUrl(owner);
 
-  store.className = `store cell ${className}${state.lastDropIndex === index ? " just-dropped" : ""}`;
+  store.className = `store cell ${className}${state.lastDropIndex === index ? " just-dropped" : ""}${getMoveHintClasses(index)}`;
   store.dataset.index = String(index);
   store.setAttribute("role", "group");
   store.setAttribute("aria-label", `${label}\uff0c${count} ${TEXT.stones}`);
   store.innerHTML = `
+    ${createMoveHintRings(index)}
     <img class="store-sigil" src="${sigil}" alt="" aria-hidden="true" />
     <span class="stones">${createStones(index, state.board[index], owner, "store")}</span>
     <span class="store-count">${count}</span>
@@ -1721,10 +1825,30 @@ pitArabicButton.addEventListener("click", () => {
   setPitNumberStyle("arabic");
 });
 
+volumeSlider.addEventListener("input", () => {
+  setVolumePercent(volumeSlider.value);
+});
+
+playerHintToggle.addEventListener("change", () => {
+  setPlayerHintsEnabled(playerHintToggle.checked);
+});
+
 boardEl.addEventListener("click", (event) => {
   const pit = event.target.closest(".pit");
   if (!pit) return;
-  void makeMove(Number(pit.dataset.index));
+
+  const index = Number(pit.dataset.index);
+  if (canPreviewMove(index)) {
+    if (state.moveHint?.startIndex !== index) {
+      showMoveHint(index);
+      void sound.playEvent("ui.button");
+      return;
+    }
+
+    state.moveHint = null;
+  }
+
+  void makeMove(index);
 });
 
 coinTossButton.addEventListener("click", tossCoin);

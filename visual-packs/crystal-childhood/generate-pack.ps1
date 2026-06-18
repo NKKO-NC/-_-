@@ -4,8 +4,8 @@ $ErrorActionPreference = "Stop"
 
 $PackRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $AssetRoot = Join-Path $PackRoot "assets"
-$AssetVersion = "20260618-visual-a"
-$SampleSeed = 20260618
+$AssetVersion = "20260619-visual-b"
+$SampleSeed = 20260619
 $script:Random = [System.Random]::new($SampleSeed)
 $script:Assets = [ordered]@{}
 $script:ChecksumLines = New-Object System.Collections.Generic.List[string]
@@ -22,7 +22,7 @@ function New-Bitmap([int]$Width, [int]$Height, [bool]$Transparent = $true) {
   if ($Transparent) {
     $graphics.Clear([System.Drawing.Color]::Transparent)
   } else {
-    $graphics.Clear([System.Drawing.Color]::FromArgb(5, 6, 12))
+    $graphics.Clear([System.Drawing.Color]::FromArgb(7, 8, 10))
   }
 
   return @{ Bitmap = $bitmap; Graphics = $graphics }
@@ -76,18 +76,34 @@ function Save-Asset(
   }
 }
 
-function Add-CrystalNoise([System.Drawing.Graphics]$Graphics, [int]$Width, [int]$Height, [int]$Count) {
+function Add-GoldVeins([System.Drawing.Graphics]$Graphics, [int]$Width, [int]$Height, [int]$Count, [int]$Alpha = 88) {
   for ($i = 0; $i -lt $Count; $i++) {
     $x1 = $script:Random.Next([int]($Width * 0.08), [int]($Width * 0.92))
     $y1 = $script:Random.Next([int]($Height * 0.1), [int]($Height * 0.9))
-    $x2 = $x1 + $script:Random.Next([int](-$Width * 0.09), [int]($Width * 0.09))
-    $y2 = $y1 + $script:Random.Next([int](-$Height * 0.09), [int]($Height * 0.09))
-    $choice = $script:Random.Next(0, 3)
-    if ($choice -eq 0) { $pen = New-PenColor 72 220 48 76 2 }
-    elseif ($choice -eq 1) { $pen = New-PenColor 72 150 86 224 2 }
-    else { $pen = New-PenColor 82 238 194 95 2 }
+    $x2 = $x1 + $script:Random.Next([int](-$Width * 0.12), [int]($Width * 0.12))
+    $y2 = $y1 + $script:Random.Next([int](-$Height * 0.12), [int]($Height * 0.12))
+    $pen = New-PenColor $Alpha 176 139 78 ([Math]::Max(1.6, [Math]::Min($Width, $Height) / 900))
     $Graphics.DrawLine($pen, $x1, $y1, $x2, $y2)
+    if ($script:Random.NextDouble() -gt 0.55) {
+      $highlight = New-PenColor ([Math]::Max(24, $Alpha - 30)) 228 210 168 1
+      $Graphics.DrawLine($highlight, $x1 + 1, $y1 + 1, $x2 + 1, $y2 + 1)
+      $highlight.Dispose()
+    }
     $pen.Dispose()
+  }
+}
+
+function Add-PaperFibers([System.Drawing.Graphics]$Graphics, [int]$Width, [int]$Height, [int]$Count) {
+  for ($i = 0; $i -lt $Count; $i++) {
+    $shade = $script:Random.Next(120, 170)
+    $alpha = $script:Random.Next(10, 30)
+    $brush = New-BrushColor $alpha $shade ($shade - 8) ($shade - 18)
+    $x = $script:Random.Next(0, $Width)
+    $y = $script:Random.Next(0, $Height)
+    $w = $script:Random.Next(10, [Math]::Max(16, [int]($Width * 0.04)))
+    $h = $script:Random.Next(2, 6)
+    $Graphics.FillEllipse($brush, $x, $y, $w, $h)
+    $brush.Dispose()
   }
 }
 
@@ -132,31 +148,42 @@ function New-BoardBase([int]$Width, [int]$Height, [string]$Layout) {
   $ctx = New-Bitmap $Width $Height $true
   $g = $ctx.Graphics
   $outer = [System.Drawing.RectangleF]::new($Width * 0.055, $Height * 0.08, $Width * 0.89, $Height * 0.84)
-  $path = New-RoundedPath $outer ([Math]::Min($Width, $Height) * 0.11)
+  $radius = [Math]::Min($Width, $Height) * 0.11
+  $path = New-RoundedPath $outer $radius
 
-  $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+  $baseBrush = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
     $outer,
-    (New-Color 245 9 10 18),
-    (New-Color 245 42 20 52),
+    (New-Color 250 8 10 12),
+    (New-Color 250 28 31 33),
+    [System.Drawing.Drawing2D.LinearGradientMode]::Vertical
+  )
+  $g.FillPath($baseBrush, $path)
+  $baseBrush.Dispose()
+
+  $crystalSheen = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+    [System.Drawing.RectangleF]::new($outer.X, $outer.Y, $outer.Width, $outer.Height * 0.58),
+    (New-Color 72 70 82 74),
+    (New-Color 0 70 82 74),
     [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal
   )
-  $g.FillPath($brush, $path)
-  $brush.Dispose()
+  $g.FillPath($crystalSheen, $path)
+  $crystalSheen.Dispose()
 
-  for ($i = 0; $i -lt 10; $i++) {
-    $inset = $i * 5
+  for ($i = 0; $i -lt 8; $i++) {
+    $inset = $i * 8
     $rect = [System.Drawing.RectangleF]::new($outer.X + $inset, $outer.Y + $inset, $outer.Width - $inset * 2, $outer.Height - $inset * 2)
-    $pen = New-PenColor ([Math]::Max(35, 150 - $i * 10)) 224 176 82 3
-    $g.DrawPath($pen, (New-RoundedPath $rect ([Math]::Min($Width, $Height) * 0.1)))
+    $pen = New-PenColor ([Math]::Max(28, 136 - $i * 12)) 116 90 56 2
+    $g.DrawPath($pen, (New-RoundedPath $rect ([Math]::Max(16, $radius - $inset * 0.7))))
     $pen.Dispose()
   }
 
-  Add-CrystalNoise $g $Width $Height 42
+  Add-GoldVeins $g $Width $Height 24 54
+
   $slots = if ($Layout -eq "landscape") { Get-LandscapeSlots $Width $Height } else { Get-PortraitSlots $Width $Height }
   foreach ($slot in $slots) {
-    $wellBrush = New-BrushColor 228 3 4 9
-    $rimPen = New-PenColor 190 202 164 78 ([Math]::Max(4, $Width / 420))
-    $innerPen = New-PenColor 92 126 70 178 ([Math]::Max(2, $Width / 760))
+    $wellBrush = New-BrushColor 240 5 6 8
+    $rimPen = New-PenColor 178 160 124 72 ([Math]::Max(4, $Width / 420))
+    $innerPen = New-PenColor 76 98 106 110 ([Math]::Max(2, $Width / 760))
     $g.FillEllipse($wellBrush, $slot.Rect)
     $g.DrawEllipse($rimPen, $slot.Rect)
     $inner = [System.Drawing.RectangleF]::new($slot.Rect.X + $slot.Rect.Width * 0.14, $slot.Rect.Y + $slot.Rect.Height * 0.14, $slot.Rect.Width * 0.72, $slot.Rect.Height * 0.72)
@@ -176,21 +203,26 @@ function New-BoardRim([int]$Width, [int]$Height, [string]$Layout) {
   $g = $ctx.Graphics
   $outer = [System.Drawing.RectangleF]::new($Width * 0.055, $Height * 0.08, $Width * 0.89, $Height * 0.84)
   $inner = [System.Drawing.RectangleF]::new($Width * 0.105, $Height * 0.15, $Width * 0.79, $Height * 0.7)
-  $goldPen = New-PenColor 216 248 204 112 ([Math]::Max(5, $Width / 230))
-  $purplePen = New-PenColor 112 144 82 210 ([Math]::Max(3, $Width / 410))
-  $g.DrawPath($goldPen, (New-RoundedPath $outer ([Math]::Min($Width, $Height) * 0.11)))
-  $g.DrawPath($purplePen, (New-RoundedPath $inner ([Math]::Min($Width, $Height) * 0.075)))
+  $radiusOuter = [Math]::Min($Width, $Height) * 0.11
+  $radiusInner = [Math]::Min($Width, $Height) * 0.075
+  $shadowPen = New-PenColor 118 54 41 24 ([Math]::Max(10, $Width / 150))
+  $goldPen = New-PenColor 230 224 189 124 ([Math]::Max(5, $Width / 230))
+  $innerPen = New-PenColor 170 164 130 84 ([Math]::Max(2, $Width / 410))
+  $g.DrawPath($shadowPen, (New-RoundedPath $outer $radiusOuter))
+  $g.DrawPath($goldPen, (New-RoundedPath $outer $radiusOuter))
+  $g.DrawPath($innerPen, (New-RoundedPath $inner $radiusInner))
 
   $slots = if ($Layout -eq "landscape") { Get-LandscapeSlots $Width $Height } else { Get-PortraitSlots $Width $Height }
   foreach ($slot in $slots) {
-    $pen = New-PenColor 185 248 205 112 ([Math]::Max(3, $Width / 360))
+    $pen = New-PenColor 168 214 178 112 ([Math]::Max(3, $Width / 360))
     $g.DrawEllipse($pen, $slot.Rect)
     $pen.Dispose()
   }
 
-  Add-CrystalNoise $g $Width $Height 30
+  Add-GoldVeins $g $Width $Height 16 74
+  $shadowPen.Dispose()
   $goldPen.Dispose()
-  $purplePen.Dispose()
+  $innerPen.Dispose()
   $g.Dispose()
   return $ctx.Bitmap
 }
@@ -199,7 +231,7 @@ function New-BoardShadow([int]$Width, [int]$Height) {
   $ctx = New-Bitmap $Width $Height $true
   $g = $ctx.Graphics
   $rect = [System.Drawing.RectangleF]::new($Width * 0.075, $Height * 0.12, $Width * 0.85, $Height * 0.82)
-  $brush = New-BrushColor 125 0 0 0
+  $brush = New-BrushColor 118 0 0 0
   $g.FillPath($brush, (New-RoundedPath $rect ([Math]::Min($Width, $Height) * 0.12)))
   $brush.Dispose()
   $g.Dispose()
@@ -224,17 +256,17 @@ function New-Material([int]$Width, [int]$Height, [string]$Type) {
   $g = $ctx.Graphics
   if ($Type -eq "normal") {
     $g.Clear((New-Color 255 128 128 245))
-    $pen = New-PenColor 110 160 160 255 4
+    $pen = New-PenColor 100 158 158 255 4
     for ($i = 0; $i -lt 12; $i++) {
       $inset = $i * [Math]::Min($Width, $Height) / 28
       $g.DrawEllipse($pen, $inset, $inset, $Width - $inset * 2, $Height - $inset * 2)
     }
     $pen.Dispose()
   } elseif ($Type -eq "roughness") {
-    $g.Clear((New-Color 255 136 136 136))
+    $g.Clear((New-Color 255 132 132 132))
     for ($i = 0; $i -lt 160; $i++) {
-      $shade = $script:Random.Next(82, 202)
-      $brush = New-BrushColor 75 $shade $shade $shade
+      $shade = $script:Random.Next(86, 192)
+      $brush = New-BrushColor 68 $shade $shade $shade
       $x = $script:Random.Next(0, $Width)
       $y = $script:Random.Next(0, $Height)
       $g.FillEllipse($brush, $x, $y, $script:Random.Next(12, 80), $script:Random.Next(12, 80))
@@ -242,15 +274,24 @@ function New-Material([int]$Width, [int]$Height, [string]$Type) {
     }
   } else {
     $rect = [System.Drawing.RectangleF]::new(0, 0, $Width, $Height)
-    $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 8 8 16), (New-Color 255 42 25 54), [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
+    $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 10 12 14), (New-Color 255 28 30 31), [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
     $g.FillRectangle($brush, $rect)
     $brush.Dispose()
-    $centerBrush = New-BrushColor 92 0 0 0
-    $g.FillEllipse($centerBrush, $Width * 0.18, $Height * 0.18, $Width * 0.64, $Height * 0.64)
+    $centerBrush = New-BrushColor 128 3 3 4
+    $g.FillEllipse($centerBrush, $Width * 0.16, $Height * 0.18, $Width * 0.68, $Height * 0.64)
     $centerBrush.Dispose()
-    $rimPen = New-PenColor 155 230 186 98 ([Math]::Max(3, $Width / 120))
+    $sheen = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+      [System.Drawing.RectangleF]::new($Width * 0.1, $Height * 0.08, $Width * 0.8, $Height * 0.42),
+      (New-Color 54 88 100 94),
+      (New-Color 0 88 100 94),
+      [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal
+    )
+    $g.FillEllipse($sheen, $Width * 0.1, $Height * 0.08, $Width * 0.8, $Height * 0.42)
+    $sheen.Dispose()
+    $rimPen = New-PenColor 155 182 145 86 ([Math]::Max(3, $Width / 120))
     $g.DrawEllipse($rimPen, $Width * 0.08, $Height * 0.08, $Width * 0.84, $Height * 0.84)
     $rimPen.Dispose()
+    Add-GoldVeins $g $Width $Height 8 36
   }
   $g.Dispose()
   return $ctx.Bitmap
@@ -261,17 +302,38 @@ function New-UiPanel([int]$Width, [int]$Height, [string]$Kind) {
   $g = $ctx.Graphics
   $rect = [System.Drawing.RectangleF]::new($Width * 0.045, $Height * 0.12, $Width * 0.91, $Height * 0.76)
   $radius = [Math]::Max(18, [Math]::Min($Width, $Height) * 0.16)
-  $fill = if ($Kind -like "*primary*") { New-BrushColor 228 42 22 46 } elseif ($Kind -like "*secondary*") { New-BrushColor 220 16 22 34 } else { New-BrushColor 220 15 14 24 }
-  $g.FillPath($fill, (New-RoundedPath $rect $radius))
-  $goldPen = New-PenColor 195 244 199 98 ([Math]::Max(3, $Width / 180))
-  $purplePen = New-PenColor 110 145 86 216 ([Math]::Max(2, $Width / 360))
-  $g.DrawPath($goldPen, (New-RoundedPath $rect $radius))
-  $inner = [System.Drawing.RectangleF]::new($rect.X + $rect.Width * 0.06, $rect.Y + $rect.Height * 0.1, $rect.Width * 0.88, $rect.Height * 0.8)
-  $g.DrawPath($purplePen, (New-RoundedPath $inner ([Math]::Max(12, $radius * 0.5))))
-  Add-CrystalNoise $g $Width $Height 10
+  $baseColor = if ($Kind -like "*primary*") { @(232, 206, 176) } elseif ($Kind -like "*secondary*") { @(214, 195, 166) } else { @(224, 205, 174) }
+  $path = New-RoundedPath $rect $radius
+
+  $fill = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+    $rect,
+    (New-Color 238 $baseColor[0] $baseColor[1] $baseColor[2]),
+    (New-Color 238 ($baseColor[0] - 26) ($baseColor[1] - 24) ($baseColor[2] - 24)),
+    [System.Drawing.Drawing2D.LinearGradientMode]::Vertical
+  )
+  $g.FillPath($fill, $path)
   $fill.Dispose()
+
+  $wash = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+    [System.Drawing.RectangleF]::new($rect.X, $rect.Y, $rect.Width, $rect.Height * 0.5),
+    (New-Color 62 255 247 226),
+    (New-Color 0 255 247 226),
+    [System.Drawing.Drawing2D.LinearGradientMode]::Vertical
+  )
+  $g.FillPath($wash, $path)
+  $wash.Dispose()
+
+  Add-PaperFibers $g $Width $Height ([Math]::Max(24, [int](($Width + $Height) / 18)))
+
+  $goldPen = New-PenColor 185 138 107 64 ([Math]::Max(3, $Width / 180))
+  $innerPen = New-PenColor 98 92 70 46 ([Math]::Max(1.5, $Width / 420))
+  $g.DrawPath($goldPen, $path)
+  $inner = [System.Drawing.RectangleF]::new($rect.X + $rect.Width * 0.06, $rect.Y + $rect.Height * 0.1, $rect.Width * 0.88, $rect.Height * 0.8)
+  $g.DrawPath($innerPen, (New-RoundedPath $inner ([Math]::Max(12, $radius * 0.5))))
+  Add-GoldVeins $g $Width $Height 4 28
   $goldPen.Dispose()
-  $purplePen.Dispose()
+  $innerPen.Dispose()
+  $path.Dispose()
   $g.Dispose()
   return $ctx.Bitmap
 }
@@ -279,15 +341,16 @@ function New-UiPanel([int]$Width, [int]$Height, [string]$Kind) {
 function New-IconFrame([int]$Size) {
   $ctx = New-Bitmap $Size $Size $true
   $g = $ctx.Graphics
-  $fill = New-BrushColor 225 14 13 24
-  $gold = New-PenColor 220 240 198 95 8
-  $purple = New-PenColor 120 150 90 220 4
+  $fill = New-BrushColor 228 12 14 16
+  $gold = New-PenColor 220 224 189 124 8
+  $inner = New-PenColor 120 110 88 60 4
   $g.FillEllipse($fill, 24, 24, $Size - 48, $Size - 48)
   $g.DrawEllipse($gold, 24, 24, $Size - 48, $Size - 48)
-  $g.DrawEllipse($purple, 50, 50, $Size - 100, $Size - 100)
+  $g.DrawEllipse($inner, 50, 50, $Size - 100, $Size - 100)
+  Add-GoldVeins $g $Size $Size 6 40
   $fill.Dispose()
   $gold.Dispose()
-  $purple.Dispose()
+  $inner.Dispose()
   $g.Dispose()
   return $ctx.Bitmap
 }
@@ -301,10 +364,11 @@ function New-TurnBadge([int]$Size) {
     [System.Drawing.PointF]::new($Size / 2, $Size - 22),
     [System.Drawing.PointF]::new(58, $Size / 2)
   )
-  $fill = New-BrushColor 230 28 18 36
-  $gold = New-PenColor 220 240 198 95 7
+  $fill = New-BrushColor 232 16 18 20
+  $gold = New-PenColor 220 224 189 124 7
   $g.FillPolygon($fill, $points)
   $g.DrawPolygon($gold, $points)
+  Add-GoldVeins $g $Size $Size 6 34
   $fill.Dispose()
   $gold.Dispose()
   $g.Dispose()
@@ -315,18 +379,20 @@ function New-Background([int]$Width, [int]$Height, [string]$Layout) {
   $ctx = New-Bitmap $Width $Height $false
   $g = $ctx.Graphics
   $rect = [System.Drawing.RectangleF]::new(0, 0, $Width, $Height)
-  $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 5 7 13), (New-Color 255 24 18 31), [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
+  $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 6 8 10), (New-Color 255 17 19 21), [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
   $g.FillRectangle($brush, $rect)
   $brush.Dispose()
-  for ($i = 0; $i -lt 8; $i++) {
-    $x = $script:Random.Next([int]($Width * 0.1), [int]($Width * 0.9))
-    $y = $script:Random.Next([int]($Height * 0.1), [int]($Height * 0.9))
-    $r = $script:Random.Next([int]([Math]::Min($Width, $Height) * 0.09), [int]([Math]::Min($Width, $Height) * 0.24))
-    $brush = if ($i % 3 -eq 0) { New-BrushColor 35 220 48 76 } elseif ($i % 3 -eq 1) { New-BrushColor 32 145 86 224 } else { New-BrushColor 26 238 194 95 }
-    $g.FillEllipse($brush, $x - $r, $y - $r, $r * 2, $r * 2)
-    $brush.Dispose()
+
+  for ($i = 0; $i -lt 5; $i++) {
+    $x = $script:Random.Next([int]($Width * 0.08), [int]($Width * 0.92))
+    $y = $script:Random.Next([int]($Height * 0.08), [int]($Height * 0.92))
+    $r = $script:Random.Next([int]([Math]::Min($Width, $Height) * 0.12), [int]([Math]::Min($Width, $Height) * 0.28))
+    $blob = New-BrushColor 14 104 90 62
+    $g.FillEllipse($blob, $x - $r, $y - $r, $r * 2, $r * 2)
+    $blob.Dispose()
   }
-  Add-CrystalNoise $g $Width $Height 70
+
+  Add-GoldVeins $g $Width $Height 46 24
   $g.Dispose()
   return $ctx.Bitmap
 }
@@ -434,7 +500,7 @@ $manifest = [ordered]@{
     "ui.button.secondary" = [ordered]@{ left = 96; right = 96; top = 72; bottom = 72 }
   }
   notes = [ordered]@{
-    artPass = "procedural integration placeholder; replace with final department art while preserving ids and dimensions"
+    artPass = "obsidian-and-kraft revision pass for current playable build; preserve ids and dimensions for future art replacement"
     backgroundFormatNote = "PNG is used instead of WebP because the local PowerShell/.NET generator has no WebP encoder."
   }
 }
@@ -448,11 +514,12 @@ $script:ChecksumLines | Set-Content -Path (Join-Path $PackRoot "checksums.sha256
 @"
 # Crystal Childhood Visual Pack
 
-Generated first-round visual pack for Kalah Childhood Memories.
+Generated revised playable visual pack for Kalah Childhood Memories.
 
-This is an integration-ready procedural placeholder pack. Final artwork can
-replace these files while preserving asset ids, filenames, dimensions, and
-manifest structure.
+This pass aligns the board toward obsidian / black crystal with restrained gold
+veins and shifts text-bearing UI surfaces toward light khaki kraft-paper cards.
+Final artwork can still replace these files while preserving asset ids,
+filenames, dimensions, and manifest structure.
 "@ | Set-Content -Path (Join-Path $PackRoot "README.md") -Encoding UTF8
 
 @"
@@ -475,8 +542,9 @@ Replace procedural placeholders with final department-approved artwork when read
 # Source Notes
 
 Source method: original procedural generation via PowerShell and System.Drawing.
-Generated asset date: 2026-06-18.
-Theme: dark crystal childhood memory, obsidian body, gold inlay, ruby/amethyst accents.
+Generated asset date: 2026-06-19.
+Theme: black crystal / ink jade board body, restrained gold veins, quiet dark
+background, khaki kraft-paper text panels.
 "@ | Set-Content -Path (Join-Path $PackRoot "SOURCE_NOTES.md") -Encoding UTF8
 
 Write-Host "Generated visual pack at $PackRoot"

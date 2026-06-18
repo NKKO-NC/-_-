@@ -51,8 +51,8 @@ const CRYSTAL_OBJECT_PACK = defineObjectPack({
         faceAsset: "dragonSigil",
         dialogueKey: "coin.redFirst",
         resultText: {
-          pvp: "\u6b63\u9762\u897f\u6d0b\u9f8d\uff0c\u7d05\u65b9\u5148\u624b",
-          pve: "\u6b63\u9762\u897f\u6d0b\u9f8d\uff0c\u73a9\u5bb6\u5148\u624b",
+          pvp: "\u6b63\u9762\uff0c\u7d05\u65b9\u5148\u624b",
+          pve: "\u6b63\u9762\uff0c\u73a9\u5bb6\u5148\u624b",
         },
       },
       back: {
@@ -60,8 +60,8 @@ const CRYSTAL_OBJECT_PACK = defineObjectPack({
         faceAsset: "shieldSigil",
         dialogueKey: "coin.purpleFirst",
         resultText: {
-          pvp: "\u53cd\u9762\u76fe\u528d\uff0c\u7d2b\u65b9\u5148\u624b",
-          pve: "\u53cd\u9762\u76fe\u528d\uff0cAI \u5148\u624b",
+          pvp: "\u53cd\u9762\uff0c\u7d2b\u65b9\u5148\u624b",
+          pve: "\u53cd\u9762\uff0cAI \u5148\u624b",
         },
       },
     },

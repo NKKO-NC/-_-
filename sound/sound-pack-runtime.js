@@ -2,6 +2,7 @@ function createSoundPackRuntime({ manifestUrl }) {
   let manifest = null;
   let context = null;
   let masterGain = null;
+  let masterVolume = 1;
   const buffers = new Map();
   const activeLoops = new Map();
   const lastPlayedAt = new Map();
@@ -32,9 +33,17 @@ function createSoundPackRuntime({ manifestUrl }) {
 
     context = new AudioContextClass();
     masterGain = context.createGain();
-    masterGain.gain.value = 1;
+    masterGain.gain.value = masterVolume;
     masterGain.connect(context.destination);
     return context;
+  }
+
+  function setMasterVolume(value) {
+    masterVolume = clamp(Number(value), 0, 1);
+
+    if (masterGain && context) {
+      masterGain.gain.setValueAtTime(masterVolume, context.currentTime);
+    }
   }
 
   async function unlock() {
@@ -176,12 +185,21 @@ function createSoundPackRuntime({ manifestUrl }) {
     }
   }
 
+  function clamp(value, min, max) {
+    if (!Number.isFinite(value)) return max;
+    return Math.min(max, Math.max(min, value));
+  }
+
   return Object.freeze({
     ready,
     unlock,
     playEvent,
     stopEvent,
     stopAll,
+    setMasterVolume,
+    getMasterVolume() {
+      return masterVolume;
+    },
     get manifest() {
       return manifest;
     },

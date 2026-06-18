@@ -1,0 +1,169 @@
+{
+  "documentType": "visual-direction-plan",
+  "project": "Kalah Childhood Memories",
+  "date": "2026-06-19",
+  "mode": "pm-review-plus-playable-art-pass",
+  "currentPack": {
+    "id": "crystal-childhood-visual",
+    "previousAssetVersion": "20260618-visual-a",
+    "currentAssetVersion": "20260619-visual-b"
+  },
+  "reviewSummary": {
+    "overallAssessment": "The previous playable art pack was structurally complete but visually inconsistent. The board, background, UI panels, and text-bearing surfaces were each using different material languages, causing the experience to feel assembled instead of art-directed.",
+    "primaryProblems": [
+      {
+        "id": "material-language-conflict",
+        "severity": "high",
+        "finding": "The board suggested a crystal board, but the UI panels and background used similar decorative noise and glow treatment, so hierarchy collapsed."
+      },
+      {
+        "id": "text-on-patterned-translucency",
+        "severity": "high",
+        "finding": "Dialogue, score, and modal text sat on dark translucent surfaces with decorative streaks, reducing readability and making the interface feel busy."
+      },
+      {
+        "id": "accent-overuse",
+        "severity": "medium",
+        "finding": "Ruby, amethyst, gold, and additional glow accents appeared in too many layers at once, so the board no longer felt calm or premium."
+      },
+      {
+        "id": "background-competition",
+        "severity": "medium",
+        "finding": "The background contained circular glow clusters and crystal streaks that competed with the board instead of framing it."
+      }
+    ]
+  },
+  "approvedDirection": {
+    "coreTheme": "Obsidian / black crystal board with restrained gold veins and quiet khaki kraft-paper text cards.",
+    "moodKeywords": [
+      "calm",
+      "collected",
+      "premium",
+      "childhood-memory warmth",
+      "readable",
+      "not ornate"
+    ],
+    "boardLanguage": {
+      "baseMaterial": "ink-jade / black crystal / obsidian",
+      "surfaceBehavior": "dark matte-to-polished crystal with subtle reflective planes",
+      "decorativeRule": "thin gold veins and gold perimeter inlay only",
+      "whatToAvoid": [
+        "multi-color streak confetti",
+        "purple-on-black ornamental clutter",
+        "high-noise fantasy filigree"
+      ]
+    },
+    "textCardLanguage": {
+      "baseMaterial": "light khaki kraft paper",
+      "surfaceBehavior": "mostly opaque with soft paper fibers and quiet border framing",
+      "textColor": "deep brown / warm ink",
+      "whatToAvoid": [
+        "transparent patterned black plates for long text",
+        "gold body text on decorative surfaces",
+        "strong color glow behind labels"
+      ]
+    },
+    "accentPolicy": {
+      "gold": "structural trim and thin vein highlights only",
+      "ruby": "player-one state accent only",
+      "amethyst": "player-two state accent only",
+      "teal": "very limited utility accent only if needed for focus state"
+    }
+  },
+  "implementationThisPass": {
+    "status": "completed",
+    "scope": [
+      "procedural visual-pack generator rewritten to match obsidian + kraft direction",
+      "text-bearing CSS surfaces shifted from translucent dark glass to paper-card treatment",
+      "existing asset ids and file names preserved for runtime compatibility"
+    ],
+    "filesChanged": [
+      "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\generate-pack.ps1",
+      "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\styles.css",
+      "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\manifest.json",
+      "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\README.md",
+      "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\SOURCE_NOTES.md",
+      "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\checksums.sha256"
+    ]
+  },
+  "assetMapping": {
+    "board": [
+      {
+        "assetId": "board.landscape.base",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\board-landscape-base.png",
+        "direction": "dark obsidian slab with quiet gold structural lines"
+      },
+      {
+        "assetId": "board.landscape.rim",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\board-landscape-rim-overlay.png",
+        "direction": "restrained gold inlay and slot framing"
+      },
+      {
+        "assetId": "board.portrait.base",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\board-portrait-base.png",
+        "direction": "portrait variant using the same material language"
+      }
+    ],
+    "textPanels": [
+      {
+        "assetId": "ui.dialogue.panel",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\ui-dialogue-panel-9slice.png",
+        "direction": "khaki kraft paper card for dialogue text"
+      },
+      {
+        "assetId": "ui.score.panel",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\ui-score-panel-9slice.png",
+        "direction": "clean paper score strips with dark readable numerals"
+      },
+      {
+        "assetId": "ui.modal.panel",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\ui-modal-panel-9slice.png",
+        "direction": "paper modal surface for rules and settings"
+      },
+      {
+        "assetId": "ui.result.panel",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\ui-result-panel-9slice.png",
+        "direction": "paper winner card with state tint applied lightly by CSS"
+      }
+    ],
+    "background": [
+      {
+        "assetId": "background.landscape.idle",
+        "path": "C:\\Users\\User\\OneDrive\\文件\\Kalah_童年回憶計畫\\visual-packs\\crystal-childhood\\assets\\background-landscape-idle.png",
+        "direction": "quiet dark field that supports the board instead of competing with it"
+      }
+    ]
+  },
+  "uiBehaviorRules": {
+    "longTextSurfaces": "Use khaki paper-card treatment with dark ink text.",
+    "shortCounts": "Use small paper pills for pit/store counts.",
+    "activePlayerFeedback": "Tint the paper surface subtly instead of replacing it with a glowing colored plate.",
+    "boardPriority": "The board remains the darkest and heaviest object on screen.",
+    "backgroundPriority": "Background should stay quieter than board and text cards."
+  },
+  "nextRoundRecommendations": [
+    {
+      "priority": "p1",
+      "task": "Refresh stone assets so ruby and amethyst pieces harmonize better with the more matte board body."
+    },
+    {
+      "priority": "p1",
+      "task": "Review typography choices. Current system fonts are serviceable, but a more intentional title/display face would help complete the theme."
+    },
+    {
+      "priority": "p2",
+      "task": "Create a unified coin / emblem pass so coin toss visuals match the new board language."
+    },
+    {
+      "priority": "p2",
+      "task": "Reduce decorative noise in remaining tutorial/demo surfaces if they still feel more fantasy than premium."
+    }
+  ],
+  "acceptanceCriteria": [
+    "Text is readable without relying on glow or extreme contrast tricks.",
+    "The board reads first, interface reads second, background reads third.",
+    "Gold appears as structure, not glitter.",
+    "Dialogue, score, modal, and result surfaces feel like one family.",
+    "The pack remains runtime-compatible with existing asset ids and manifest loading."
+  ]
+}

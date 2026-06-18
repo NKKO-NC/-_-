@@ -2,7 +2,7 @@
     "schemaVersion":  1,
     "id":  "crystal-childhood-visual",
     "displayName":  "Crystal Childhood Visual",
-    "assetVersion":  "20260618-visual-a",
+    "assetVersion":  "20260619-visual-b",
     "engineCompatibility":  "^1.0.0",
     "baseUrl":  "./assets/",
     "compliance":  {
@@ -39,7 +39,7 @@
                                                 "role":  "board-base",
                                                 "source":  "original-procedural-generated",
                                                 "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                "sha256":  "603d9b1cb24f5e1aacfa516ec702ef9f45663362979beb1db1c6cdc44e651db5"
+                                                "sha256":  "f220c48139d7b9ae206a5f96a52c6b1a6a885a3d5f99bb78e9bb465bfde9d370"
                                             },
                    "board.landscape.rim":  {
                                                "src":  "board-landscape-rim-overlay.png",
@@ -50,7 +50,7 @@
                                                "role":  "board-rim-overlay",
                                                "source":  "original-procedural-generated",
                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                               "sha256":  "b0a0f7d3b54abbd6d603b8b4594372f2acaee0b87a929cf9878439e7b98a9c4e"
+                                               "sha256":  "2d265b00f874ab225080411286350b1d10fa30bc48e3f67b6dae6c5443172dcf"
                                            },
                    "board.landscape.shadow":  {
                                                   "src":  "board-landscape-shadow.png",
@@ -61,7 +61,7 @@
                                                   "role":  "board-shadow",
                                                   "source":  "original-procedural-generated",
                                                   "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                  "sha256":  "d0a79a414ea1225e3bff2a6c775a8aed731911cb5efa667de8ab503c6b2bb883"
+                                                  "sha256":  "dedb01179007a9d707b2d203904c322aef1771e2e827215a844215dc9cf63384"
                                               },
                    "board.landscape.slot-mask":  {
                                                      "src":  "board-landscape-slot-mask.png",
@@ -83,7 +83,7 @@
                                                "role":  "board-base",
                                                "source":  "original-procedural-generated",
                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                               "sha256":  "b8d93a07b1755cbef59b5994f17f95fb58165749dbb21f06884da7cc5bb25c4a"
+                                               "sha256":  "c45743ab21188506e6b1faff37821a4eac10ed4bc4c1fe12086abc7aa57a2e1d"
                                            },
                    "board.portrait.rim":  {
                                               "src":  "board-portrait-rim-overlay.png",
@@ -94,7 +94,7 @@
                                               "role":  "board-rim-overlay",
                                               "source":  "original-procedural-generated",
                                               "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                              "sha256":  "3789f8699bf8459d399c005481bf08cbd50346504328a985211dd70d2e057f95"
+                                              "sha256":  "aaea3b5e4ff2e81b352ee166eeefdf252620515e5e339ea8df1b6edeb6a4da94"
                                           },
                    "board.portrait.shadow":  {
                                                  "src":  "board-portrait-shadow.png",
@@ -105,7 +105,7 @@
                                                  "role":  "board-shadow",
                                                  "source":  "original-procedural-generated",
                                                  "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                 "sha256":  "22b57ff33ef23654a64eb3582290d609eb6bc2a8986bc0e6df86bdf468c8b72c"
+                                                 "sha256":  "57c745deeffdb26fc8f4eb4e2f29f0a14c3b7d3900385a55cd856a465cb710cd"
                                              },
                    "board.portrait.slot-mask":  {
                                                     "src":  "board-portrait-slot-mask.png",
@@ -127,7 +127,7 @@
                                       "role":  "pit-material",
                                       "source":  "original-procedural-generated",
                                       "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                      "sha256":  "3e04b2cb6b63a7aee81eed694c11aabc528e4d4b3a32550ea2eceba452cc9afe"
+                                      "sha256":  "0b231cc3df4904b8716021cee71842403d861f6f2789659c1034f3a51ea9933c"
                                   },
                    "pit.normal":  {
                                       "src":  "pit-well-normal.png",
@@ -138,7 +138,7 @@
                                       "role":  "pit-material-normal",
                                       "source":  "original-procedural-generated",
                                       "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                      "sha256":  "8bf29500cb8cd4fb154a211e35cd2f09c824c219c3d5d351ee39f81fc8dfa869"
+                                      "sha256":  "c97a0dd0bcd4dd97ab56d6a4709ee1bacabd2b107159e5bb9524436bd0d6119e"
                                   },
                    "pit.roughness":  {
                                          "src":  "pit-well-roughness.png",
@@ -149,7 +149,7 @@
                                          "role":  "pit-material-roughness",
                                          "source":  "original-procedural-generated",
                                          "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                         "sha256":  "06ef24a8dbfee54b296fd659945daa5b932b096e1cba8c5c1bed07b541e40fbd"
+                                         "sha256":  "efbed93262ac28825f6a208bcb43e7bcd0178c793e4b06e23613f2e9ffe2f110"
                                      },
                    "store.landscape.albedo":  {
                                                   "src":  "store-well-landscape-albedo.png",
@@ -160,7 +160,7 @@
                                                   "role":  "store-material",
                                                   "source":  "original-procedural-generated",
                                                   "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                  "sha256":  "4aa917979c5b3f2a88f8a352a8c582e8934a0c008a16fd11de8050540838bcc9"
+                                                  "sha256":  "7e1b7b564574aab74b13df171e2f3677b50811a9935b0a9f8346bcf890786c4c"
                                               },
                    "store.portrait.albedo":  {
                                                  "src":  "store-well-portrait-albedo.png",
@@ -171,7 +171,7 @@
                                                  "role":  "store-material",
                                                  "source":  "original-procedural-generated",
                                                  "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                 "sha256":  "594e1798c3d48f8eb11b9a1db39e127003551cb26430be1e6f5348e1659c471e"
+                                                 "sha256":  "42c36cfed19182761ba3dc45d03094b8da93b01aac96f5558db023fa84901425"
                                              },
                    "store.normal":  {
                                         "src":  "store-well-normal.png",
@@ -182,7 +182,7 @@
                                         "role":  "store-material-normal",
                                         "source":  "original-procedural-generated",
                                         "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                        "sha256":  "a5d006a2f62785b1b50b55a6c3014f6ccea942df4edf6f40a94b68a21a3a2ea2"
+                                        "sha256":  "0afdf783dc755c21b99479813fb5582808d19acda846437666bde46d449421f0"
                                     },
                    "store.roughness":  {
                                            "src":  "store-well-roughness.png",
@@ -193,7 +193,7 @@
                                            "role":  "store-material-roughness",
                                            "source":  "original-procedural-generated",
                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                           "sha256":  "47f03d111ebbe85836c11e93a1745d3e6fdea52b787503cfd759f0b755e97886"
+                                           "sha256":  "9f40fc79f84f34e2e9a3d746370c3b92cfa56c08286e6d7b20fb2336cf917b76"
                                        },
                    "ui.score.panel":  {
                                           "src":  "ui-score-panel-9slice.png",
@@ -204,7 +204,7 @@
                                           "role":  "ui-score-panel",
                                           "source":  "original-procedural-generated",
                                           "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                          "sha256":  "863f09759183915ac1ee9d5dc5a6e1baf457d16f54e5198bf14d586b2418445d"
+                                          "sha256":  "0eadb824ab5a0a527ec42fcb3af4b40a7931e5419e0921af514dcbc5e6693375"
                                       },
                    "ui.dialogue.panel":  {
                                              "src":  "ui-dialogue-panel-9slice.png",
@@ -215,7 +215,7 @@
                                              "role":  "ui-dialogue-panel",
                                              "source":  "original-procedural-generated",
                                              "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                             "sha256":  "af138d47f0189a5ac468f5edefb9d1f6e9359f066e00da86914de027eb265ebf"
+                                             "sha256":  "d70a39b1eb66e564043afc4dcbc7b82f5d5667d79702a1d6e23a5426f7f98f66"
                                          },
                    "ui.modal.panel":  {
                                           "src":  "ui-modal-panel-9slice.png",
@@ -226,7 +226,7 @@
                                           "role":  "ui-modal-panel",
                                           "source":  "original-procedural-generated",
                                           "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                          "sha256":  "b45d864664bd7c97e4ca02451824324bd50489fb397c6f19e21ee5ad7d548346"
+                                          "sha256":  "0ced9741ffb9ed1296b508934b3ef8d4ec5d06ea8a5f1ce326f0ea7c2f48ff7e"
                                       },
                    "ui.result.panel":  {
                                            "src":  "ui-result-panel-9slice.png",
@@ -237,7 +237,7 @@
                                            "role":  "ui-result-panel",
                                            "source":  "original-procedural-generated",
                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                           "sha256":  "511de02aaefafefe70b210c413d15669c524cfa097000c2b3cf9e4741966ee80"
+                                           "sha256":  "016f38755eb659734739ec42471ed4fcc2cbbbd325b5bb4fccb4611d7617e700"
                                        },
                    "ui.button.primary":  {
                                              "src":  "ui-button-primary-9slice.png",
@@ -248,7 +248,7 @@
                                              "role":  "ui-button-primary",
                                              "source":  "original-procedural-generated",
                                              "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                             "sha256":  "9f79fa02a78718a7a878d80d848cf4f6ff5629a82a2252901622bd39d930c269"
+                                             "sha256":  "69b34cf6d6fa19b82b4b3129b04150c3b5a0ff239ccb547c7185b37edd2c88be"
                                          },
                    "ui.button.secondary":  {
                                                "src":  "ui-button-secondary-9slice.png",
@@ -259,7 +259,7 @@
                                                "role":  "ui-button-secondary",
                                                "source":  "original-procedural-generated",
                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                               "sha256":  "9d5ba0ae61ce1b15e19eb4280cae82995760139910821ad38e0c73a5c5baf6ef"
+                                               "sha256":  "849be7150f4959bb769ec3990c1da0a8aa7c4e0a51c0e33c9b327a6bcd214c57"
                                            },
                    "ui.icon.frame":  {
                                          "src":  "ui-icon-frame.png",
@@ -270,7 +270,7 @@
                                          "role":  "ui-icon-frame",
                                          "source":  "original-procedural-generated",
                                          "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                         "sha256":  "40c5528a7e80ca6bae64ad260ec4a4194df789a39282b0bca3d15a9cc3d0b688"
+                                         "sha256":  "16ecaa6e658872fefeba3583a4972b889a2d552304715f7aa062a78cae0bd16f"
                                      },
                    "ui.turn.badge":  {
                                          "src":  "ui-turn-badge.png",
@@ -281,8 +281,41 @@
                                          "role":  "ui-turn-badge",
                                          "source":  "original-procedural-generated",
                                          "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                         "sha256":  "45a883ccf2ac0abe1f1907be777a76ecc7d07597be12d53fca67db8659daf1bf"
+                                         "sha256":  "1a5d5774bc30078586af39604c86ee92fdcbe276ded33896c27ba4184acb1dd6"
                                      },
+                   "hint.ring.red":  {
+                                         "src":  "hint-ring-red.png",
+                                         "type":  "image/png",
+                                         "width":  512,
+                                         "height":  512,
+                                         "alpha":  true,
+                                         "role":  "hint-ring",
+                                         "source":  "original-procedural-generated",
+                                         "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                         "sha256":  "1b36071622b7a9e26140b17efb905fc49d6623eb8c0e1b578be1cbf8b0038eda"
+                                     },
+                   "hint.ring.purple":  {
+                                            "src":  "hint-ring-purple.png",
+                                            "type":  "image/png",
+                                            "width":  512,
+                                            "height":  512,
+                                            "alpha":  true,
+                                            "role":  "hint-ring",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "42e7763ad1ae1d498017903c2dda498d793d6676548b0ce5139aa1aca066734c"
+                                        },
+                   "hint.ring.landing":  {
+                                             "src":  "hint-ring-landing.png",
+                                             "type":  "image/png",
+                                             "width":  512,
+                                             "height":  512,
+                                             "alpha":  true,
+                                             "role":  "hint-ring",
+                                             "source":  "original-procedural-generated",
+                                             "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                             "sha256":  "4f6a1bd396dd07f29f423421a7f7a2e439f7e1a262f3be202dfcca16597d91ca"
+                                         },
                    "background.landscape.idle":  {
                                                      "src":  "background-landscape-idle.png",
                                                      "type":  "image/png",
@@ -292,7 +325,7 @@
                                                      "role":  "background",
                                                      "source":  "original-procedural-generated",
                                                      "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                     "sha256":  "d2fa505cb121c63e2156384db028b519bff9aeb5cb285bab9512160c20f46a80"
+                                                     "sha256":  "063454ca49bba4ff82007da38833cfe5787a46893677563cfb3875b477106292"
                                                  },
                    "background.portrait.idle":  {
                                                     "src":  "background-portrait-idle.png",
@@ -303,7 +336,7 @@
                                                     "role":  "background",
                                                     "source":  "original-procedural-generated",
                                                     "license":  "project-owned-procedural-placeholder-commercial-use-ok",
-                                                    "sha256":  "919dc4546ea118ee7ff3149c1df977ad95f1f8d23fcf7a36206c47984a1b0064"
+                                                    "sha256":  "d2b4df286ae4b2d8ab6fe6f74fc8c9f2113e91336254d65a8a1f9d67f33665f6"
                                                 },
                    "particle.ruby.01":  {
                                             "src":  "particle-ruby-01.png",
@@ -510,7 +543,7 @@
                                               }
                   },
     "notes":  {
-                  "artPass":  "procedural integration placeholder; replace with final department art while preserving ids and dimensions",
+                  "artPass":  "obsidian-and-kraft revision pass for current playable build; preserve ids and dimensions for future art replacement",
                   "backgroundFormatNote":  "PNG is used instead of WebP because the local PowerShell/.NET generator has no WebP encoder."
               }
 }

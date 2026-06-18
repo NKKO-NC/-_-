@@ -136,6 +136,9 @@ All UI skin assets must be stretch-safe. Provide a 9-slice guide in manifest.
 | `ui.button.secondary` | `ui-button-secondary-9slice.png` | 768 x 224 | PNG | yes | yes | Secondary button surface. |
 | `ui.icon.frame` | `ui-icon-frame.png` | 256 x 256 | PNG | yes | yes | Circular or compact icon button frame. |
 | `ui.turn.badge` | `ui-turn-badge.png` | 384 x 384 | PNG | yes | yes | Turn indicator holder. |
+| `hint.ring.red` | `hint-ring-red.png` | 512 x 512 | PNG | yes | optional | Player-one sow-preview ring material; CSS fallback exists. |
+| `hint.ring.purple` | `hint-ring-purple.png` | 512 x 512 | PNG | yes | optional | Player-two sow-preview ring material; CSS fallback exists. |
+| `hint.ring.landing` | `hint-ring-landing.png` | 512 x 512 | PNG | yes | optional | Yellow landing-stop preview ring material; CSS fallback exists. |
 
 UI prompt:
 
