@@ -3,7 +3,7 @@
   getCoinFace,
   getNeutralSkin,
   getPlayerSkin,
-} from "./object-pack-manifest.js?v=20260618d";
+} from "./object-pack-manifest.js?v=20260619a";
 
 function createObjectPackRuntime(pack) {
   function getPackAssetUrl(assetId) {

@@ -1,9 +1,9 @@
-﻿import { CoinTossScene } from "./coin/index.js?v=20260618d";
-import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260618d";
-import { createKalahAi } from "./game/ai.js?v=20260618d";
-import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260618d";
-import { getGameDomRefs } from "./ui/dom.js?v=20260618d";
-import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260618d";
+﻿import { CoinTossScene } from "./coin/index.js?v=20260619a";
+import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260619a";
+import { createKalahAi } from "./game/ai.js?v=20260619a";
+import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260619a";
+import { getGameDomRefs } from "./ui/dom.js?v=20260619a";
+import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260619a";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -19,17 +19,17 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260618d";
+} from "./core/object-model.js?v=20260619a";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
   STONE_PLACEMENT_PHYSICS,
   selectCountCurveValue,
-} from "./core/object-physics.js?v=20260618d";
-import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260618d";
-import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260618d";
-import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260618d";
-import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260618d";
+} from "./core/object-physics.js?v=20260619a";
+import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
+import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260619a";
+import { CRYSTAL_OBJECT_PACK } from "./object-packs/crystal.js?v=20260619a";
+import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619a";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const objectPack = createObjectPackRuntime(CRYSTAL_OBJECT_PACK);
@@ -46,6 +46,8 @@ const BOARD_SIZE = BOARD_MODEL.boardSize;
 const topPits = BOARD_MODEL.layout.topPits;
 const bottomPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_ONE);
 const playerTwoPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_TWO);
+const COMPACT_LANDSCAPE_MAX_HEIGHT = 560;
+const COMPACT_LANDSCAPE_MAX_WIDTH = 980;
 
 const {
   boardEl,
@@ -229,6 +231,18 @@ const ruleDemoState = {
 };
 
 const LOW_SIDE_THRESHOLD = 8;
+
+function updateBoardLayoutMode() {
+  const viewport = window.visualViewport;
+  const width = Math.round(viewport?.width ?? window.innerWidth);
+  const height = Math.round(viewport?.height ?? window.innerHeight);
+  const isPortrait = height >= width && width <= 760;
+  const isCompactLandscape =
+    width > height && (height <= COMPACT_LANDSCAPE_MAX_HEIGHT || width <= COMPACT_LANDSCAPE_MAX_WIDTH);
+  const layoutMode = isPortrait ? "portrait" : isCompactLandscape ? "compact-landscape" : "landscape";
+
+  document.documentElement.dataset.boardLayout = layoutMode;
+}
 
 function createInitialBoard() {
   return createInitialObjectBoard(BOARD_MODEL);
@@ -1616,6 +1630,11 @@ resetButton.addEventListener("click", resetGame);
 menuButton.addEventListener("click", showMainMenu);
 resultResetButton.addEventListener("click", resetGame);
 resultMenuButton.addEventListener("click", showMainMenu);
+
+updateBoardLayoutMode();
+window.addEventListener("resize", updateBoardLayoutMode, { passive: true });
+window.addEventListener("orientationchange", updateBoardLayoutMode, { passive: true });
+window.visualViewport?.addEventListener("resize", updateBoardLayoutMode, { passive: true });
 
 window.addEventListener(
   "pointerdown",

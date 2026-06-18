@@ -1,4 +1,4 @@
-import { PLAYER_ONE, PLAYER_TWO } from "../core/object-model.js?v=20260618d";
+import { PLAYER_ONE, PLAYER_TWO } from "../core/object-model.js?v=20260619a";
 
 const RULE_DEMOS = [
   {

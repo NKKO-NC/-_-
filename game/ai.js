@@ -9,7 +9,7 @@
   getPlayerPitIndices,
   getStoreIndex,
   isStoreIndex,
-} from "../core/object-model.js?v=20260618d";
+} from "../core/object-model.js?v=20260619a";
 
 function toCountBoard(stoneBoard) {
   return stoneBoard.map((cell) => cell.length);

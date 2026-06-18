@@ -579,18 +579,19 @@ h1 {
   display: grid;
   grid-template-columns: minmax(72px, 0.82fr) repeat(6, minmax(74px, 1fr)) minmax(72px, 0.82fr);
   grid-template-rows: repeat(2, minmax(128px, 1fr));
+  align-items: center;
+  justify-items: center;
   gap: 14px;
   padding: 22px;
   border: 2px solid var(--gold);
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.88);
   background-image:
-    var(--visual-board-landscape-base),
     linear-gradient(145deg, rgba(255, 228, 161, 0.12), transparent 22%),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 17px),
     linear-gradient(135deg, rgba(23, 23, 28, 0.96), rgba(0, 0, 0, 0.88));
   background-position: center;
-  background-size: 100% 100%, auto, auto, auto;
+  background-size: auto, auto, auto;
   box-shadow:
     0 30px 72px rgba(0, 0, 0, 0.62),
     0 28px 70px var(--shadow),
@@ -610,11 +611,10 @@ h1 {
 .board::before {
   border: 1px solid rgba(255, 228, 161, 0.34);
   background-image:
-    var(--visual-board-landscape-rim),
     repeating-conic-gradient(from 45deg, transparent 0deg 14deg, rgba(217, 180, 100, 0.16) 14deg 15deg),
     linear-gradient(90deg, transparent, rgba(82, 199, 184, 0.05), transparent);
   background-position: center;
-  background-size: 100% 100%, auto, auto;
+  background-size: auto, auto;
   mask-image: linear-gradient(#000, #000);
 }
 
@@ -684,7 +684,8 @@ h1 {
 }
 
 .pit {
-  min-height: 128px;
+  width: min(100%, 142px);
+  min-height: 0;
   aspect-ratio: 1 / 0.92;
   border-radius: 50%;
   cursor: pointer;
@@ -717,6 +718,8 @@ h1 {
 }
 
 .store {
+  width: 100%;
+  min-width: 0;
   min-height: 100%;
   border-radius: 44px;
   box-shadow:
@@ -1275,12 +1278,12 @@ h1 {
 }
 
 .rule-demo-board::before {
-  content: "對方";
+  content: "\5c0d\65b9";
   top: 5px;
 }
 
 .rule-demo-board::after {
-  content: "我方";
+  content: "\6211\65b9";
   bottom: 4px;
 }
 
@@ -1558,6 +1561,7 @@ h1 {
   background: transparent;
   cursor: pointer;
   box-shadow: inset 0 0 0 1px rgba(255, 228, 161, 0.08);
+  overflow: visible;
 }
 
 .setup-side-frame.opponent-pits {
@@ -1610,6 +1614,16 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.setup-side-frame.opponent-store span,
+.setup-side-frame.player-store span {
+  left: 50%;
+  max-width: none;
+  min-width: max-content;
+  transform: translateX(-50%);
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .setup-side-frame b {
@@ -2313,6 +2327,142 @@ h1 {
   }
 }
 
+@media (orientation: landscape) and (max-height: 560px), (max-width: 980px) and (orientation: landscape) {
+  .game-app {
+    width: min(100%, 1060px);
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    gap: 8px;
+  }
+
+  .game-screen {
+    min-height: calc(100vh - 22px);
+    min-height: calc(100svh - 22px);
+    gap: 8px;
+  }
+
+  .game-header,
+  .score-strip,
+  .ai-dialogue {
+    width: min(100%, 920px);
+  }
+
+  .game-header .eyebrow {
+    font-size: 1.55rem;
+  }
+
+  .game-actions {
+    gap: 7px;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 38px;
+    font-size: 1.08rem;
+  }
+
+  .menu-return-button {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 0.82rem;
+  }
+
+  .ai-dialogue {
+    padding: 6px 10px;
+  }
+
+  .ai-dialogue-line {
+    font-size: 0.82rem;
+  }
+
+  .score-strip {
+    grid-template-columns: 1fr 58px 1fr;
+    gap: 8px;
+  }
+
+  .player-score {
+    min-height: 50px;
+    padding: 8px 12px;
+  }
+
+  .player-score strong {
+    font-size: 1.42rem;
+  }
+
+  .turn-indicator {
+    width: 58px;
+    min-height: 50px;
+  }
+
+  .turn-indicator img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .board-wrap {
+    overflow-x: hidden;
+    padding: 2px 0 6px;
+  }
+
+  .board {
+    width: min(100%, 940px);
+    grid-template-columns: minmax(52px, 0.72fr) repeat(6, minmax(46px, 1fr)) minmax(52px, 0.72fr);
+    grid-template-rows: repeat(2, minmax(74px, 1fr));
+    gap: 8px;
+    padding: 14px;
+  }
+
+  .pit {
+    width: min(100%, 96px);
+  }
+
+  .store {
+    border-radius: 30px;
+  }
+
+  .pit::before,
+  .store::before {
+    inset: 6px;
+  }
+
+  .pit::after,
+  .store::after {
+    inset: 11px 9px auto;
+  }
+
+  .pit-count {
+    right: 5px;
+    bottom: 5px;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 5px;
+    font-size: 0.68rem;
+  }
+
+  .store-count {
+    min-width: 32px;
+    height: 28px;
+    font-size: 0.94rem;
+  }
+
+  .stone {
+    width: 32%;
+  }
+
+  .store .stone {
+    width: 38%;
+  }
+}
+
+html[data-board-layout="compact-landscape"] .board {
+  width: min(100%, 940px);
+}
+
+html[data-board-layout="compact-landscape"] .pit {
+  width: min(100%, 96px);
+}
+
 @media (max-width: 760px) and (orientation: portrait) {
   body {
     background-image:
@@ -2349,7 +2499,6 @@ h1 {
     padding: 12px;
     overflow: hidden;
     background-image:
-      var(--visual-board-portrait-base),
       linear-gradient(145deg, rgba(255, 228, 161, 0.12), transparent 22%),
       repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 17px),
       linear-gradient(135deg, rgba(23, 23, 28, 0.96), rgba(0, 0, 0, 0.88));
@@ -2357,10 +2506,9 @@ h1 {
 
   .board::before {
     background-image:
-      var(--visual-board-portrait-rim),
       radial-gradient(ellipse at 50% 50%, rgba(82, 199, 184, 0.075), transparent 52%),
       repeating-conic-gradient(from 45deg, transparent 0deg 14deg, rgba(217, 180, 100, 0.13) 14deg 15deg);
-    background-size: 100% 100%, auto, auto;
+    background-size: auto, auto;
   }
 
   .board::after {
