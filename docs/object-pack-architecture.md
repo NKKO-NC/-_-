@@ -18,6 +18,9 @@ The expected object-pack contract lives in `core/object-pack-manifest.js`. `defi
 
 Current runtime wiring:
 
-- `script.js` imports `KALAH_BOARD_MODEL` for rules/state, `STONE_*_PHYSICS` for layout/animation, and `CRYSTAL_OBJECT_PACK` for the active skin.
+- `script.js` imports `KALAH_BOARD_MODEL` for rules/state and `STONE_*_PHYSICS` for layout/animation.
+- `core/object-pack-runtime.js` wraps the active object pack and exposes asset, player, coin-face, class, and CSS variable accessors.
+- `game/ai.js` owns count-board simulation and Easy / Medium / Hard move selection, so AI search no longer lives inside the main UI controller.
+- `ui/copy.js`, `ui/dom.js`, and `ui/rule-demo-data.js` keep shared copy, DOM references, and tutorial data out of `script.js`.
 - CSS still owns the detailed selectors for the current crystal skin, but values that are likely to theme-swap are exposed as CSS custom properties by the active pack.
-- `service-worker.js` precaches the new core and object-pack modules.
+- `service-worker.js` precaches the split core, game, UI, and object-pack modules.

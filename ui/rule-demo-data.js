@@ -1,0 +1,143 @@
+import { PLAYER_ONE, PLAYER_TWO } from "../core/object-model.js?v=20260618d";
+
+const RULE_DEMOS = [
+  {
+    id: "intro",
+    title: "遊戲簡介",
+    summary: "出處、年代、背景與特色。",
+    type: "text",
+    header: "Kalah 是播棋家族的現代版本。",
+    sections: [
+      { label: "出處", text: "源自古老的 mancala 播棋家族；現代 Kalah 由 William J. Champion Jr. 整理推廣。" },
+      { label: "年代", text: "約 1940 年代在美國出現，後來成為常見的商業版本。" },
+      { label: "背景", text: "用棋坑、棋庫與棋子，表現撒種、分配、收成的抽象思路。" },
+      { label: "特色", text: "規則短，但每一步都牽動得分、連手、吃子與結算。" },
+    ],
+  },
+  {
+    id: "goal",
+    title: "遊戲目標",
+    summary: "看懂如何鬥智，以及最後比什麼。",
+    type: "text",
+    header: "讓更多棋子進自己的棋庫。",
+    sections: [
+      { label: "如何鬥智", text: "每回合都在取捨：現在得分、製造額外回合，或留下吃子的機會。" },
+      { label: "最終目標", text: "一方棋坑清空後結算；自己的棋庫棋子比對方多，就獲勝。" },
+    ],
+  },
+  {
+    id: "setup",
+    title: "遊戲初始設置",
+    summary: "認識棋坑、棋庫與起始棋子。",
+    type: "setup",
+    board: [3, 3, 0, 3, 3, 0],
+    setupInfo: [
+      {
+        id: "player-pits",
+        label: "我的棋坑",
+        frameClass: "player-pits",
+        indices: [0, 1],
+        description: "輪到你時，從自己的棋坑取起全部棋子，依序往下一格撒。",
+      },
+      {
+        id: "player-store",
+        label: "我的棋庫",
+        frameClass: "player-store",
+        indices: [2],
+        description: "棋子進自己的棋庫就得分；最後一顆落在這裡，會得到額外回合。",
+      },
+      {
+        id: "opponent-pits",
+        label: "對方棋坑",
+        frameClass: "opponent-pits",
+        indices: [3, 4],
+        description: "撒棋會經過對方棋坑，棋子照樣放進去；也可能成為之後吃子的目標。",
+      },
+      {
+        id: "opponent-store",
+        label: "對方棋庫",
+        frameClass: "opponent-store",
+        indices: [5],
+        description: "撒棋時會跳過對方棋庫，不替對方加分。",
+      },
+    ],
+  },
+  {
+    id: "basic",
+    title: "基本操作",
+    summary: "選自己的棋坑，棋子依序落進下一格。",
+    type: "animation",
+    header: "選自己的棋坑，棋子依序落進下一格。",
+    legend: ["自己的棋坑", "自己的棋庫 (+1分)", "對方的棋坑", "對方的棋庫(跳過)"],
+    frames: [
+      { board: [5, 0, 0, 0, 0, 0], activeIndices: [0], note: "選自己的棋坑。" },
+      { board: [0, 0, 0, 0, 0, 0], activeIndices: [0], note: "拿起棋子，準備依序撒下。" },
+      { board: [0, 1, 0, 0, 0, 0], activeIndices: [1], note: "自己的棋坑。" },
+      { board: [0, 1, 1, 0, 0, 0], activeIndices: [2], note: "自己的棋庫 +1 分。" },
+      { board: [0, 1, 1, 1, 0, 0], activeIndices: [3], note: "對方的棋坑。" },
+      { board: [0, 1, 1, 1, 1, 0], activeIndices: [4], note: "對方的棋坑。" },
+      { board: [0, 1, 1, 1, 1, 0], skippedIndex: 5, note: "對方的棋庫，跳過。" },
+      { board: [1, 1, 1, 1, 1, 0], activeIndices: [0], note: "繼續回到自己的棋坑。" },
+    ],
+  },
+  {
+    id: "extra",
+    title: "額外的回合!",
+    summary: "最後一子落在自己的棋庫，可以再來一次。",
+    type: "animation",
+    header: "最後一子落在自己的棋庫，就觸發額外回合，可以多動一下。",
+    frames: [
+      { board: [3, 1, 0, 0, 0, 0], activeIndices: [0], note: "先試著取 3。" },
+      { board: [0, 1, 0, 0, 0, 0], activeIndices: [0], note: "拿起 3 顆，開始逐格放。" },
+      { board: [0, 2, 0, 0, 0, 0], activeIndices: [1], note: "第 1 顆落在自己的棋坑。" },
+      { board: [0, 2, 1, 0, 0, 0], activeIndices: [2], note: "第 2 顆進自己的棋庫，先加 1 分。" },
+      { board: [0, 2, 1, 1, 0, 0], activeIndices: [3], note: "第 3 顆落在對手棋坑，沒有額外回合。" },
+      { board: [3, 1, 0, 0, 0, 0], activeIndices: [1], note: "改成先取 1。" },
+      { board: [3, 0, 0, 0, 0, 0], activeIndices: [1], note: "拿起 1 顆。" },
+      { board: [3, 0, 1, 0, 0, 0], activeIndices: [2], note: "最後一顆進棋庫，觸發額外回合。" },
+      { board: [3, 0, 1, 0, 0, 0], activeIndices: [0], note: "你觸發了額外回合，所以可以多動一下。" },
+      { board: [0, 0, 1, 0, 0, 0], activeIndices: [0], note: "接著取 3，繼續逐格放。" },
+      { board: [0, 1, 1, 0, 0, 0], activeIndices: [1], note: "第 1 顆落在自己的棋坑。" },
+      { board: [0, 1, 2, 0, 0, 0], activeIndices: [2], note: "第 2 顆再進棋庫，又多 1 分。" },
+      { board: [0, 1, 2, 1, 0, 0], activeIndices: [3], note: "第 3 顆落到對手棋坑，連手多拿了分數。" },
+    ],
+  },
+  {
+    id: "capture",
+    title: "吃子",
+    summary: "最後落在自己的空棋坑，收走對面棋子。",
+    type: "animation",
+    header: "最後一子落在自己的空棋坑，且對面有棋子，就吃子。",
+    frames: [
+      { board: [1, 0, 0, 3, 0, 0], activeIndices: [0], note: "選自己的棋坑。" },
+      { board: [0, 0, 0, 3, 0, 0], activeIndices: [0], note: "拿起棋子。" },
+      { board: [0, 1, 0, 3, 0, 0], activeIndices: [1], note: "最後一顆落在自己的空棋坑。" },
+      { board: [0, 1, 0, 3, 0, 0], activeIndices: [1, 3], note: "對面棋坑有棋子，可以吃。" },
+      { board: [0, 0, 4, 0, 0, 0], activeIndices: [2], note: "兩邊棋子一起收進棋庫。" },
+    ],
+  },
+  {
+    id: "finish",
+    title: "結算",
+    summary: "一方棋坑清空，剩子全部進棋庫。",
+    type: "animation",
+    header: "一方棋坑清空，剩下棋子全部進自己的棋庫。",
+    frames: [
+      { board: [0, 1, 5, 2, 1, 4], activeIndices: [1], note: "這一步會讓我的棋坑清空。" },
+      { board: [0, 0, 6, 2, 1, 4], activeIndices: [2], note: "最後一顆進棋庫，我方棋坑清空。" },
+      { board: [0, 0, 6, 0, 1, 6], activeIndices: [3, 5], note: "對手剩下的棋子收進對手棋庫。" },
+      { board: [0, 0, 6, 0, 0, 7], activeIndices: [4, 5], note: "全部收完後，比棋庫分數。" },
+    ],
+  },
+];
+
+const RULE_DEMO_CELLS = [
+  { index: 5, label: "對手棋庫", type: "store", owner: PLAYER_TWO },
+  { index: 4, label: "對手棋坑", type: "pit", owner: PLAYER_TWO },
+  { index: 3, label: "對手棋坑", type: "pit", owner: PLAYER_TWO },
+  { index: 0, label: "我的棋坑", type: "pit", owner: PLAYER_ONE },
+  { index: 1, label: "我的棋坑", type: "pit", owner: PLAYER_ONE },
+  { index: 2, label: "我的棋庫", type: "store", owner: PLAYER_ONE },
+];
+
+export { RULE_DEMOS, RULE_DEMO_CELLS };

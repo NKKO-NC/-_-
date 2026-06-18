@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "id": "procedural-crystal",
+  "displayName": "Procedural Crystal",
+  "assetVersion": "20260618-procedural-crystal-a",
+  "baseUrl": "./audio/",
+  "format": "wav/pcm-s16le",
+  "sampleRate": 44100,
+  "channels": 2,
+  "generator": {
+    "name": "generate-pack.ps1",
+    "method": "deterministic procedural synthesis; no third-party samples"
+  },
+  "compliance": {
+    "thirdPartySamples": false,
+    "commercialUseIntended": true,
+    "attributionRequired": false,
+    "source": "procedural-generated",
+    "licenseNote": "Generated from source code in this pack. Keep SOUND_LICENSE.md with redistributed files."
+  },
+  "buses": {
+    "music": { "volume": 0.42, "loop": true },
+    "sfx": { "volume": 0.82, "polyphony": 8 }
+  },
+  "assets": {
+    "bgm-main": {
+      "src": "bgm-crystal-major-loop.wav",
+      "type": "audio/wav",
+      "durationMs": 32000,
+      "sha256": "5ee14a19fe55d8ecf6200568ea23a15a7621bbd87ccefe563152c50a1d8be45b",
+      "tags": ["bgm", "major", "loop", "airy", "wind-chime"]
+    },
+    "pickup-01": {
+      "src": "stone-pickup-01.wav",
+      "type": "audio/wav",
+      "durationMs": 480,
+      "sha256": "09189026cf5a39b6df23cb7cb5179bca6d3725b87ac299250503820dcfb1b4c0",
+      "tags": ["stone", "pickup", "crystal"]
+    },
+    "pickup-02": {
+      "src": "stone-pickup-02.wav",
+      "type": "audio/wav",
+      "durationMs": 480,
+      "sha256": "151008a8a17d868d3fe5ee4720ac62a34fbed4651c86d52f5443fab962300ae4",
+      "tags": ["stone", "pickup", "crystal"]
+    },
+    "pickup-03": {
+      "src": "stone-pickup-03.wav",
+      "type": "audio/wav",
+      "durationMs": 480,
+      "sha256": "548e4b2037e6469de3e272d3359754953d351bb7a174d8bc13b2553c75a050cb",
+      "tags": ["stone", "pickup", "crystal"]
+    },
+    "drop-pit-01": {
+      "src": "stone-drop-pit-01.wav",
+      "type": "audio/wav",
+      "durationMs": 580,
+      "sha256": "4e93e9717135b143c749a19f5318751a1b1d3bd876a90410bb989b864fa4b118",
+      "tags": ["stone", "drop", "pit", "crystal"]
+    },
+    "drop-pit-02": {
+      "src": "stone-drop-pit-02.wav",
+      "type": "audio/wav",
+      "durationMs": 580,
+      "sha256": "4bb6f0cdb226b1df51bc956e37f49b64c63d34979d671a995d866c41d64801ed",
+      "tags": ["stone", "drop", "pit", "crystal"]
+    },
+    "drop-pit-03": {
+      "src": "stone-drop-pit-03.wav",
+      "type": "audio/wav",
+      "durationMs": 580,
+      "sha256": "a65bb2e38d23d607e362677c87bd9520bed6a79f45cb4ee26560b3ecd5ca6f4f",
+      "tags": ["stone", "drop", "pit", "crystal"]
+    },
+    "drop-store-01": {
+      "src": "stone-drop-store-01.wav",
+      "type": "audio/wav",
+      "durationMs": 780,
+      "sha256": "c421f8bff475430f9b5c7bfd096c44523d8b492f43bb69b005775b8f990e8aa1",
+      "tags": ["stone", "drop", "store", "crystal"]
+    },
+    "drop-store-02": {
+      "src": "stone-drop-store-02.wav",
+      "type": "audio/wav",
+      "durationMs": 780,
+      "sha256": "a0450bed4ebad7d674cad5d6cd1516125b7317b5e5bf87549d4da8e6874143e3",
+      "tags": ["stone", "drop", "store", "crystal"]
+    },
+    "collision-01": {
+      "src": "stone-collision-01.wav",
+      "type": "audio/wav",
+      "durationMs": 455,
+      "sha256": "4ca0b49f07b1261cb0fc2eab7e575f2b5f021ea23a7ee2e47bf6c58184db2627",
+      "tags": ["stone", "collision", "crystal", "random-variant"]
+    },
+    "collision-02": {
+      "src": "stone-collision-02.wav",
+      "type": "audio/wav",
+      "durationMs": 490,
+      "sha256": "3627c2a440929e35fc7173acda31947d833141e51627a8f2445255fafc841e19",
+      "tags": ["stone", "collision", "crystal", "random-variant"]
+    },
+    "collision-03": {
+      "src": "stone-collision-03.wav",
+      "type": "audio/wav",
+      "durationMs": 525,
+      "sha256": "28065640db1a0fb477c77b44fc9e100adca814b93855cb6938621384403ca404",
+      "tags": ["stone", "collision", "crystal", "random-variant"]
+    },
+    "capture-01": {
+      "src": "stone-capture-crystal-01.wav",
+      "type": "audio/wav",
+      "durationMs": 1450,
+      "sha256": "7262da4a53fe3b688b3469b1b14b7e83b61681737b2192f528ac0913f0edb3fd",
+      "tags": ["stone", "capture", "crystal", "sweep"]
+    },
+    "ui-button-01": {
+      "src": "ui-button-wood-01.wav",
+      "type": "audio/wav",
+      "durationMs": 200,
+      "sha256": "e1417f3df692f1a865959840a72bc5378dbc06ec13f94bbd38d3f79ee814396e",
+      "tags": ["ui", "button", "wood", "short"]
+    },
+    "ui-button-02": {
+      "src": "ui-button-wood-02.wav",
+      "type": "audio/wav",
+      "durationMs": 200,
+      "sha256": "2b8600cf77df840b2f5cc704c122aab23e1b199845562a2fccab6e1e428c66fa",
+      "tags": ["ui", "button", "wood", "short"]
+    },
+    "ui-button-03": {
+      "src": "ui-button-wood-03.wav",
+      "type": "audio/wav",
+      "durationMs": 200,
+      "sha256": "ccc653b9372fef51d6c9aea84bd44086b1b11ab496dca73fc9ae0fe003f1881d",
+      "tags": ["ui", "button", "wood", "short"]
+    },
+    "ui-invalid-01": {
+      "src": "ui-invalid-muted-01.wav",
+      "type": "audio/wav",
+      "durationMs": 180,
+      "sha256": "e886b73b5bc911800d7f9be6d8a5a5b894f6804f93d11c67c5b39e24f67f8d87",
+      "tags": ["ui", "invalid", "muted"]
+    },
+    "coin-toss-01": {
+      "src": "coin-toss-crystal-spin-01.wav",
+      "type": "audio/wav",
+      "durationMs": 1550,
+      "sha256": "1b63d3a2911ee061b195755c59c6bf3b738a1ed4402e8c8ba50e8695e7b270d2",
+      "tags": ["coin", "toss", "spin", "crystal"]
+    },
+    "turn-change-01": {
+      "src": "turn-change-chime-01.wav",
+      "type": "audio/wav",
+      "durationMs": 820,
+      "sha256": "f4be63eb5b0bfc507171ec8b70c3059bb4868b1d4097f87c04fe64548960da29",
+      "tags": ["turn", "chime", "crystal"]
+    },
+    "extra-turn-01": {
+      "src": "turn-extra-crystal-01.wav",
+      "type": "audio/wav",
+      "durationMs": 1180,
+      "sha256": "287d3189bc80b98350c70ff33f4271626ce82b348aa3508869adb58378959daa",
+      "tags": ["turn", "extra", "up", "crystal"]
+    },
+    "result-victory-01": {
+      "src": "result-victory-crystal-upbeat-01.wav",
+      "type": "audio/wav",
+      "durationMs": 4250,
+      "sha256": "c6f0f47c31fb00d27b6e7093ded4f9df4bd6949d143dc98daaffafb0b58d8c47",
+      "tags": ["result", "victory", "upbeat", "crystal"]
+    },
+    "result-defeat-01": {
+      "src": "result-defeat-crystal-downbeat-01.wav",
+      "type": "audio/wav",
+      "durationMs": 4150,
+      "sha256": "0b50912cc50fdde777e228eb8473b198653e94b5ce044fa1f49a3aa92ca9c08a",
+      "tags": ["result", "defeat", "downbeat", "crystal"]
+    },
+    "result-draw-01": {
+      "src": "result-draw-crystal-chord-01.wav",
+      "type": "audio/wav",
+      "durationMs": 3550,
+      "sha256": "5eb9fb5ce40b27ba85ca08e96473d2d27323f3823feef56445584f6ddc90cf20",
+      "tags": ["result", "draw", "chord", "crystal"]
+    }
+  },
+  "events": {
+    "music.game": {
+      "variants": ["bgm-main"],
+      "bus": "music",
+      "loop": true,
+      "volume": 1,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 800,
+      "fadeOutMs": 1200
+    },
+    "stone.pickup": {
+      "variants": ["pickup-01", "pickup-02", "pickup-03"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.9,
+      "randomizeVariant": true,
+      "pitchRange": [0.96, 1.04],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "stone.drop.pit": {
+      "variants": ["drop-pit-01", "drop-pit-02", "drop-pit-03"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.82,
+      "randomizeVariant": true,
+      "pitchRange": [0.96, 1.04],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "stone.drop.store": {
+      "variants": ["drop-store-01", "drop-store-02"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.88,
+      "randomizeVariant": true,
+      "pitchRange": [0.96, 1.04],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "stone.collision": {
+      "variants": ["collision-01", "collision-02", "collision-03"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.72,
+      "randomizeVariant": true,
+      "pitchRange": [0.96, 1.04],
+      "cooldownMs": 25,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "stone.capture": {
+      "variants": ["capture-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.92,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "turn.change": {
+      "variants": ["turn-change-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.7,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "turn.extra": {
+      "variants": ["extra-turn-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.82,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "coin.toss": {
+      "variants": ["coin-toss-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.78,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "ui.button": {
+      "variants": ["ui-button-01", "ui-button-02", "ui-button-03"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.72,
+      "randomizeVariant": true,
+      "pitchRange": [0.96, 1.04],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "ui.invalid": {
+      "variants": ["ui-invalid-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.64,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "result.victory": {
+      "variants": ["result-victory-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.88,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "result.defeat": {
+      "variants": ["result-defeat-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.84,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    },
+    "result.draw": {
+      "variants": ["result-draw-01"],
+      "bus": "sfx",
+      "loop": false,
+      "volume": 0.82,
+      "randomizeVariant": false,
+      "pitchRange": [1, 1],
+      "cooldownMs": 0,
+      "fadeInMs": 0,
+      "fadeOutMs": 0
+    }
+
+  }
+}

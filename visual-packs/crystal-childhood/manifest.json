@@ -1,0 +1,516 @@
+﻿{
+    "schemaVersion":  1,
+    "id":  "crystal-childhood-visual",
+    "displayName":  "Crystal Childhood Visual",
+    "assetVersion":  "20260618-visual-a",
+    "engineCompatibility":  "^1.0.0",
+    "baseUrl":  "./assets/",
+    "compliance":  {
+                       "source":  "original-or-procedural-generated",
+                       "commercialUseIntended":  true,
+                       "commercialUse":  true,
+                       "thirdPartySourceAssets":  false,
+                       "attributionRequired":  false,
+                       "licenseNote":  "Original generated visual assets for Kalah Childhood Memories. Keep source notes and hashes with redistributed files."
+                   },
+    "layouts":  {
+                    "landscape":  {
+                                      "canvas":  [
+                                                     2048,
+                                                     1024
+                                                 ],
+                                      "physicalModel":  "kalah-6x6-landscape"
+                                  },
+                    "portrait":  {
+                                     "canvas":  [
+                                                    1536,
+                                                    2048
+                                                ],
+                                     "physicalModel":  "kalah-6x6-portrait"
+                                 }
+                },
+    "assets":  {
+                   "board.landscape.base":  {
+                                                "src":  "board-landscape-base.png",
+                                                "type":  "image/png",
+                                                "width":  2048,
+                                                "height":  1024,
+                                                "alpha":  true,
+                                                "role":  "board-base",
+                                                "source":  "original-procedural-generated",
+                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                "sha256":  "603d9b1cb24f5e1aacfa516ec702ef9f45663362979beb1db1c6cdc44e651db5"
+                                            },
+                   "board.landscape.rim":  {
+                                               "src":  "board-landscape-rim-overlay.png",
+                                               "type":  "image/png",
+                                               "width":  2048,
+                                               "height":  1024,
+                                               "alpha":  true,
+                                               "role":  "board-rim-overlay",
+                                               "source":  "original-procedural-generated",
+                                               "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                               "sha256":  "b0a0f7d3b54abbd6d603b8b4594372f2acaee0b87a929cf9878439e7b98a9c4e"
+                                           },
+                   "board.landscape.shadow":  {
+                                                  "src":  "board-landscape-shadow.png",
+                                                  "type":  "image/png",
+                                                  "width":  2048,
+                                                  "height":  1024,
+                                                  "alpha":  true,
+                                                  "role":  "board-shadow",
+                                                  "source":  "original-procedural-generated",
+                                                  "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                  "sha256":  "d0a79a414ea1225e3bff2a6c775a8aed731911cb5efa667de8ab503c6b2bb883"
+                                              },
+                   "board.landscape.slot-mask":  {
+                                                     "src":  "board-landscape-slot-mask.png",
+                                                     "type":  "image/png",
+                                                     "width":  2048,
+                                                     "height":  1024,
+                                                     "alpha":  true,
+                                                     "role":  "board-slot-mask",
+                                                     "source":  "original-procedural-generated",
+                                                     "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                     "sha256":  "2d8a58cf376e4ec8c0dff9d0c9e858f1ae061cf5f774d048cc554cb8d7905df2"
+                                                 },
+                   "board.portrait.base":  {
+                                               "src":  "board-portrait-base.png",
+                                               "type":  "image/png",
+                                               "width":  1536,
+                                               "height":  2048,
+                                               "alpha":  true,
+                                               "role":  "board-base",
+                                               "source":  "original-procedural-generated",
+                                               "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                               "sha256":  "b8d93a07b1755cbef59b5994f17f95fb58165749dbb21f06884da7cc5bb25c4a"
+                                           },
+                   "board.portrait.rim":  {
+                                              "src":  "board-portrait-rim-overlay.png",
+                                              "type":  "image/png",
+                                              "width":  1536,
+                                              "height":  2048,
+                                              "alpha":  true,
+                                              "role":  "board-rim-overlay",
+                                              "source":  "original-procedural-generated",
+                                              "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                              "sha256":  "3789f8699bf8459d399c005481bf08cbd50346504328a985211dd70d2e057f95"
+                                          },
+                   "board.portrait.shadow":  {
+                                                 "src":  "board-portrait-shadow.png",
+                                                 "type":  "image/png",
+                                                 "width":  1536,
+                                                 "height":  2048,
+                                                 "alpha":  true,
+                                                 "role":  "board-shadow",
+                                                 "source":  "original-procedural-generated",
+                                                 "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                 "sha256":  "22b57ff33ef23654a64eb3582290d609eb6bc2a8986bc0e6df86bdf468c8b72c"
+                                             },
+                   "board.portrait.slot-mask":  {
+                                                    "src":  "board-portrait-slot-mask.png",
+                                                    "type":  "image/png",
+                                                    "width":  1536,
+                                                    "height":  2048,
+                                                    "alpha":  true,
+                                                    "role":  "board-slot-mask",
+                                                    "source":  "original-procedural-generated",
+                                                    "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                    "sha256":  "f514327a843acaa149e93139c7ff045c1480019ed4dbf5f62c4ef1d58270e5e1"
+                                                },
+                   "pit.albedo":  {
+                                      "src":  "pit-well-albedo.png",
+                                      "type":  "image/png",
+                                      "width":  512,
+                                      "height":  512,
+                                      "alpha":  false,
+                                      "role":  "pit-material",
+                                      "source":  "original-procedural-generated",
+                                      "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                      "sha256":  "3e04b2cb6b63a7aee81eed694c11aabc528e4d4b3a32550ea2eceba452cc9afe"
+                                  },
+                   "pit.normal":  {
+                                      "src":  "pit-well-normal.png",
+                                      "type":  "image/png",
+                                      "width":  512,
+                                      "height":  512,
+                                      "alpha":  false,
+                                      "role":  "pit-material-normal",
+                                      "source":  "original-procedural-generated",
+                                      "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                      "sha256":  "8bf29500cb8cd4fb154a211e35cd2f09c824c219c3d5d351ee39f81fc8dfa869"
+                                  },
+                   "pit.roughness":  {
+                                         "src":  "pit-well-roughness.png",
+                                         "type":  "image/png",
+                                         "width":  512,
+                                         "height":  512,
+                                         "alpha":  false,
+                                         "role":  "pit-material-roughness",
+                                         "source":  "original-procedural-generated",
+                                         "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                         "sha256":  "06ef24a8dbfee54b296fd659945daa5b932b096e1cba8c5c1bed07b541e40fbd"
+                                     },
+                   "store.landscape.albedo":  {
+                                                  "src":  "store-well-landscape-albedo.png",
+                                                  "type":  "image/png",
+                                                  "width":  512,
+                                                  "height":  1024,
+                                                  "alpha":  false,
+                                                  "role":  "store-material",
+                                                  "source":  "original-procedural-generated",
+                                                  "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                  "sha256":  "4aa917979c5b3f2a88f8a352a8c582e8934a0c008a16fd11de8050540838bcc9"
+                                              },
+                   "store.portrait.albedo":  {
+                                                 "src":  "store-well-portrait-albedo.png",
+                                                 "type":  "image/png",
+                                                 "width":  512,
+                                                 "height":  768,
+                                                 "alpha":  false,
+                                                 "role":  "store-material",
+                                                 "source":  "original-procedural-generated",
+                                                 "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                 "sha256":  "594e1798c3d48f8eb11b9a1db39e127003551cb26430be1e6f5348e1659c471e"
+                                             },
+                   "store.normal":  {
+                                        "src":  "store-well-normal.png",
+                                        "type":  "image/png",
+                                        "width":  512,
+                                        "height":  1024,
+                                        "alpha":  false,
+                                        "role":  "store-material-normal",
+                                        "source":  "original-procedural-generated",
+                                        "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                        "sha256":  "a5d006a2f62785b1b50b55a6c3014f6ccea942df4edf6f40a94b68a21a3a2ea2"
+                                    },
+                   "store.roughness":  {
+                                           "src":  "store-well-roughness.png",
+                                           "type":  "image/png",
+                                           "width":  512,
+                                           "height":  1024,
+                                           "alpha":  false,
+                                           "role":  "store-material-roughness",
+                                           "source":  "original-procedural-generated",
+                                           "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                           "sha256":  "47f03d111ebbe85836c11e93a1745d3e6fdea52b787503cfd759f0b755e97886"
+                                       },
+                   "ui.score.panel":  {
+                                          "src":  "ui-score-panel-9slice.png",
+                                          "type":  "image/png",
+                                          "width":  1024,
+                                          "height":  256,
+                                          "alpha":  true,
+                                          "role":  "ui-score-panel",
+                                          "source":  "original-procedural-generated",
+                                          "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                          "sha256":  "863f09759183915ac1ee9d5dc5a6e1baf457d16f54e5198bf14d586b2418445d"
+                                      },
+                   "ui.dialogue.panel":  {
+                                             "src":  "ui-dialogue-panel-9slice.png",
+                                             "type":  "image/png",
+                                             "width":  1536,
+                                             "height":  320,
+                                             "alpha":  true,
+                                             "role":  "ui-dialogue-panel",
+                                             "source":  "original-procedural-generated",
+                                             "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                             "sha256":  "af138d47f0189a5ac468f5edefb9d1f6e9359f066e00da86914de027eb265ebf"
+                                         },
+                   "ui.modal.panel":  {
+                                          "src":  "ui-modal-panel-9slice.png",
+                                          "type":  "image/png",
+                                          "width":  1400,
+                                          "height":  1200,
+                                          "alpha":  true,
+                                          "role":  "ui-modal-panel",
+                                          "source":  "original-procedural-generated",
+                                          "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                          "sha256":  "b45d864664bd7c97e4ca02451824324bd50489fb397c6f19e21ee5ad7d548346"
+                                      },
+                   "ui.result.panel":  {
+                                           "src":  "ui-result-panel-9slice.png",
+                                           "type":  "image/png",
+                                           "width":  1024,
+                                           "height":  1024,
+                                           "alpha":  true,
+                                           "role":  "ui-result-panel",
+                                           "source":  "original-procedural-generated",
+                                           "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                           "sha256":  "511de02aaefafefe70b210c413d15669c524cfa097000c2b3cf9e4741966ee80"
+                                       },
+                   "ui.button.primary":  {
+                                             "src":  "ui-button-primary-9slice.png",
+                                             "type":  "image/png",
+                                             "width":  768,
+                                             "height":  224,
+                                             "alpha":  true,
+                                             "role":  "ui-button-primary",
+                                             "source":  "original-procedural-generated",
+                                             "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                             "sha256":  "9f79fa02a78718a7a878d80d848cf4f6ff5629a82a2252901622bd39d930c269"
+                                         },
+                   "ui.button.secondary":  {
+                                               "src":  "ui-button-secondary-9slice.png",
+                                               "type":  "image/png",
+                                               "width":  768,
+                                               "height":  224,
+                                               "alpha":  true,
+                                               "role":  "ui-button-secondary",
+                                               "source":  "original-procedural-generated",
+                                               "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                               "sha256":  "9d5ba0ae61ce1b15e19eb4280cae82995760139910821ad38e0c73a5c5baf6ef"
+                                           },
+                   "ui.icon.frame":  {
+                                         "src":  "ui-icon-frame.png",
+                                         "type":  "image/png",
+                                         "width":  256,
+                                         "height":  256,
+                                         "alpha":  true,
+                                         "role":  "ui-icon-frame",
+                                         "source":  "original-procedural-generated",
+                                         "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                         "sha256":  "40c5528a7e80ca6bae64ad260ec4a4194df789a39282b0bca3d15a9cc3d0b688"
+                                     },
+                   "ui.turn.badge":  {
+                                         "src":  "ui-turn-badge.png",
+                                         "type":  "image/png",
+                                         "width":  384,
+                                         "height":  384,
+                                         "alpha":  true,
+                                         "role":  "ui-turn-badge",
+                                         "source":  "original-procedural-generated",
+                                         "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                         "sha256":  "45a883ccf2ac0abe1f1907be777a76ecc7d07597be12d53fca67db8659daf1bf"
+                                     },
+                   "background.landscape.idle":  {
+                                                     "src":  "background-landscape-idle.png",
+                                                     "type":  "image/png",
+                                                     "width":  2560,
+                                                     "height":  1440,
+                                                     "alpha":  false,
+                                                     "role":  "background",
+                                                     "source":  "original-procedural-generated",
+                                                     "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                     "sha256":  "d2fa505cb121c63e2156384db028b519bff9aeb5cb285bab9512160c20f46a80"
+                                                 },
+                   "background.portrait.idle":  {
+                                                    "src":  "background-portrait-idle.png",
+                                                    "type":  "image/png",
+                                                    "width":  1440,
+                                                    "height":  2560,
+                                                    "alpha":  false,
+                                                    "role":  "background",
+                                                    "source":  "original-procedural-generated",
+                                                    "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                    "sha256":  "919dc4546ea118ee7ff3149c1df977ad95f1f8d23fcf7a36206c47984a1b0064"
+                                                },
+                   "particle.ruby.01":  {
+                                            "src":  "particle-ruby-01.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "7099ed4b44df22e0d9c3790d89bbe0edbf331bbb6bc5ea7d76ce24d790dc8abc"
+                                        },
+                   "particle.ruby.02":  {
+                                            "src":  "particle-ruby-02.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "7099ed4b44df22e0d9c3790d89bbe0edbf331bbb6bc5ea7d76ce24d790dc8abc"
+                                        },
+                   "particle.ruby.03":  {
+                                            "src":  "particle-ruby-03.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "7099ed4b44df22e0d9c3790d89bbe0edbf331bbb6bc5ea7d76ce24d790dc8abc"
+                                        },
+                   "particle.ruby.04":  {
+                                            "src":  "particle-ruby-04.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "7099ed4b44df22e0d9c3790d89bbe0edbf331bbb6bc5ea7d76ce24d790dc8abc"
+                                        },
+                   "particle.ruby.05":  {
+                                            "src":  "particle-ruby-05.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "7099ed4b44df22e0d9c3790d89bbe0edbf331bbb6bc5ea7d76ce24d790dc8abc"
+                                        },
+                   "particle.amethyst.01":  {
+                                                "src":  "particle-amethyst-01.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-procedural-generated",
+                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                "sha256":  "dbd4f1e2a0c0b562bee3de6141b2494a5724338815e0a230aef1732e4809b485"
+                                            },
+                   "particle.amethyst.02":  {
+                                                "src":  "particle-amethyst-02.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-procedural-generated",
+                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                "sha256":  "dbd4f1e2a0c0b562bee3de6141b2494a5724338815e0a230aef1732e4809b485"
+                                            },
+                   "particle.amethyst.03":  {
+                                                "src":  "particle-amethyst-03.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-procedural-generated",
+                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                "sha256":  "dbd4f1e2a0c0b562bee3de6141b2494a5724338815e0a230aef1732e4809b485"
+                                            },
+                   "particle.amethyst.04":  {
+                                                "src":  "particle-amethyst-04.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-procedural-generated",
+                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                "sha256":  "dbd4f1e2a0c0b562bee3de6141b2494a5724338815e0a230aef1732e4809b485"
+                                            },
+                   "particle.amethyst.05":  {
+                                                "src":  "particle-amethyst-05.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-procedural-generated",
+                                                "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                                "sha256":  "dbd4f1e2a0c0b562bee3de6141b2494a5724338815e0a230aef1732e4809b485"
+                                            },
+                   "particle.gold.01":  {
+                                            "src":  "particle-gold-01.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "4746a62997a0d413c01671324a57cbb4c7240e99eca03d8869b97482caf12039"
+                                        },
+                   "particle.gold.02":  {
+                                            "src":  "particle-gold-02.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "4746a62997a0d413c01671324a57cbb4c7240e99eca03d8869b97482caf12039"
+                                        },
+                   "particle.gold.03":  {
+                                            "src":  "particle-gold-03.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "4746a62997a0d413c01671324a57cbb4c7240e99eca03d8869b97482caf12039"
+                                        },
+                   "particle.gold.04":  {
+                                            "src":  "particle-gold-04.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "4746a62997a0d413c01671324a57cbb4c7240e99eca03d8869b97482caf12039"
+                                        },
+                   "particle.gold.05":  {
+                                            "src":  "particle-gold-05.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-procedural-generated",
+                                            "license":  "project-owned-procedural-placeholder-commercial-use-ok",
+                                            "sha256":  "4746a62997a0d413c01671324a57cbb4c7240e99eca03d8869b97482caf12039"
+                                        }
+               },
+    "nineSlice":  {
+                      "ui.score.panel":  {
+                                             "left":  96,
+                                             "right":  96,
+                                             "top":  72,
+                                             "bottom":  72
+                                         },
+                      "ui.dialogue.panel":  {
+                                                "left":  128,
+                                                "right":  128,
+                                                "top":  88,
+                                                "bottom":  88
+                                            },
+                      "ui.modal.panel":  {
+                                             "left":  128,
+                                             "right":  128,
+                                             "top":  128,
+                                             "bottom":  128
+                                         },
+                      "ui.result.panel":  {
+                                              "left":  120,
+                                              "right":  120,
+                                              "top":  120,
+                                              "bottom":  120
+                                          },
+                      "ui.button.primary":  {
+                                                "left":  96,
+                                                "right":  96,
+                                                "top":  72,
+                                                "bottom":  72
+                                            },
+                      "ui.button.secondary":  {
+                                                  "left":  96,
+                                                  "right":  96,
+                                                  "top":  72,
+                                                  "bottom":  72
+                                              }
+                  },
+    "notes":  {
+                  "artPass":  "procedural integration placeholder; replace with final department art while preserving ids and dimensions",
+                  "backgroundFormatNote":  "PNG is used instead of WebP because the local PowerShell/.NET generator has no WebP encoder."
+              }
+}

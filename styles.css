@@ -15,6 +15,25 @@
   --text: #f7ecd5;
   --muted: #c9b98f;
   --shadow: rgba(0, 0, 0, 0.56);
+  --visual-background-landscape: none;
+  --visual-background-portrait: var(--visual-background-landscape);
+  --visual-board-landscape-base: none;
+  --visual-board-landscape-rim: none;
+  --visual-board-landscape-shadow: none;
+  --visual-board-portrait-base: var(--visual-board-landscape-base);
+  --visual-board-portrait-rim: var(--visual-board-landscape-rim);
+  --visual-board-portrait-shadow: var(--visual-board-landscape-shadow);
+  --visual-pit-albedo: none;
+  --visual-store-landscape-albedo: none;
+  --visual-store-portrait-albedo: var(--visual-store-landscape-albedo);
+  --visual-ui-score-panel: none;
+  --visual-ui-dialogue-panel: none;
+  --visual-ui-modal-panel: none;
+  --visual-ui-result-panel: none;
+  --visual-ui-button-primary: none;
+  --visual-ui-button-secondary: none;
+  --visual-ui-icon-frame: none;
+  --visual-ui-turn-badge: none;
 }
 
 * {
@@ -32,16 +51,20 @@ body {
   color: var(--text);
   background-color: var(--black);
   background-image:
+    var(--visual-background-landscape),
     linear-gradient(135deg, rgba(255, 228, 161, 0.08), transparent 28%),
     linear-gradient(315deg, rgba(82, 199, 184, 0.08), transparent 34%),
     repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
     linear-gradient(180deg, #0b0a0c 0%, #030304 100%);
+  background-position: center;
+  background-size: cover, auto, auto, auto, auto;
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
 }
 
 body.turn-red {
   background-image:
+    var(--visual-background-landscape),
     radial-gradient(circle at 50% 8%, rgba(215, 25, 50, 0.28), transparent 28%),
     linear-gradient(135deg, rgba(255, 228, 161, 0.08), transparent 28%),
     repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
@@ -50,6 +73,7 @@ body.turn-red {
 
 body.turn-purple {
   background-image:
+    var(--visual-background-landscape),
     radial-gradient(circle at 50% 8%, rgba(143, 50, 217, 0.3), transparent 28%),
     linear-gradient(315deg, rgba(82, 199, 184, 0.06), transparent 34%),
     repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
@@ -174,8 +198,10 @@ h1 {
   border: 1px solid var(--gold);
   border-radius: 50%;
   background:
+    var(--visual-ui-icon-frame),
     linear-gradient(145deg, rgba(255, 228, 161, 0.16), rgba(255, 255, 255, 0.02)),
     rgba(0, 0, 0, 0.72);
+  background-size: 100% 100%, auto, auto;
   box-shadow: 0 12px 26px var(--shadow), inset 0 0 18px rgba(255, 228, 161, 0.12);
   color: var(--gold-bright);
   cursor: pointer;
@@ -345,8 +371,10 @@ h1 {
   border: 1px solid rgba(255, 228, 161, 0.68);
   border-radius: 8px;
   background:
+    var(--visual-ui-button-primary),
     linear-gradient(145deg, rgba(255, 228, 161, 0.24), rgba(255, 255, 255, 0.035)),
     rgba(0, 0, 0, 0.56);
+  background-size: 100% 100%, auto, auto;
   color: var(--gold-bright);
   cursor: pointer;
   box-shadow: 0 12px 22px rgba(0, 0, 0, 0.24);
@@ -380,8 +408,10 @@ h1 {
   border: 1px solid rgba(143, 50, 217, 0.24);
   border-radius: 8px;
   background:
+    var(--visual-ui-dialogue-panel),
     linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
     rgba(5, 4, 12, 0.58);
+  background-size: 100% 100%, auto, auto;
   box-shadow:
     inset 0 0 24px rgba(255, 255, 255, 0.02),
     0 14px 28px rgba(0, 0, 0, 0.18);
@@ -422,8 +452,10 @@ h1 {
   border: 1px solid rgba(217, 180, 100, 0.32);
   border-radius: 8px;
   background:
+    var(--visual-ui-score-panel),
     linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015)),
     rgba(0, 0, 0, 0.54);
+  background-size: 100% 100%, auto, auto;
   box-shadow: inset 0 0 26px rgba(255, 255, 255, 0.035);
 }
 
@@ -450,14 +482,18 @@ h1 {
 
 .player-one.active {
   background:
+    var(--visual-ui-score-panel),
     linear-gradient(145deg, var(--ruby-soft), rgba(255, 255, 255, 0.02)),
     rgba(0, 0, 0, 0.6);
+  background-size: 100% 100%, auto, auto;
 }
 
 .player-two.active {
   background:
+    var(--visual-ui-score-panel),
     linear-gradient(145deg, var(--amethyst-soft), rgba(255, 255, 255, 0.02)),
     rgba(0, 0, 0, 0.6);
+  background-size: 100% 100%, auto, auto;
 }
 
 .player-score.winner-pop {
@@ -473,9 +509,11 @@ h1 {
   border: 1px solid var(--gold);
   border-radius: 8px;
   background:
+    var(--visual-ui-turn-badge),
     radial-gradient(circle at 50% 45%, rgba(255, 228, 161, 0.18), transparent 58%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(0, 0, 0, 0.48)),
     rgba(0, 0, 0, 0.68);
+  background-size: 100% 100%, auto, auto, auto;
   box-shadow:
     inset 0 0 0 1px rgba(255, 228, 161, 0.14),
     inset 0 -14px 24px rgba(0, 0, 0, 0.38),
@@ -494,9 +532,11 @@ h1 {
 .turn-indicator.red {
   border-color: rgba(255, 228, 161, 0.92);
   background:
+    var(--visual-ui-turn-badge),
     radial-gradient(circle at 50% 45%, rgba(215, 25, 50, 0.42), transparent 58%),
     linear-gradient(145deg, rgba(255, 228, 161, 0.11), rgba(0, 0, 0, 0.5)),
     rgba(18, 4, 7, 0.78);
+  background-size: 100% 100%, auto, auto, auto;
   box-shadow:
     inset 0 0 0 1px rgba(255, 228, 161, 0.2),
     0 0 0 1px rgba(255, 228, 161, 0.15),
@@ -507,9 +547,11 @@ h1 {
 .turn-indicator.purple {
   border-color: rgba(255, 228, 161, 0.92);
   background:
+    var(--visual-ui-turn-badge),
     radial-gradient(circle at 50% 45%, rgba(143, 50, 217, 0.46), transparent 58%),
     linear-gradient(145deg, rgba(255, 228, 161, 0.11), rgba(0, 0, 0, 0.5)),
     rgba(12, 5, 18, 0.78);
+  background-size: 100% 100%, auto, auto, auto;
   box-shadow:
     inset 0 0 0 1px rgba(255, 228, 161, 0.2),
     0 0 0 1px rgba(255, 228, 161, 0.15),
@@ -541,11 +583,16 @@ h1 {
   padding: 22px;
   border: 2px solid var(--gold);
   border-radius: 8px;
-  background:
+  background-color: rgba(0, 0, 0, 0.88);
+  background-image:
+    var(--visual-board-landscape-base),
     linear-gradient(145deg, rgba(255, 228, 161, 0.12), transparent 22%),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 17px),
     linear-gradient(135deg, rgba(23, 23, 28, 0.96), rgba(0, 0, 0, 0.88));
+  background-position: center;
+  background-size: 100% 100%, auto, auto, auto;
   box-shadow:
+    0 30px 72px rgba(0, 0, 0, 0.62),
     0 28px 70px var(--shadow),
     inset 0 0 0 1px rgba(255, 228, 161, 0.24),
     inset 0 0 70px rgba(0, 0, 0, 0.54);
@@ -562,9 +609,12 @@ h1 {
 
 .board::before {
   border: 1px solid rgba(255, 228, 161, 0.34);
-  background:
+  background-image:
+    var(--visual-board-landscape-rim),
     repeating-conic-gradient(from 45deg, transparent 0deg 14deg, rgba(217, 180, 100, 0.16) 14deg 15deg),
     linear-gradient(90deg, transparent, rgba(82, 199, 184, 0.05), transparent);
+  background-position: center;
+  background-size: 100% 100%, auto, auto;
   mask-image: linear-gradient(#000, #000);
 }
 
@@ -590,11 +640,14 @@ h1 {
   position: relative;
   z-index: 1;
   border: 1px solid rgba(255, 228, 161, 0.54);
-  background:
+  background-color: var(--glass);
+  background-image:
+    var(--visual-pit-albedo),
     radial-gradient(ellipse at 50% 56%, rgba(0, 0, 0, 0.74) 0%, rgba(0, 0, 0, 0.5) 35%, transparent 62%),
     radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.12), transparent 42%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.56)),
-    var(--glass);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.56));
+  background-position: center;
+  background-size: cover, auto, auto, auto;
   box-shadow:
     inset 0 0 0 2px rgba(0, 0, 0, 0.62),
     inset 0 -26px 42px rgba(0, 0, 0, 0.64),
@@ -677,22 +730,28 @@ h1 {
   grid-column: 1;
   grid-row: 1 / span 2;
   border-color: rgba(197, 121, 255, 0.58);
-  background:
+  background-color: var(--glass-strong);
+  background-image:
+    var(--visual-store-landscape-albedo),
     radial-gradient(ellipse at 50% 52%, rgba(143, 50, 217, 0.2), transparent 58%),
     radial-gradient(ellipse at 50% 62%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.44) 48%, transparent 72%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58)),
-    var(--glass-strong);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58));
+  background-position: center;
+  background-size: cover, auto, auto, auto;
 }
 
 .store.p1-store {
   grid-column: 8;
   grid-row: 1 / span 2;
   border-color: rgba(255, 82, 101, 0.52);
-  background:
+  background-color: var(--glass-strong);
+  background-image:
+    var(--visual-store-landscape-albedo),
     radial-gradient(ellipse at 50% 52%, rgba(215, 25, 50, 0.18), transparent 58%),
     radial-gradient(ellipse at 50% 62%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.44) 48%, transparent 72%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58)),
-    var(--glass-strong);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58));
+  background-position: center;
+  background-size: cover, auto, auto, auto;
 }
 
 .pit-count,
@@ -956,9 +1015,11 @@ h1 {
   border: 1px solid rgba(255, 228, 161, 0.68);
   border-radius: 12px;
   background:
+    var(--visual-ui-modal-panel),
     radial-gradient(circle at 18% 0%, rgba(255, 228, 161, 0.2), transparent 30%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(0, 0, 0, 0.24)),
     rgba(5, 5, 8, 0.96);
+  background-size: 100% 100%, auto, auto, auto;
   box-shadow:
     0 34px 80px rgba(0, 0, 0, 0.62),
     inset 0 0 0 1px rgba(255, 228, 161, 0.16),
@@ -1670,8 +1731,10 @@ h1 {
   border: 1px solid rgba(255, 228, 161, 0.64);
   border-radius: 8px;
   background:
+    var(--visual-ui-result-panel),
     linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.22)),
     rgba(4, 4, 6, 0.94);
+  background-size: 100% 100%, auto, auto;
   box-shadow:
     0 34px 74px rgba(0, 0, 0, 0.58),
     inset 0 0 0 1px rgba(255, 228, 161, 0.16);
@@ -1685,23 +1748,29 @@ h1 {
 
 .result-panel.winner-red {
   background:
+    var(--visual-ui-result-panel),
     radial-gradient(circle at 50% 0%, rgba(255, 228, 161, 0.18), transparent 34%),
     linear-gradient(145deg, rgba(215, 25, 50, 0.48), rgba(0, 0, 0, 0.32)),
     rgba(18, 4, 7, 0.96);
+  background-size: 100% 100%, auto, auto, auto;
 }
 
 .result-panel.winner-purple {
   background:
+    var(--visual-ui-result-panel),
     radial-gradient(circle at 50% 0%, rgba(255, 228, 161, 0.18), transparent 34%),
     linear-gradient(145deg, rgba(143, 50, 217, 0.48), rgba(0, 0, 0, 0.32)),
     rgba(12, 5, 18, 0.96);
+  background-size: 100% 100%, auto, auto, auto;
 }
 
 .result-panel.winner-draw {
   background:
+    var(--visual-ui-result-panel),
     radial-gradient(circle at 50% 0%, rgba(255, 228, 161, 0.2), transparent 36%),
     linear-gradient(145deg, rgba(82, 199, 184, 0.26), rgba(0, 0, 0, 0.32)),
     rgba(5, 13, 15, 0.96);
+  background-size: 100% 100%, auto, auto, auto;
 }
 
 .result-kicker,
@@ -1748,8 +1817,10 @@ h1 {
   border: 1px solid rgba(255, 228, 161, 0.72);
   border-radius: 8px;
   background:
+    var(--visual-ui-button-primary),
     linear-gradient(145deg, rgba(255, 228, 161, 0.24), rgba(255, 255, 255, 0.03)),
     rgba(0, 0, 0, 0.56);
+  background-size: 100% 100%, auto, auto;
   color: var(--gold-bright);
   cursor: pointer;
   box-shadow: 0 12px 22px rgba(0, 0, 0, 0.28);
@@ -1759,8 +1830,10 @@ h1 {
   color: var(--text);
   border-color: rgba(255, 228, 161, 0.38);
   background:
+    var(--visual-ui-button-secondary),
     linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
     rgba(0, 0, 0, 0.5);
+  background-size: 100% 100%, auto, auto;
 }
 
 .result-button:hover {
@@ -1800,6 +1873,14 @@ h1 {
 
 .particle.gold {
   background: var(--gold-bright);
+}
+
+.particle.has-sprite {
+  border-radius: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 @keyframes stone-drop {
@@ -2233,6 +2314,33 @@ h1 {
 }
 
 @media (max-width: 760px) and (orientation: portrait) {
+  body {
+    background-image:
+      var(--visual-background-portrait),
+      linear-gradient(135deg, rgba(255, 228, 161, 0.08), transparent 28%),
+      linear-gradient(315deg, rgba(82, 199, 184, 0.08), transparent 34%),
+      repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
+      linear-gradient(180deg, #0b0a0c 0%, #030304 100%);
+  }
+
+  body.turn-red {
+    background-image:
+      var(--visual-background-portrait),
+      radial-gradient(circle at 50% 8%, rgba(215, 25, 50, 0.28), transparent 28%),
+      linear-gradient(135deg, rgba(255, 228, 161, 0.08), transparent 28%),
+      repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
+      linear-gradient(180deg, #120508 0%, #030304 100%);
+  }
+
+  body.turn-purple {
+    background-image:
+      var(--visual-background-portrait),
+      radial-gradient(circle at 50% 8%, rgba(143, 50, 217, 0.3), transparent 28%),
+      linear-gradient(315deg, rgba(82, 199, 184, 0.06), transparent 34%),
+      repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
+      linear-gradient(180deg, #0d0614 0%, #030304 100%);
+  }
+
   .board {
     width: min(100%, 440px);
     height: clamp(300px, 82vw, 350px);
@@ -2240,12 +2348,19 @@ h1 {
     display: block;
     padding: 12px;
     overflow: hidden;
+    background-image:
+      var(--visual-board-portrait-base),
+      linear-gradient(145deg, rgba(255, 228, 161, 0.12), transparent 22%),
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 17px),
+      linear-gradient(135deg, rgba(23, 23, 28, 0.96), rgba(0, 0, 0, 0.88));
   }
 
   .board::before {
-    background:
+    background-image:
+      var(--visual-board-portrait-rim),
       radial-gradient(ellipse at 50% 50%, rgba(82, 199, 184, 0.075), transparent 52%),
       repeating-conic-gradient(from 45deg, transparent 0deg 14deg, rgba(217, 180, 100, 0.13) 14deg 15deg);
+    background-size: 100% 100%, auto, auto;
   }
 
   .board::after {
@@ -2269,6 +2384,12 @@ h1 {
     width: 12%;
     height: 30%;
     border-radius: 999px;
+    background-color: var(--glass-strong);
+    background-image:
+      var(--visual-store-portrait-albedo),
+      radial-gradient(ellipse at 50% 52%, rgba(255, 228, 161, 0.12), transparent 58%),
+      radial-gradient(ellipse at 50% 62%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.44) 48%, transparent 72%),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.58));
   }
 
   .board .store[data-index="13"] {

@@ -1,4 +1,4 @@
-import * as THREE from "../vendor/three/build/three.module.js?v=20260618b";
+﻿import * as THREE from "../vendor/three/build/three.module.js?v=20260618d";
 
 const TAU = Math.PI * 2;
 
