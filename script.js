@@ -2,7 +2,7 @@
 import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260619a";
 import { createKalahAi } from "./game/ai.js?v=20260619a";
 import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260619b";
-import { getGameDomRefs } from "./ui/dom.js?v=20260619b";
+import { getGameDomRefs } from "./ui/dom.js?v=20260619c";
 import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260619a";
 import {
   KALAH_BOARD_MODEL,
@@ -55,6 +55,7 @@ const {
   mainMenu,
   gameScreen,
   startButton,
+  menuRulesButton,
   resetButton,
   menuButton,
   playerOneScore,
@@ -816,6 +817,7 @@ function renderInterfaceState() {
   }
 
   difficultyField.hidden = state.mode !== "pve";
+  modePveButton.setAttribute("aria-expanded", String(state.mode === "pve"));
 
   for (const [difficulty, button] of Object.entries(difficultyButtons)) {
     button.classList.toggle("is-active", state.aiDifficulty === difficulty);
@@ -1694,23 +1696,7 @@ modePvpButton.addEventListener("click", () => {
   selectMode("pvp");
 });
 
-modePvpButton.addEventListener("mouseenter", () => {
-  selectMode("pvp");
-});
-
-modePvpButton.addEventListener("focus", () => {
-  selectMode("pvp");
-});
-
 modePveButton.addEventListener("click", () => {
-  selectMode("pve");
-});
-
-modePveButton.addEventListener("mouseenter", () => {
-  selectMode("pve");
-});
-
-modePveButton.addEventListener("focus", () => {
   selectMode("pve");
 });
 
@@ -1756,6 +1742,10 @@ document.addEventListener("click", (event) => {
 });
 
 rulesButton.addEventListener("click", () => {
+  openFloatingCard(rulesOverlay);
+});
+
+menuRulesButton.addEventListener("click", () => {
   openFloatingCard(rulesOverlay);
 });
 

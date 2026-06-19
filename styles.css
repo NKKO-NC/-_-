@@ -151,7 +151,7 @@ button {
 }
 
 .main-menu {
-  width: min(100%, 720px);
+  width: min(100%, 460px);
   min-height: calc(100vh - 60px);
   min-height: calc(100svh - 60px);
   margin: 0 auto;
@@ -272,6 +272,7 @@ h1 {
 .menu-option:focus-visible,
 .difficulty-button:focus-visible,
 .start-button:focus-visible,
+.menu-help-button:focus-visible,
 .result-button:focus-visible,
 .floating-card-close:focus-visible,
 .rule-item:focus-visible,
@@ -286,14 +287,16 @@ h1 {
 }
 
 .menu-options {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .menu-option {
   position: relative;
-  min-height: 108px;
+  width: 100%;
+  min-height: 94px;
   display: grid;
   align-content: center;
   gap: 6px;
@@ -348,6 +351,7 @@ h1 {
 }
 
 .menu-difficulty {
+  width: 100%;
   display: grid;
   gap: 8px;
   padding: 12px;
@@ -411,7 +415,15 @@ h1 {
   font-size: 0.92rem;
 }
 
+.menu-actions {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .start-button,
+.menu-help-button,
 .menu-return-button {
   min-height: 42px;
   border: 1px solid rgba(255, 228, 161, 0.68);
@@ -427,11 +439,22 @@ h1 {
 }
 
 .start-button {
-  width: min(100%, 320px);
-  justify-self: center;
+  width: 100%;
   padding: 0 22px;
   font-size: 1.08rem;
   font-weight: 700;
+}
+
+.menu-help-button {
+  width: 100%;
+  padding: 0 16px;
+  color: var(--text);
+  border-color: rgba(255, 228, 161, 0.38);
+  background:
+    var(--visual-ui-button-secondary),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    rgba(0, 0, 0, 0.5);
+  background-size: 100% 100%, auto, auto;
 }
 
 .menu-return-button {
@@ -439,6 +462,7 @@ h1 {
 }
 
 .start-button:hover,
+.menu-help-button:hover,
 .menu-return-button:hover {
   border-color: var(--gold-bright);
   filter: brightness(1.08);
@@ -1216,6 +1240,7 @@ h1 {
 
 .floating-card-kicker,
 .floating-card h2,
+.rules-overview,
 .rules-list,
 .setting-row {
   position: relative;
@@ -1277,6 +1302,37 @@ h1 {
 .rules-list {
   display: grid;
   gap: 10px;
+}
+
+.rules-overview {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid rgba(158, 122, 79, 0.2);
+  border-radius: 8px;
+  color: var(--text);
+  background:
+    linear-gradient(145deg, rgba(255, 248, 236, 0.08), rgba(138, 107, 64, 0.06)),
+    rgba(14, 12, 18, 0.82);
+}
+
+.rules-overview h3 {
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.rules-overview ol {
+  margin: 0;
+  padding-left: 1.35rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.rules-overview li + li {
+  margin-top: 5px;
 }
 
 .rules-list p,
@@ -2356,9 +2412,8 @@ h1 {
   }
 
   .main-menu {
-    width: auto;
-    max-width: 100%;
-    justify-self: stretch;
+    width: min(100%, 460px);
+    justify-self: center;
     min-height: calc(100vh - 42px);
     min-height: calc(100svh - 42px);
     align-content: start;
@@ -2371,8 +2426,7 @@ h1 {
     min-width: 0;
   }
 
-  .menu-options,
-  .difficulty-options {
+  .menu-options {
     grid-template-columns: 1fr;
   }
 
@@ -3047,6 +3101,10 @@ html[data-board-layout="compact-landscape"] .pit {
 
   .menu-option {
     min-height: 92px;
+  }
+
+  .menu-actions {
+    grid-template-columns: 1fr;
   }
 
   .start-button {

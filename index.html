@@ -13,7 +13,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260619a" />
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png?v=20260619a" />
-    <link rel="stylesheet" href="styles.css?v=20260619e" />
+    <link rel="stylesheet" href="styles.css?v=20260619f" />
   </head>
   <body>
     <main class="game-app">
@@ -23,25 +23,28 @@
           <h1>&#25773;&#26827;</h1>
         </div>
         <div class="menu-options" role="group" aria-label="&#27169;&#24335;">
-          <button class="menu-option is-active" id="modePveButton" type="button" data-mode="pve">
+          <button class="menu-option is-active" id="modePveButton" type="button" data-mode="pve" aria-controls="difficultyField" aria-expanded="true">
             <span>&#21934;&#20154;&#27169;&#24335;</span>
             <small>vs AI</small>
           </button>
+          <div class="menu-difficulty" id="difficultyField">
+            <span>AI &#38627;&#24230;</span>
+            <div class="difficulty-options" role="group" aria-label="AI &#38627;&#24230;">
+              <button class="difficulty-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
+              <button class="difficulty-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
+              <button class="difficulty-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
+            </div>
+          </div>
           <button class="menu-option" id="modePvpButton" type="button" data-mode="pvp">
             <span>&#38617;&#20154;&#27169;&#24335;</span>
             <small>Local</small>
           </button>
         </div>
-        <div class="menu-difficulty" id="difficultyField">
-          <span>AI &#38627;&#24230;</span>
-          <div class="difficulty-options" role="group" aria-label="AI &#38627;&#24230;">
-            <button class="difficulty-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
-            <button class="difficulty-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
-            <button class="difficulty-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
-          </div>
-        </div>
         <p class="control-hint" id="controlHint"></p>
-        <button class="start-button" id="startButton" type="button">&#38283;&#22987;</button>
+        <div class="menu-actions">
+          <button class="start-button" id="startButton" type="button">&#38283;&#22987;</button>
+          <button class="menu-help-button" id="menuRulesButton" type="button">&#26032;&#25163;&#35498;&#26126;</button>
+        </div>
       </section>
 
       <section class="game-screen" id="gameScreen" hidden>
@@ -120,6 +123,16 @@
         <button class="floating-card-close" id="rulesCloseButton" type="button" aria-label="&#38364;&#38281;&#29609;&#27861;">&times;</button>
         <p class="floating-card-kicker">&#29609;&#27861;</p>
         <h2 id="rulesTitle">Kalah &#35215;&#21063;</h2>
+        <section class="rules-overview" aria-label="&#22238;&#21512;&#31777;&#20171;">
+          <h3>&#22238;&#21512;&#24590;&#40636;&#24448;&#20358;</h3>
+          <ol>
+            <li>&#20320;&#30340;&#22238;&#21512;&#26178;&#65292;&#36984;&#33258;&#24049;&#36889;&#20596;&#26377;&#26827;&#23376;&#30340;&#26827;&#22353;&#12290;</li>
+            <li>&#25226;&#35442;&#22353;&#30340;&#26827;&#23376;&#19968;&#38982;&#19968;&#38982;&#24448;&#24460;&#25773;&#65292;&#26371;&#25918;&#36914;&#33258;&#24049;&#26827;&#24235;&#65292;&#20294;&#36339;&#36942;&#23565;&#26041;&#26827;&#24235;&#12290;</li>
+            <li>&#26368;&#24460;&#19968;&#38982;&#33853;&#22312;&#33258;&#24049;&#26827;&#24235;&#65292;&#20320;&#20877;&#36208;&#19968;&#25163;&#65307;&#21542;&#21063;&#36650;&#21040;&#23565;&#26041;&#12290;</li>
+            <li>&#26368;&#24460;&#19968;&#38982;&#33853;&#22312;&#33258;&#24049;&#31354;&#22353;&#65292;&#32780;&#23565;&#38754;&#26377;&#26827;&#23376;&#65292;&#23601;&#25226;&#20841;&#37002;&#26827;&#23376;&#25910;&#20837;&#33258;&#24049;&#26827;&#24235;&#12290;</li>
+            <li>&#19968;&#26041;&#26827;&#22353;&#28165;&#31354;&#26178;&#32080;&#26463;&#65292;&#21478;&#19968;&#26041;&#21097;&#39192;&#26827;&#23376;&#20840;&#37096;&#25910;&#22238;&#26827;&#24235;&#65292;&#26827;&#24235;&#32317;&#25976;&#22810;&#30340;&#20154;&#29554;&#21213;&#12290;</li>
+          </ol>
+        </section>
         <div class="rules-list" id="rulesList" role="list"></div>
       </section>
     </div>
@@ -183,7 +196,7 @@
       </section>
     </div>
 
-    <script type="module" src="script.js?v=20260619e"></script>
+    <script type="module" src="script.js?v=20260619f"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {

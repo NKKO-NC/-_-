@@ -18,6 +18,7 @@ function getGameDomRefs(root = document) {
     mainMenu: queryRequired("#mainMenu", root),
     gameScreen: queryRequired("#gameScreen", root),
     startButton: queryRequired("#startButton", root),
+    menuRulesButton: queryRequired("#menuRulesButton", root),
     resetButton: queryRequired("#resetButton", root),
     menuButton: queryRequired("#menuButton", root),
     playerOneScore,
