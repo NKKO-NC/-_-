@@ -372,6 +372,13 @@ h1 {
   letter-spacing: 0.08em;
 }
 
+.menu-difficulty-note {
+  margin: -2px 0 2px;
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
 .difficulty-options {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -415,6 +422,10 @@ h1 {
   font-size: 0.92rem;
 }
 
+.control-hint:empty {
+  display: none;
+}
+
 .menu-actions {
   width: 100%;
   display: grid;
@@ -429,13 +440,11 @@ h1 {
   border: 1px solid rgba(255, 228, 161, 0.68);
   border-radius: 8px;
   background:
-    var(--visual-ui-button-primary),
     linear-gradient(145deg, rgba(255, 228, 161, 0.24), rgba(255, 255, 255, 0.035)),
     rgba(0, 0, 0, 0.56);
-  background-size: 100% 100%, auto, auto;
   color: var(--gold-bright);
   cursor: pointer;
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
 }
 
 .start-button {
@@ -451,10 +460,8 @@ h1 {
   color: var(--text);
   border-color: rgba(255, 228, 161, 0.38);
   background:
-    var(--visual-ui-button-secondary),
     linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
     rgba(0, 0, 0, 0.5);
-  background-size: 100% 100%, auto, auto;
 }
 
 .menu-return-button {
@@ -1187,11 +1194,9 @@ h1 {
   border: 1px solid var(--panel-border);
   border-radius: 12px;
   background:
-    var(--visual-ui-modal-panel),
     radial-gradient(circle at 18% 0%, var(--panel-sheen), transparent 30%),
     linear-gradient(145deg, rgba(255, 248, 236, 0.06), rgba(138, 107, 64, 0.08)),
     var(--panel-core-soft);
-  background-size: 100% 100%, auto, auto, auto;
   box-shadow:
     0 34px 80px rgba(0, 0, 0, 0.62),
     inset 0 0 0 1px var(--panel-inner-border),
@@ -1202,12 +1207,7 @@ h1 {
 }
 
 .floating-card::before {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border: 1px solid rgba(138, 107, 64, 0.18);
-  border-radius: 8px;
-  pointer-events: none;
+  display: none;
 }
 
 .floating-card-overlay.is-visible .floating-card {

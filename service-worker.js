@@ -1,12 +1,12 @@
-const CACHE_VERSION = "20260619f";
+const CACHE_VERSION = "20260620a";
 const CACHE_NAME = `kalah-pwa-${CACHE_VERSION}`;
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./styles.css?v=20260619f",
-  "./script.js?v=20260619f",
+  "./styles.css?v=20260620a",
+  "./script.js?v=20260620a",
   "./core/object-model.js?v=20260619a",
   "./core/object-physics.js?v=20260619a",
   "./core/object-pack-manifest.js?v=20260619a",

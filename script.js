@@ -824,8 +824,7 @@ function renderInterfaceState() {
     button.setAttribute("aria-pressed", String(state.aiDifficulty === difficulty));
   }
 
-  controlHint.textContent =
-    state.mode === "pve" ? `${TEXT.pveHint} \u00b7 ${getDifficultyLabel()}` : TEXT.pvpHint;
+  controlHint.textContent = state.mode === "pve" ? "" : TEXT.pvpHint;
   aiDialogue.hidden = state.screen !== "game";
   aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
   aiDialogueLine.textContent = state.aiDialogue.line;
