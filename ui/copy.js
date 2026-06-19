@@ -23,9 +23,9 @@ const TEXT = Object.freeze({
 });
 
 const DIFFICULTY_LABELS = Object.freeze({
-  easy: "Easy",
-  medium: "Medium",
-  hard: "Hard",
+  easy: "\u7c21\u55ae",
+  medium: "\u666e\u901a",
+  hard: "\u56f0\u96e3",
 });
 
 const NARRATOR = "\u65c1\u767d";

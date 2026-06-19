@@ -1,8 +1,8 @@
 ﻿import { CoinTossScene } from "./coin/index.js?v=20260619a";
 import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260619a";
 import { createKalahAi } from "./game/ai.js?v=20260619a";
-import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260619b";
-import { getGameDomRefs } from "./ui/dom.js?v=20260619c";
+import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260620b";
+import { getGameDomRefs } from "./ui/dom.js?v=20260620b";
 import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260619a";
 import {
   KALAH_BOARD_MODEL,
@@ -48,6 +48,60 @@ const bottomPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_ONE);
 const playerTwoPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_TWO);
 const COMPACT_LANDSCAPE_MAX_HEIGHT = 560;
 const COMPACT_LANDSCAPE_MAX_WIDTH = 980;
+const urlParams = new URLSearchParams(window.location.search);
+const ENTRY_FRIENDLY_MODE =
+  urlParams.has("entryFriendly") || window.location.pathname.toLowerCase().includes("entry-friendly");
+const DEFAULT_AI_DIFFICULTY = "easy";
+const DEFAULT_PIT_NUMBER_STYLE = "arabic";
+const DEFAULT_PLAYER_HINTS_ENABLED = true;
+const ENTRY_GUIDE_FIRST_SCENE = -1;
+const ENTRY_GUIDE_SCENES = [
+  {
+    id: "turns",
+    title: "\u5148\u770b\u8f2a\u6d41",
+    lead: "\u4f60\u662f\u7d05\u65b9\uff0c\u64cd\u4f5c\u4e0b\u6392\u68cb\u5751\u3002AI \u662f\u7d2b\u65b9\uff0c\u64cd\u4f5c\u4e0a\u6392\u68cb\u5751\u3002",
+    note: "\u8f2a\u5230\u4f60\u6642\uff0c\u9ede\u4e0b\u6392\u4eae\u8d77\u7684\u68cb\u5751\u3002\u7b2c\u4e00\u6b21\u9ede\u6703\u5148\u9810\u89bd\u8def\u5f91\uff0c\u518d\u9ede\u540c\u4e00\u5751\u624d\u6703\u884c\u68cb\u3002",
+    board: [6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0],
+    highlights: [0, 1, 2, 3, 4, 5],
+    activePlayer: PLAYER_ONE,
+  },
+  {
+    id: "capture",
+    title: "\u55ae\u7d14\u5403\u5b50",
+    lead: "\u6700\u5f8c\u4e00\u5b50\u843d\u5728\u81ea\u5df1\u7684\u7a7a\u5751\uff0c\u5c0d\u9762\u53c8\u6709\u5b50\uff0c\u5c31\u628a\u5169\u908a\u6536\u9032\u81ea\u5df1\u68cb\u5eab\u3002",
+    note: "\u5b57\u5361\u770b\u91cd\u9ede\uff1a\u4e0d\u662f\u5403\u6389\u7d93\u904e\u7684\u5b50\uff0c\u800c\u662f\u300c\u6700\u5f8c\u843d\u9ede\u300d\u8981\u525b\u597d\u843d\u5728\u81ea\u5df1\u7a7a\u5751\u3002",
+    board: [0, 1, 0, 0, 0, 0, 7, 0, 0, 0, 4, 0, 0, 6],
+    highlights: [1, 2, 10, 6],
+    activePlayer: PLAYER_ONE,
+  },
+  {
+    id: "loop",
+    title: "13 \u5b50\u7e5e\u5708\u9677\u9631",
+    lead: "\u68cb\u5751\u88e1\u5b50\u5f88\u591a\u4e0d\u4e00\u5b9a\u5c31\u662f\u597d\u68cb\u300213 \u5b50\u6703\u7e5e\u904e\u5927\u534a\u500b\u68cb\u76e4\uff0c\u9084\u6703\u8df3\u904e\u5c0d\u65b9\u68cb\u5eab\u3002",
+    note: "\u65b0\u624b\u5148\u8a18\uff1a\u5225\u53ea\u770b\u300c\u54ea\u5751\u6700\u591a\u300d\u3002\u5148\u770b\u6700\u5f8c\u4e00\u9846\u6703\u843d\u5230\u54ea\u88e1\uff0c\u662f\u4e0d\u662f\u9001\u5c0d\u624b\u5403\u5b50\u6a5f\u6703\u3002",
+    board: [13, 0, 2, 0, 4, 1, 9, 2, 0, 5, 1, 0, 7, 8],
+    highlights: [0, 6, 12, 11, 10, 9, 8, 7, 1],
+    activePlayer: PLAYER_ONE,
+  },
+  {
+    id: "combo",
+    title: "\u591a\u4e00\u624b\u56de\u5408 combo",
+    lead: "\u6700\u5f8c\u4e00\u5b50\u843d\u9032\u81ea\u5df1\u68cb\u5eab\uff0c\u4f60\u53ef\u4ee5\u518d\u8d70\u4e00\u624b\u3002\u9023\u7e8c\u8a08\u7b97\u5f97\u597d\uff0c\u53ef\u4ee5\u628a\u5c40\u9762\u4e00\u53e3\u6c23\u62c9\u958b\u3002",
+    note: "\u9019\u985e\u5c40\u9762\u5148\u627e\u300c\u5e7e\u9846\u5b50\u525b\u597d\u843d\u5230\u68cb\u5eab\u300d\uff0c\u518d\u60f3\u4e0b\u4e00\u624b\u80fd\u4e0d\u80fd\u7e7c\u7e8c\u5f97\u5206\u3002",
+    board: [0, 0, 2, 0, 1, 1, 10, 3, 3, 0, 4, 1, 0, 9],
+    highlights: [5, 6, 4, 3],
+    activePlayer: PLAYER_ONE,
+  },
+  {
+    id: "finish",
+    title: "\u7d50\u7b97",
+    lead: "\u4e00\u65b9\u7684\u68cb\u5751\u5168\u90e8\u6e05\u7a7a\uff0c\u5c31\u7acb\u523b\u7d50\u675f\u3002\u53e6\u4e00\u65b9\u5269\u4e0b\u7684\u5b50\u6703\u5168\u90e8\u6536\u56de\u81ea\u5df1\u68cb\u5eab\u3002",
+    note: "\u6240\u4ee5\u5c3e\u76e4\u4e0d\u662f\u53ea\u6bd4\u73fe\u5728\u5206\u6578\uff0c\u9084\u8981\u770b\u8ab0\u6703\u628a\u5269\u5b50\u4e00\u53e3\u6c23\u5e36\u56de\u68cb\u5eab\u3002",
+    board: [0, 0, 0, 0, 0, 1, 20, 3, 0, 0, 0, 0, 0, 18],
+    highlights: [5, 6, 7, 13],
+    activePlayer: PLAYER_ONE,
+  },
+];
 
 const {
   boardEl,
@@ -55,6 +109,7 @@ const {
   mainMenu,
   gameScreen,
   startButton,
+  entryGuideButton,
   menuRulesButton,
   resetButton,
   menuButton,
@@ -93,6 +148,17 @@ const {
   rulePrevButton,
   ruleNextButton,
   ruleStepIndicator,
+  entryGuideOverlay,
+  entryGuideCloseButton,
+  entryGuideKicker,
+  entryGuideTitle,
+  entryGuideLead,
+  entryGuideBoard,
+  entryGuideNote,
+  entryGuideProgress,
+  entryGuideSkipButton,
+  entryGuidePrevButton,
+  entryGuideNextButton,
   pitRomanButton,
   pitArabicButton,
   volumeSlider,
@@ -197,15 +263,17 @@ const state = {
   layoutSalt: createLayoutSalt(BOARD_MODEL),
   screen: "menu",
   mode: "pve",
-  aiDifficulty: "medium",
+  aiDifficulty: DEFAULT_AI_DIFFICULTY,
   humanPlayer: 1,
   aiPlayer: 2,
   aiThinking: false,
   aiThinkDelayMs: 520,
-  pitNumberStyle: "roman",
+  pitNumberStyle: DEFAULT_PIT_NUMBER_STYLE,
   volumePercent: 100,
-  playerHintsEnabled: false,
+  playerHintsEnabled: DEFAULT_PLAYER_HINTS_ENABLED,
   moveHint: null,
+  entryGuideAutoOpened: false,
+  entryGuideSceneIndex: ENTRY_GUIDE_FIRST_SCENE,
   aiDialogue: {
     speaker: "\u65c1\u767d",
     line: "\u9078\u64c7\u6a21\u5f0f\u5f8c\uff0c\u95dc\u9375\u5c40\u9762\u6703\u5728\u9019\u88e1\u88dc\u4e0a\u53f0\u8a5e\u3002",
@@ -238,6 +306,10 @@ const ruleDemoState = {
 };
 
 const LOW_SIDE_THRESHOLD = 8;
+
+if (ENTRY_FRIENDLY_MODE) {
+  document.documentElement.dataset.entryFriendly = "true";
+}
 
 function updateBoardLayoutMode() {
   const viewport = window.visualViewport;
@@ -303,6 +375,18 @@ function showMainMenu() {
   coinTossOverlay.classList.remove("is-visible");
   document.body.classList.remove(...getTurnBodyClasses());
   renderInterfaceState();
+  maybeOpenEntryFriendlyGuide();
+}
+
+function maybeOpenEntryFriendlyGuide() {
+  if (!ENTRY_FRIENDLY_MODE || state.entryGuideAutoOpened) return;
+
+  state.entryGuideAutoOpened = true;
+  window.setTimeout(() => {
+    if (state.screen === "menu") {
+      openEntryGuide();
+    }
+  }, 260);
 }
 
 function otherPlayer(player) {
@@ -364,6 +448,8 @@ function canPreviewMove(index) {
 
 function showMoveHint(startIndex) {
   state.moveHint = createMoveHint(startIndex, state.activePlayer);
+  state.message = "\u9810\u89bd\u8def\u5f91\uff1a\u518d\u9ede\u540c\u4e00\u500b\u68cb\u5751\u78ba\u8a8d\u884c\u68cb";
+  setAiDialogue(NARRATOR, "\u4eae\u5708\u662f\u68cb\u5b50\u6703\u7d93\u904e\u7684\u4f4d\u7f6e\uff1b\u6700\u4eae\u7684\u662f\u6700\u5f8c\u843d\u9ede\u3002");
   render();
 }
 
@@ -726,6 +812,19 @@ async function makeMove(startIndex) {
     setAiDialogue(NARRATOR, dialogueLine);
   }
 
+  if (
+    ENTRY_FRIENDLY_MODE &&
+    !ended &&
+    state.mode === "pve" &&
+    state.activePlayer === state.humanPlayer &&
+    !state.gameOver
+  ) {
+    state.message = "\u8f2a\u5230\u4f60\uff1a\u9ede\u4e0b\u6392\u7d05\u65b9\u68cb\u5751";
+    if (movingPlayer === state.aiPlayer) {
+      setAiDialogue(NARRATOR, "AI \u8d70\u5b8c\u4e86\u3002\u4e0b\u6392\u6709\u4eae\u8d77\u7684\u7d05\u65b9\u68cb\u5751\u90fd\u53ef\u4ee5\u9ede\u3002");
+    }
+  }
+
   state.animating = false;
   boardEl.classList.remove("is-sowing");
   render();
@@ -824,7 +923,11 @@ function renderInterfaceState() {
     button.setAttribute("aria-pressed", String(state.aiDifficulty === difficulty));
   }
 
-  controlHint.textContent = state.mode === "pve" ? "" : TEXT.pvpHint;
+  controlHint.textContent =
+    state.mode === "pve"
+      ? "\u7b2c\u4e00\u6b21\u5efa\u8b70\uff1a\u7c21\u55ae\u96e3\u5ea6\u3001\u963f\u62c9\u4f2f\u6578\u5b57\u3001\u8def\u5f91\u63d0\u793a\u5df2\u958b\u555f\u3002"
+      : TEXT.pvpHint;
+  entryGuideButton.textContent = ENTRY_FRIENDLY_MODE ? "\u91cd\u64ad 60 \u79d2\u5c0e\u8b80" : "60 \u79d2\u5c0e\u8b80";
   aiDialogue.hidden = state.screen !== "game";
   aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
   aiDialogueLine.textContent = state.aiDialogue.line;
@@ -866,6 +969,125 @@ function setPlayerHintsEnabled(enabled) {
 
 function initializeRulesPanel() {
   renderRulesList();
+}
+
+function openEntryGuide(sceneIndex = ENTRY_GUIDE_FIRST_SCENE) {
+  state.entryGuideSceneIndex = sceneIndex;
+  renderEntryGuide();
+  openFloatingCard(entryGuideOverlay);
+}
+
+function closeEntryGuide() {
+  closeFloatingCard(entryGuideOverlay);
+}
+
+function startEntryFriendlyGame() {
+  closeEntryGuide();
+  window.setTimeout(resetGame, 180);
+}
+
+function showNextEntryGuideScene() {
+  if (state.entryGuideSceneIndex === ENTRY_GUIDE_FIRST_SCENE) {
+    state.entryGuideSceneIndex = 0;
+  } else if (state.entryGuideSceneIndex < ENTRY_GUIDE_SCENES.length - 1) {
+    state.entryGuideSceneIndex += 1;
+  } else {
+    startEntryFriendlyGame();
+    return;
+  }
+
+  renderEntryGuide();
+}
+
+function showPreviousEntryGuideScene() {
+  if (state.entryGuideSceneIndex <= 0) {
+    state.entryGuideSceneIndex = ENTRY_GUIDE_FIRST_SCENE;
+  } else {
+    state.entryGuideSceneIndex -= 1;
+  }
+
+  renderEntryGuide();
+}
+
+function renderEntryGuide() {
+  const isIntro = state.entryGuideSceneIndex === ENTRY_GUIDE_FIRST_SCENE;
+  const scene = isIntro
+    ? {
+        title: "\u5148\u770b\u61c2\u8ab0\u8f2a\u5230\u4e86",
+        lead: "\u4f60\u662f\u7d05\u65b9\uff0c\u4e0b\u6392\u662f\u4f60\u7684\u68cb\u5751\u3002AI \u662f\u7d2b\u65b9\uff0c\u4e0a\u6392\u662f AI \u7684\u68cb\u5751\u3002",
+        note: "\u6309\u4e0b\u300c\u958b\u59cb\u6b98\u5c40\u6f14\u793a\u300d\u5f8c\uff0c\u6703\u5148\u64ad\u4e00\u7d44\u5b57\u5361\uff1a\u5403\u5b50\u300113 \u5b50\u7e5e\u5708\u3001\u591a\u4e00\u624b\u3001\u7d50\u7b97\u3002\u770b\u5b8c\u518d\u9032\u7b2c\u4e00\u5c40\u3002",
+        board: ENTRY_GUIDE_SCENES[0].board,
+        highlights: ENTRY_GUIDE_SCENES[0].highlights,
+        activePlayer: PLAYER_ONE,
+      }
+    : ENTRY_GUIDE_SCENES[state.entryGuideSceneIndex];
+  const current = isIntro ? 0 : state.entryGuideSceneIndex + 1;
+  const total = ENTRY_GUIDE_SCENES.length;
+
+  entryGuideKicker.textContent = isIntro ? "\u65b0\u624b\u5165\u5834" : "\u65b0\u624b 60 \u79d2\u5c0e\u8b80";
+  entryGuideTitle.textContent = scene.title;
+  entryGuideLead.textContent = scene.lead;
+  entryGuideNote.textContent = scene.note;
+  entryGuideBoard.innerHTML = createEntryGuideBoard(scene);
+  entryGuideProgress.innerHTML = isIntro
+    ? `<span class="entry-guide-dot is-active"></span>${ENTRY_GUIDE_SCENES.map(() => `<span class="entry-guide-dot"></span>`).join("")}`
+    : ENTRY_GUIDE_SCENES.map(
+        (_, index) => `<span class="entry-guide-dot${index === state.entryGuideSceneIndex ? " is-active" : ""}"></span>`
+      ).join("");
+  entryGuidePrevButton.hidden = isIntro;
+  entryGuideNextButton.textContent = isIntro
+    ? "\u958b\u59cb\u6b98\u5c40\u6f14\u793a"
+    : state.entryGuideSceneIndex === ENTRY_GUIDE_SCENES.length - 1
+      ? "\u958b\u59cb\u7b2c\u4e00\u5c40"
+      : "\u4e0b\u4e00\u5f35";
+  entryGuideSkipButton.textContent = isIntro ? "\u7565\u904e\uff0c\u76f4\u63a5\u958b\u59cb" : "\u8df3\u904e\u5c0e\u8b80";
+  entryGuideOverlay.setAttribute(
+    "aria-label",
+    isIntro ? "\u65b0\u624b\u5165\u5834\u63d0\u793a" : `\u65b0\u624b\u5c0e\u8b80 ${current} / ${total}`
+  );
+}
+
+function createEntryGuideBoard(scene) {
+  const highlightSet = new Set(scene.highlights || []);
+  const cells = [
+    { index: PLAYER_TWO_STORE, type: "store", owner: PLAYER_TWO, label: "AI \u68cb\u5eab" },
+    ...topPits.map((index) => ({ index, type: "pit", owner: PLAYER_TWO, label: "AI \u68cb\u5751" })),
+    { index: PLAYER_ONE_STORE, type: "store", owner: PLAYER_ONE, label: "\u4f60\u7684\u68cb\u5eab" },
+    ...bottomPits.map((index) => ({ index, type: "pit", owner: PLAYER_ONE, label: "\u4f60\u7684\u68cb\u5751" })),
+  ];
+
+  return cells
+    .map((cell) => {
+      const count = scene.board[cell.index] ?? 0;
+      const ownerClass = cell.owner === PLAYER_ONE ? "player-one" : "player-two";
+      const activeClass = scene.activePlayer === cell.owner ? " is-active-side" : "";
+      const highlightClass = highlightSet.has(cell.index) ? " is-highlighted" : "";
+      const countLabel = cell.type === "store" ? count : formatGuideCount(count);
+
+      return `
+        <div class="entry-guide-cell ${cell.type} ${ownerClass}${activeClass}${highlightClass}" data-index="${cell.index}" aria-label="${escapeHtml(`${cell.label}\uff0c${count} \u5b50`)}">
+          <span class="entry-guide-stones" aria-hidden="true">${createEntryGuideStones(count, cell.owner)}</span>
+          <span class="entry-guide-count">${countLabel}</span>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function createEntryGuideStones(count, owner) {
+  const visible = Math.min(count, 8);
+  const ownerClass = owner === PLAYER_ONE ? "red" : "purple";
+  let html = "";
+
+  for (let i = 0; i < visible; i += 1) {
+    html += `<span class="entry-guide-stone ${ownerClass}" style="--stone-index:${i};"></span>`;
+  }
+
+  return html;
+}
+
+function formatGuideCount(count) {
+  return count > 12 ? `${count}!` : String(count);
 }
 
 function renderRulesList() {
@@ -1217,7 +1439,7 @@ function closeRulesCard() {
 }
 
 function closeOpenFloatingCards() {
-  for (const overlay of [ruleDemoOverlay, rulesOverlay, settingsOverlay]) {
+  for (const overlay of [entryGuideOverlay, ruleDemoOverlay, rulesOverlay, settingsOverlay]) {
     if (!overlay.hidden) {
       if (overlay === ruleDemoOverlay || overlay === rulesOverlay) {
         ruleDemoState.token += 1;
@@ -1252,7 +1474,7 @@ async function tossCoin() {
   if (!state.awaitingCoinToss || state.coinTossing) return;
 
   const token = state.animationToken;
-  const result = Math.random() < 0.5 ? "front" : "back";
+  const result = ENTRY_FRIENDLY_MODE && state.mode === "pve" ? "front" : Math.random() < 0.5 ? "front" : "back";
   const face = getCoinFace(result);
   const firstPlayer = face.player;
 
@@ -1280,6 +1502,10 @@ async function tossCoin() {
 
   state.coinResultHolding = false;
   state.awaitingCoinToss = false;
+  if (ENTRY_FRIENDLY_MODE && state.mode === "pve" && state.activePlayer === state.humanPlayer) {
+    state.message = "\u8f2a\u5230\u4f60\uff1a\u9ede\u4e0b\u6392\u7d05\u65b9\u68cb\u5751";
+    setAiDialogue(NARRATOR, "\u8f2a\u5230\u4f60\u4e86\u3002\u7b2c\u4e00\u6b21\u9ede\u68cb\u5751\u6703\u5148\u770b\u8def\u5f91\uff0c\u518d\u9ede\u540c\u4e00\u5751\u624d\u6703\u771f\u6b63\u884c\u68cb\u3002");
+  }
   render();
   await maybeRunAiTurn();
 }
@@ -1715,6 +1941,9 @@ difficultyHardButton.addEventListener("click", () => {
 });
 
 startButton.addEventListener("click", resetGame);
+entryGuideButton.addEventListener("click", () => {
+  openEntryGuide();
+});
 resetButton.addEventListener("click", resetGame);
 menuButton.addEventListener("click", showMainMenu);
 resultResetButton.addEventListener("click", resetGame);
@@ -1751,6 +1980,11 @@ menuRulesButton.addEventListener("click", () => {
 settingsButton.addEventListener("click", () => {
   openFloatingCard(settingsOverlay);
 });
+
+entryGuideCloseButton.addEventListener("click", closeEntryGuide);
+entryGuideSkipButton.addEventListener("click", startEntryFriendlyGame);
+entryGuidePrevButton.addEventListener("click", showPreviousEntryGuideScene);
+entryGuideNextButton.addEventListener("click", showNextEntryGuideScene);
 
 rulesCloseButton.addEventListener("click", () => {
   closeRulesCard();
@@ -1803,6 +2037,12 @@ settingsOverlay.addEventListener("click", (event) => {
 ruleDemoOverlay.addEventListener("click", (event) => {
   if (event.target === ruleDemoOverlay) {
     closeRuleDemoCard();
+  }
+});
+
+entryGuideOverlay.addEventListener("click", (event) => {
+  if (event.target === entryGuideOverlay) {
+    closeEntryGuide();
   }
 });
 
