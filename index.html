@@ -13,7 +13,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260619a" />
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png?v=20260619a" />
-    <link rel="stylesheet" href="styles.css?v=20260620a" />
+    <link rel="stylesheet" href="styles.css?v=20260620b" />
   </head>
   <body>
     <main class="game-app">
@@ -29,21 +29,22 @@
           </button>
           <div class="menu-difficulty" id="difficultyField">
             <span>AI &#38627;&#24230;</span>
-            <p class="menu-difficulty-note">&#29609;&#23478; = &#32005;&#26041;&#65292;AI = &#32043;&#26041;</p>
+            <p class="menu-difficulty-note">&#29609;&#23478; = &#32005;&#26041;&#65292;AI = &#32043;&#26041;&#12290;&#31532;&#19968;&#27425;&#24314;&#35696;&#29992;&#12300;&#31777;&#21934;&#12301;&#12290;</p>
             <div class="difficulty-options" role="group" aria-label="AI &#38627;&#24230;">
-              <button class="difficulty-button" id="difficultyEasyButton" type="button" data-difficulty="easy">Easy</button>
-              <button class="difficulty-button is-active" id="difficultyMediumButton" type="button" data-difficulty="medium">Medium</button>
-              <button class="difficulty-button" id="difficultyHardButton" type="button" data-difficulty="hard">Hard</button>
+              <button class="difficulty-button is-active" id="difficultyEasyButton" type="button" data-difficulty="easy">&#31777;&#21934;</button>
+              <button class="difficulty-button" id="difficultyMediumButton" type="button" data-difficulty="medium">&#26222;&#36890;</button>
+              <button class="difficulty-button" id="difficultyHardButton" type="button" data-difficulty="hard">&#22256;&#38627;</button>
             </div>
           </div>
           <button class="menu-option" id="modePvpButton" type="button" data-mode="pvp">
             <span>&#38617;&#20154;&#27169;&#24335;</span>
-            <small>Local</small>
+            <small>&#21516;&#27231;&#38617;&#20154;</small>
           </button>
         </div>
         <p class="control-hint" id="controlHint"></p>
         <div class="menu-actions">
           <button class="start-button" id="startButton" type="button">&#38283;&#22987;</button>
+          <button class="menu-help-button" id="entryGuideButton" type="button">60 &#31186;&#23566;&#35712;</button>
           <button class="menu-help-button" id="menuRulesButton" type="button">&#26032;&#25163;&#35498;&#26126;</button>
         </div>
       </section>
@@ -159,6 +160,23 @@
       </section>
     </div>
 
+    <div class="floating-card-overlay entry-guide-overlay" id="entryGuideOverlay" hidden aria-live="polite">
+      <section class="floating-card entry-guide-card" role="dialog" aria-modal="true" aria-labelledby="entryGuideTitle">
+        <button class="floating-card-close" id="entryGuideCloseButton" type="button" aria-label="&#38364;&#38281; 60 &#31186;&#23566;&#35712;">&times;</button>
+        <p class="floating-card-kicker" id="entryGuideKicker">&#26032;&#25163; 60 &#31186;&#23566;&#35712;</p>
+        <h2 id="entryGuideTitle"></h2>
+        <p class="entry-guide-lead" id="entryGuideLead"></p>
+        <div class="entry-guide-board" id="entryGuideBoard" aria-label="Kalah &#27544;&#23616;&#28436;&#31034;&#26827;&#30436;"></div>
+        <p class="entry-guide-note" id="entryGuideNote"></p>
+        <div class="entry-guide-progress" id="entryGuideProgress"></div>
+        <div class="entry-guide-actions">
+          <button class="result-button secondary" id="entryGuideSkipButton" type="button">&#30053;&#36942;&#65292;&#30452;&#25509;&#38283;&#22987;</button>
+          <button class="result-button secondary" id="entryGuidePrevButton" type="button">&#19978;&#19968;&#24373;</button>
+          <button class="result-button" id="entryGuideNextButton" type="button">&#38283;&#22987;&#27544;&#23616;&#28436;&#31034;</button>
+        </div>
+      </section>
+    </div>
+
     <div class="floating-card-overlay" id="settingsOverlay" hidden aria-live="polite">
       <section class="floating-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
         <button class="floating-card-close" id="settingsCloseButton" type="button" aria-label="&#38364;&#38281;&#35373;&#23450;">&times;</button>
@@ -170,8 +188,8 @@
             <small>&#20999;&#25563;&#26827;&#22353;&#25976;&#37327;&#39023;&#31034;&#65292;&#25163;&#27231;&#19978;&#21487;&#29992;&#38463;&#25289;&#20271;&#25976;&#23383;&#25552;&#39640;&#21487;&#35712;&#24615;&#12290;</small>
           </div>
           <div class="segmented-control" role="group" aria-label="&#26827;&#23376;&#25976;&#23383;&#39023;&#31034;">
-            <button class="setting-option is-active" id="pitRomanButton" type="button" data-pit-number-style="roman">&#32645;&#39340;&#25976;&#23383;</button>
-            <button class="setting-option" id="pitArabicButton" type="button" data-pit-number-style="arabic">&#38463;&#25289;&#20271;&#25976;&#23383;</button>
+            <button class="setting-option" id="pitRomanButton" type="button" data-pit-number-style="roman">&#32645;&#39340;&#25976;&#23383;</button>
+            <button class="setting-option is-active" id="pitArabicButton" type="button" data-pit-number-style="arabic">&#38463;&#25289;&#20271;&#25976;&#23383;</button>
           </div>
         </div>
         <div class="setting-row">
@@ -190,14 +208,14 @@
             <small>開啟後，第一次點擊顯示播子路徑；再次點同一坑才會行棋。</small>
           </div>
           <label class="toggle-control">
-            <input id="playerHintToggle" type="checkbox" />
+            <input id="playerHintToggle" type="checkbox" checked />
             <span aria-hidden="true"></span>
           </label>
         </div>
       </section>
     </div>
 
-    <script type="module" src="script.js?v=20260620a"></script>
+    <script type="module" src="script.js?v=20260620b"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
