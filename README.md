@@ -8,7 +8,7 @@ A simple browser-based Kalah / Mancala MVP built with plain HTML, CSS, and JavaS
 
 [Play the game on GitHub Pages](https://nkko-nc.github.io/-_-/)
 
-[Entry-friendly mode](https://nkko-nc.github.io/-_-/entry-friendly.html) starts with Easy AI, Arabic numerals, path previews, and a 60-second beginner guide.
+[Entry-friendly mode](https://nkko-nc.github.io/-_-/entry-friendly.html) starts with Easy AI, Arabic numerals, path previews, and a full-board dynamic demo inside the game explanation.
 
 ## Run
 
