@@ -13,7 +13,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260619a" />
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png?v=20260619a" />
-    <link rel="stylesheet" href="styles.css?v=20260620c" />
+    <link rel="stylesheet" href="styles.css?v=20260621a" />
   </head>
   <body>
     <main class="game-app">
@@ -167,6 +167,18 @@
         <h2 id="settingsTitle">&#30059;&#38754;&#35373;&#23450;</h2>
         <div class="setting-row">
           <div>
+            <strong>變更主題</strong>
+            <small>切換後會立即批量更換棋盤、背景、介面貼圖、棋子命名與回合物件。</small>
+          </div>
+          <label class="theme-select-control" for="themeSelect">
+            <select class="theme-select" id="themeSelect">
+              <option value="classic">Classic</option>
+              <option value="zen">Zen Childhood</option>
+            </select>
+          </label>
+        </div>
+        <div class="setting-row">
+          <div>
             <strong>&#26827;&#23376;&#25976;&#23383;</strong>
             <small>&#20999;&#25563;&#26827;&#22353;&#25976;&#37327;&#39023;&#31034;&#65292;&#25163;&#27231;&#19978;&#21487;&#29992;&#38463;&#25289;&#20271;&#25976;&#23383;&#25552;&#39640;&#21487;&#35712;&#24615;&#12290;</small>
           </div>
@@ -198,7 +210,7 @@
       </section>
     </div>
 
-    <script type="module" src="script.js?v=20260620c"></script>
+    <script type="module" src="script.js?v=20260621a"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {

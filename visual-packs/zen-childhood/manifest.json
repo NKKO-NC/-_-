@@ -1,0 +1,549 @@
+﻿{
+    "schemaVersion":  1,
+    "id":  "zen-childhood-visual",
+    "displayName":  "Zen Childhood Visual",
+    "assetVersion":  "20260621-visual-a",
+    "engineCompatibility":  "^1.0.0",
+    "baseUrl":  "./assets/",
+    "compliance":  {
+                       "source":  "original-generated",
+                       "commercialUseIntended":  true,
+                       "commercialUse":  true,
+                       "thirdPartySourceAssets":  false,
+                       "attributionRequired":  false,
+                       "licenseNote":  "Original generated visual assets for Kalah Childhood Memories. Keep source notes and hashes with redistributed files."
+                   },
+    "layouts":  {
+                    "landscape":  {
+                                      "canvas":  [
+                                                     2048,
+                                                     1024
+                                                 ],
+                                      "physicalModel":  "kalah-6x6-landscape"
+                                  },
+                    "portrait":  {
+                                     "canvas":  [
+                                                    1536,
+                                                    2048
+                                                ],
+                                     "physicalModel":  "kalah-6x6-portrait"
+                                 }
+                },
+    "assets":  {
+                   "board.landscape.base":  {
+                                                "src":  "board-landscape-base.png",
+                                                "type":  "image/png",
+                                                "width":  2048,
+                                                "height":  1024,
+                                                "alpha":  true,
+                                                "role":  "board-base",
+                                                "source":  "original-generated",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "895733dfcd97804944a32f99d09bfc9d57571b96973ec580ad6bf60f5c3d9b4c"
+                                            },
+                   "board.landscape.rim":  {
+                                               "src":  "board-landscape-rim-overlay.png",
+                                               "type":  "image/png",
+                                               "width":  2048,
+                                               "height":  1024,
+                                               "alpha":  true,
+                                               "role":  "board-rim-overlay",
+                                               "source":  "original-generated",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "9f0058bd92feff222a08f8b27b122173242d211b00d6774a88847012f45bd2e2"
+                                           },
+                   "board.landscape.shadow":  {
+                                                  "src":  "board-landscape-shadow.png",
+                                                  "type":  "image/png",
+                                                  "width":  2048,
+                                                  "height":  1024,
+                                                  "alpha":  true,
+                                                  "role":  "board-shadow",
+                                                  "source":  "original-generated",
+                                                  "license":  "project-owned-generated-commercial-use-ok",
+                                                  "sha256":  "dedb01179007a9d707b2d203904c322aef1771e2e827215a844215dc9cf63384"
+                                              },
+                   "board.landscape.slot-mask":  {
+                                                     "src":  "board-landscape-slot-mask.png",
+                                                     "type":  "image/png",
+                                                     "width":  2048,
+                                                     "height":  1024,
+                                                     "alpha":  true,
+                                                     "role":  "board-slot-mask",
+                                                     "source":  "original-generated",
+                                                     "license":  "project-owned-generated-commercial-use-ok",
+                                                     "sha256":  "2d8a58cf376e4ec8c0dff9d0c9e858f1ae061cf5f774d048cc554cb8d7905df2"
+                                                 },
+                   "board.portrait.base":  {
+                                               "src":  "board-portrait-base.png",
+                                               "type":  "image/png",
+                                               "width":  1536,
+                                               "height":  2048,
+                                               "alpha":  true,
+                                               "role":  "board-base",
+                                               "source":  "original-generated",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "e810d3829b61ca1373c680e72ef61a6b513a64ac521d6c9f833af6c47e358705"
+                                           },
+                   "board.portrait.rim":  {
+                                              "src":  "board-portrait-rim-overlay.png",
+                                              "type":  "image/png",
+                                              "width":  1536,
+                                              "height":  2048,
+                                              "alpha":  true,
+                                              "role":  "board-rim-overlay",
+                                              "source":  "original-generated",
+                                              "license":  "project-owned-generated-commercial-use-ok",
+                                              "sha256":  "b39283002b88b9201b2f559b09f2b2ebcebba021610ea5d4d6ecbd10883be34b"
+                                          },
+                   "board.portrait.shadow":  {
+                                                 "src":  "board-portrait-shadow.png",
+                                                 "type":  "image/png",
+                                                 "width":  1536,
+                                                 "height":  2048,
+                                                 "alpha":  true,
+                                                 "role":  "board-shadow",
+                                                 "source":  "original-generated",
+                                                 "license":  "project-owned-generated-commercial-use-ok",
+                                                 "sha256":  "57c745deeffdb26fc8f4eb4e2f29f0a14c3b7d3900385a55cd856a465cb710cd"
+                                             },
+                   "board.portrait.slot-mask":  {
+                                                    "src":  "board-portrait-slot-mask.png",
+                                                    "type":  "image/png",
+                                                    "width":  1536,
+                                                    "height":  2048,
+                                                    "alpha":  true,
+                                                    "role":  "board-slot-mask",
+                                                    "source":  "original-generated",
+                                                    "license":  "project-owned-generated-commercial-use-ok",
+                                                    "sha256":  "f514327a843acaa149e93139c7ff045c1480019ed4dbf5f62c4ef1d58270e5e1"
+                                                },
+                   "pit.albedo":  {
+                                      "src":  "pit-well-albedo.png",
+                                      "type":  "image/png",
+                                      "width":  512,
+                                      "height":  512,
+                                      "alpha":  false,
+                                      "role":  "pit-material",
+                                      "source":  "original-generated",
+                                      "license":  "project-owned-generated-commercial-use-ok",
+                                      "sha256":  "4e973248e23a812b65e7baa9ac1671a370f8099616ce9a2f8f96fd258464936e"
+                                  },
+                   "pit.normal":  {
+                                      "src":  "pit-well-normal.png",
+                                      "type":  "image/png",
+                                      "width":  512,
+                                      "height":  512,
+                                      "alpha":  false,
+                                      "role":  "pit-material-normal",
+                                      "source":  "original-generated",
+                                      "license":  "project-owned-generated-commercial-use-ok",
+                                      "sha256":  "c97a0dd0bcd4dd97ab56d6a4709ee1bacabd2b107159e5bb9524436bd0d6119e"
+                                  },
+                   "pit.roughness":  {
+                                         "src":  "pit-well-roughness.png",
+                                         "type":  "image/png",
+                                         "width":  512,
+                                         "height":  512,
+                                         "alpha":  false,
+                                         "role":  "pit-material-roughness",
+                                         "source":  "original-generated",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "efa66695449480c9668820540a56f929773a366c282c1112ad2d19eec5b082f7"
+                                     },
+                   "store.landscape.albedo":  {
+                                                  "src":  "store-well-landscape-albedo.png",
+                                                  "type":  "image/png",
+                                                  "width":  512,
+                                                  "height":  1024,
+                                                  "alpha":  false,
+                                                  "role":  "store-material",
+                                                  "source":  "original-generated",
+                                                  "license":  "project-owned-generated-commercial-use-ok",
+                                                  "sha256":  "816258a65286e80cd08f6f9d6b92294562cdd615b57d8c94e0bed2dc2d7a16d1"
+                                              },
+                   "store.portrait.albedo":  {
+                                                 "src":  "store-well-portrait-albedo.png",
+                                                 "type":  "image/png",
+                                                 "width":  512,
+                                                 "height":  768,
+                                                 "alpha":  false,
+                                                 "role":  "store-material",
+                                                 "source":  "original-generated",
+                                                 "license":  "project-owned-generated-commercial-use-ok",
+                                                 "sha256":  "eb64f0373c988a379e5029d6225e4acdb7dd57001691bf14bcf6d3b511c37be3"
+                                             },
+                   "store.normal":  {
+                                        "src":  "store-well-normal.png",
+                                        "type":  "image/png",
+                                        "width":  512,
+                                        "height":  1024,
+                                        "alpha":  false,
+                                        "role":  "store-material-normal",
+                                        "source":  "original-generated",
+                                        "license":  "project-owned-generated-commercial-use-ok",
+                                        "sha256":  "0afdf783dc755c21b99479813fb5582808d19acda846437666bde46d449421f0"
+                                    },
+                   "store.roughness":  {
+                                           "src":  "store-well-roughness.png",
+                                           "type":  "image/png",
+                                           "width":  512,
+                                           "height":  1024,
+                                           "alpha":  false,
+                                           "role":  "store-material-roughness",
+                                           "source":  "original-generated",
+                                           "license":  "project-owned-generated-commercial-use-ok",
+                                           "sha256":  "bce8dd24146cb5c01937d82c277b3802d8bfda2fc9427ea34ac5e24dd21bdd72"
+                                       },
+                   "ui.score.panel":  {
+                                          "src":  "ui-score-panel-9slice.png",
+                                          "type":  "image/png",
+                                          "width":  1024,
+                                          "height":  256,
+                                          "alpha":  true,
+                                          "role":  "ui-score-panel",
+                                          "source":  "original-generated",
+                                          "license":  "project-owned-generated-commercial-use-ok",
+                                          "sha256":  "d4d33712bd7a42c53160c5a8cf0a51014b95f73d4b4e279d2b238c8a2d268cdf"
+                                      },
+                   "ui.dialogue.panel":  {
+                                             "src":  "ui-dialogue-panel-9slice.png",
+                                             "type":  "image/png",
+                                             "width":  1536,
+                                             "height":  320,
+                                             "alpha":  true,
+                                             "role":  "ui-dialogue-panel",
+                                             "source":  "original-generated",
+                                             "license":  "project-owned-generated-commercial-use-ok",
+                                             "sha256":  "57cac10b5230d1523312ad8d0df502f54c7fd8a2207d834fa17737f1bbad88c8"
+                                         },
+                   "ui.modal.panel":  {
+                                          "src":  "ui-modal-panel-9slice.png",
+                                          "type":  "image/png",
+                                          "width":  1400,
+                                          "height":  1200,
+                                          "alpha":  true,
+                                          "role":  "ui-modal-panel",
+                                          "source":  "original-generated",
+                                          "license":  "project-owned-generated-commercial-use-ok",
+                                          "sha256":  "551b331236ae9decf90473f0ec7dfc37bfd6db28118ba2da8f07fb7583e94355"
+                                      },
+                   "ui.result.panel":  {
+                                           "src":  "ui-result-panel-9slice.png",
+                                           "type":  "image/png",
+                                           "width":  1024,
+                                           "height":  1024,
+                                           "alpha":  true,
+                                           "role":  "ui-result-panel",
+                                           "source":  "original-generated",
+                                           "license":  "project-owned-generated-commercial-use-ok",
+                                           "sha256":  "bbdfcb1352e1de3317a5f244492e195c765d83bea06d5d8a0684c19b29cf75d9"
+                                       },
+                   "ui.button.primary":  {
+                                             "src":  "ui-button-primary-9slice.png",
+                                             "type":  "image/png",
+                                             "width":  768,
+                                             "height":  224,
+                                             "alpha":  true,
+                                             "role":  "ui-button-primary",
+                                             "source":  "original-generated",
+                                             "license":  "project-owned-generated-commercial-use-ok",
+                                             "sha256":  "7e74c019d5e4b4c11914945a435bbb1831d43abf46d783cb12a12cc5f020b51a"
+                                         },
+                   "ui.button.secondary":  {
+                                               "src":  "ui-button-secondary-9slice.png",
+                                               "type":  "image/png",
+                                               "width":  768,
+                                               "height":  224,
+                                               "alpha":  true,
+                                               "role":  "ui-button-secondary",
+                                               "source":  "original-generated",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "a1b2b909fff27eeae5dedac25688bf11e4f7a91d2acd497b7474fe7ef9029dfc"
+                                           },
+                   "ui.icon.frame":  {
+                                         "src":  "ui-icon-frame.png",
+                                         "type":  "image/png",
+                                         "width":  256,
+                                         "height":  256,
+                                         "alpha":  true,
+                                         "role":  "ui-icon-frame",
+                                         "source":  "original-generated",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "a93bea24ec2600b29db4085bc89909d2e3b2ac1dfb0eb9fe8d3b12e739cbe2b5"
+                                     },
+                   "ui.turn.badge":  {
+                                         "src":  "ui-turn-badge.png",
+                                         "type":  "image/png",
+                                         "width":  384,
+                                         "height":  384,
+                                         "alpha":  true,
+                                         "role":  "ui-turn-badge",
+                                         "source":  "original-generated",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "f44696cb95d7c91be59003384aad5dc2b506965aaa856acdb64e97eeb59818c7"
+                                     },
+                   "hint.ring.red":  {
+                                         "src":  "hint-ring-red.png",
+                                         "type":  "image/png",
+                                         "width":  512,
+                                         "height":  512,
+                                         "alpha":  true,
+                                         "role":  "hint-ring",
+                                         "source":  "original-generated",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "8347c68594e84fae04ecfbdc407a1f90de7b35193b4852410488b207b8a9978b"
+                                     },
+                   "hint.ring.purple":  {
+                                            "src":  "hint-ring-purple.png",
+                                            "type":  "image/png",
+                                            "width":  512,
+                                            "height":  512,
+                                            "alpha":  true,
+                                            "role":  "hint-ring",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "6f4a1783f1f595e79082385b843ff86503511d115dd2d4853a984eb03aa1284d"
+                                        },
+                   "hint.ring.landing":  {
+                                             "src":  "hint-ring-landing.png",
+                                             "type":  "image/png",
+                                             "width":  512,
+                                             "height":  512,
+                                             "alpha":  true,
+                                             "role":  "hint-ring",
+                                             "source":  "original-generated",
+                                             "license":  "project-owned-generated-commercial-use-ok",
+                                             "sha256":  "1ea69ce9e28423b41f743e29f05b41f3efbb6e5f557df435d4b8d0b5a74bc7a7"
+                                         },
+                   "background.landscape.idle":  {
+                                                     "src":  "background-landscape-idle.png",
+                                                     "type":  "image/png",
+                                                     "width":  2560,
+                                                     "height":  1440,
+                                                     "alpha":  false,
+                                                     "role":  "background",
+                                                     "source":  "original-generated",
+                                                     "license":  "project-owned-generated-commercial-use-ok",
+                                                     "sha256":  "55c6cd25dccee2b122ae41cd36d7590097f47bf504a949b8399c1849f16e735c"
+                                                 },
+                   "background.portrait.idle":  {
+                                                    "src":  "background-portrait-idle.png",
+                                                    "type":  "image/png",
+                                                    "width":  1440,
+                                                    "height":  2560,
+                                                    "alpha":  false,
+                                                    "role":  "background",
+                                                    "source":  "original-generated",
+                                                    "license":  "project-owned-generated-commercial-use-ok",
+                                                    "sha256":  "a767748a7afa98a72ec007f2c0fa47ef9200c5daf3e8a78afa5447b2c4acc8bb"
+                                                },
+                   "particle.ruby.01":  {
+                                            "src":  "particle-ruby-01.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "5d8708dd5e1167ef377612f14958d500826937aa311824096623d87832d27f13"
+                                        },
+                   "particle.ruby.02":  {
+                                            "src":  "particle-ruby-02.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "ccc37dea8c4bcd6406cdb9d204e288000af3d4c0356cd96404c2b5a46ab32d40"
+                                        },
+                   "particle.ruby.03":  {
+                                            "src":  "particle-ruby-03.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "cd486b64ccf74bacf59c998e9c043c23f15e8fb35e3a983ec2cd4dd5e6d8228e"
+                                        },
+                   "particle.ruby.04":  {
+                                            "src":  "particle-ruby-04.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "c7368898e4a5a1009bad0d4010a22341d3b53a91723915319be7611e410783ee"
+                                        },
+                   "particle.ruby.05":  {
+                                            "src":  "particle-ruby-05.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "db86a23de99e44ba6313be24bcdbfaed18794221fb2d121f3bb05dc38258019d"
+                                        },
+                   "particle.amethyst.01":  {
+                                                "src":  "particle-amethyst-01.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "58f82d0ede98d4c54d2ddbc217822fda5fd65a184b93148065c92d3e5a910165"
+                                            },
+                   "particle.amethyst.02":  {
+                                                "src":  "particle-amethyst-02.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "d6b103ddd8824ce7219989288d5c01913c6ba006517250268bcd51f4d1adec35"
+                                            },
+                   "particle.amethyst.03":  {
+                                                "src":  "particle-amethyst-03.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "156b51c03d24e5feb9365061759a3ff7a8a0c4a6b4ddf08fcbd9f2da05eb2554"
+                                            },
+                   "particle.amethyst.04":  {
+                                                "src":  "particle-amethyst-04.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "68da2c7922bfff464b48cac33cb3aff9b692db6a2989803d648844bbb036dd75"
+                                            },
+                   "particle.amethyst.05":  {
+                                                "src":  "particle-amethyst-05.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "e0a78ecd80c1df2ebc43852911aff7543b52ccf6af89127f987f6fa2c69ee29f"
+                                            },
+                   "particle.gold.01":  {
+                                            "src":  "particle-gold-01.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "d52861bb84056957e66d3796e482e92f07d22f81c63b2fceead4f2c0de076c5a"
+                                        },
+                   "particle.gold.02":  {
+                                            "src":  "particle-gold-02.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "19cfdf1287037ebab11f49e79078dbca349afaa391d308c81653ab574621a725"
+                                        },
+                   "particle.gold.03":  {
+                                            "src":  "particle-gold-03.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "31f80fd12413ed7eb93af657da8f34bb60f923c07ffa9dd88bcd0de828b360e6"
+                                        },
+                   "particle.gold.04":  {
+                                            "src":  "particle-gold-04.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "29741b97b92d682a92d1cd041ec751c14aa3f2258bd850b363bd1fac22490796"
+                                        },
+                   "particle.gold.05":  {
+                                            "src":  "particle-gold-05.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "b38646787e744b07adc9bb854d5d76412852c4e4faff49de5c5191073a6d75fd"
+                                        }
+               },
+    "nineSlice":  {
+                      "ui.score.panel":  {
+                                             "left":  96,
+                                             "right":  96,
+                                             "top":  72,
+                                             "bottom":  72
+                                         },
+                      "ui.dialogue.panel":  {
+                                                "left":  128,
+                                                "right":  128,
+                                                "top":  88,
+                                                "bottom":  88
+                                            },
+                      "ui.modal.panel":  {
+                                             "left":  128,
+                                             "right":  128,
+                                             "top":  128,
+                                             "bottom":  128
+                                         },
+                      "ui.result.panel":  {
+                                              "left":  120,
+                                              "right":  120,
+                                              "top":  120,
+                                              "bottom":  120
+                                          },
+                      "ui.button.primary":  {
+                                                "left":  96,
+                                                "right":  96,
+                                                "top":  72,
+                                                "bottom":  72
+                                            },
+                      "ui.button.secondary":  {
+                                                  "left":  96,
+                                                  "right":  96,
+                                                  "top":  72,
+                                                  "bottom":  72
+                                              }
+                  },
+    "notes":  {
+                  "artPass":  "DALL-E concept guided Zen visual pack with hinoki wood, bamboo, river stone, rice paper, aged brass, vermilion, indigo, and jade accents; preserve ids and dimensions for runtime compatibility",
+                  "backgroundFormatNote":  "PNG is used instead of WebP because the local PowerShell/.NET generator has no WebP encoder."
+              }
+}

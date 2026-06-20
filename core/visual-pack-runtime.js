@@ -17,7 +17,7 @@ const VISUAL_CSS_BINDINGS = Object.freeze({
   "ui.turn.badge": "--visual-ui-turn-badge",
 });
 
-function createVisualPackRuntime({ manifestUrl }) {
+function createVisualPackRuntime({ manifestUrl, shouldApply = () => true }) {
   const particleUrls = new Map();
   const assetUrls = new Map();
   let manifest = null;
@@ -34,7 +34,9 @@ function createVisualPackRuntime({ manifestUrl }) {
     }
 
     manifest = await response.json();
-    applyManifest();
+    if (shouldApply(manifest)) {
+      applyManifest();
+    }
     return manifest;
   }
 
@@ -75,6 +77,7 @@ function createVisualPackRuntime({ manifestUrl }) {
 
   return Object.freeze({
     ready,
+    applyManifest,
     get manifest() {
       return manifest;
     },

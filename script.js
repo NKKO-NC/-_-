@@ -2,7 +2,7 @@
 import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260619a";
 import { createKalahAi } from "./game/ai.js?v=20260619a";
 import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260620b";
-import { getGameDomRefs } from "./ui/dom.js?v=20260620c";
+import { getGameDomRefs } from "./ui/dom.js?v=20260621a";
 import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260619a";
 import {
   KALAH_BOARD_MODEL,
@@ -27,15 +27,30 @@ import {
   selectCountCurveValue,
 } from "./core/object-physics.js?v=20260619a";
 import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
-import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260619a";
+import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260621a";
 import { OBSIDIAN_OBJECT_PACK } from "./object-packs/obsidian.js?v=20260619b";
+import { ZEN_OBJECT_PACK } from "./object-packs/zen.js?v=20260621a";
 import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
-const objectPack = createObjectPackRuntime(OBSIDIAN_OBJECT_PACK);
-const visualPack = createVisualPackRuntime({
-  manifestUrl: "./visual-packs/obsidian-childhood/manifest.json",
+const THEME_DEFINITIONS = Object.freeze({
+  classic: Object.freeze({
+    id: "classic",
+    label: "Classic",
+    objectPack: OBSIDIAN_OBJECT_PACK,
+    visualManifestUrl: "./visual-packs/obsidian-childhood/manifest.json",
+  }),
+  zen: Object.freeze({
+    id: "zen",
+    label: "Zen Childhood",
+    objectPack: ZEN_OBJECT_PACK,
+    visualManifestUrl: "./visual-packs/zen-childhood/manifest.json",
+  }),
 });
+const DEFAULT_THEME_ID = "classic";
+let activeThemeId = DEFAULT_THEME_ID;
+let objectPack = createObjectPackRuntime(THEME_DEFINITIONS[DEFAULT_THEME_ID].objectPack);
+let visualPack = createThemeVisualPack(THEME_DEFINITIONS[DEFAULT_THEME_ID]);
 const sound = createSoundPackRuntime({
   manifestUrl: "./sound-packs/procedural-crystal/manifest.json",
 });
@@ -204,6 +219,7 @@ const {
   rulePrevButton,
   ruleNextButton,
   ruleStepIndicator,
+  themeSelect,
   pitRomanButton,
   pitArabicButton,
   volumeSlider,
@@ -223,14 +239,64 @@ const {
   particleField,
 } = getGameDomRefs();
 
-const getPackAssetUrl = objectPack.getAssetUrl;
-const getCoinFace = objectPack.getCoinFace;
-const getNeutralSkin = objectPack.getNeutralSkin;
-const getPlayerCssClass = objectPack.getPlayerCssClass;
-const getPlayerSkin = objectPack.getPlayerSkin;
-const getPlayerStoneUrl = objectPack.getPlayerStoneUrl;
-const getPlayerStoreSigilUrl = objectPack.getPlayerStoreSigilUrl;
-const getTurnBodyClasses = objectPack.getTurnBodyClasses;
+function getThemeDefinition(themeId) {
+  return THEME_DEFINITIONS[themeId] || THEME_DEFINITIONS[DEFAULT_THEME_ID];
+}
+
+function createThemeVisualPack(theme) {
+  return createVisualPackRuntime({
+    manifestUrl: theme.visualManifestUrl,
+    shouldApply: () => activeThemeId === theme.id,
+  });
+}
+
+function getThemePlayerClassNames(className) {
+  return Object.values(THEME_DEFINITIONS)
+    .flatMap((theme) => Object.values(theme.objectPack.players).map((player) => player.classes[className]))
+    .filter(Boolean);
+}
+
+function getThemeNeutralClassNames(className) {
+  return Object.values(THEME_DEFINITIONS)
+    .map((theme) => theme.objectPack.neutral[className])
+    .filter(Boolean);
+}
+
+function clearThemeStateClasses() {
+  document.body.classList.remove(...getThemePlayerClassNames("bodyTurn"));
+  turnIndicator.classList.remove(
+    ...getThemePlayerClassNames("turnIndicator"),
+    ...getThemeNeutralClassNames("turnIndicatorClass")
+  );
+}
+
+function getPackAssetUrl(assetId) {
+  return objectPack.getAssetUrl(assetId);
+}
+
+function getCoinFace(face) {
+  return objectPack.getCoinFace(face);
+}
+
+function getNeutralSkin() {
+  return objectPack.getNeutralSkin();
+}
+
+function getPlayerCssClass(player, className) {
+  return objectPack.getPlayerCssClass(player, className);
+}
+
+function getPlayerSkin(player) {
+  return objectPack.getPlayerSkin(player);
+}
+
+function getPlayerStoneUrl(player) {
+  return objectPack.getPlayerStoneUrl(player);
+}
+
+function getPlayerStoreSigilUrl(player) {
+  return objectPack.getPlayerStoreSigilUrl(player);
+}
 
 function setCoinFallbackVisual() {
   coinTossButton.classList.add("is-fallback");
@@ -245,6 +311,8 @@ function createFallbackCoinScene() {
       return false;
     },
     reset() {},
+    setFace() {},
+    dispose() {},
   };
 }
 
@@ -281,6 +349,19 @@ function createCoinScene() {
           setCoinFallbackVisual();
         }
       },
+      setFace(face) {
+        void scene.ready
+          .then(() => {
+            scene.setFace(face);
+          })
+          .catch((error) => {
+            console.warn("Coin scene face sync failed. Falling back to static coin.", error);
+            setCoinFallbackVisual();
+          });
+      },
+      dispose() {
+        scene.dispose();
+      },
     };
   } catch (error) {
     console.warn("Coin scene setup failed. Falling back to static coin.", error);
@@ -289,7 +370,7 @@ function createCoinScene() {
 }
 
 objectPack.applySkin({ coinTossButton });
-const coinScene = createCoinScene();
+let coinScene = createCoinScene();
 
 const state = {
   board: createInitialBoard(),
@@ -309,6 +390,7 @@ const state = {
   screen: "menu",
   mode: "pve",
   aiDifficulty: DEFAULT_AI_DIFFICULTY,
+  themeId: DEFAULT_THEME_ID,
   humanPlayer: 1,
   aiPlayer: 2,
   aiThinking: false,
@@ -425,7 +507,7 @@ function showMainMenu() {
   resetCoinVisual();
   coinTossOverlay.hidden = true;
   coinTossOverlay.classList.remove("is-visible");
-  document.body.classList.remove(...getTurnBodyClasses());
+  clearThemeStateClasses();
   renderInterfaceState();
   maybeOpenEntryFriendlyExplanation();
 }
@@ -995,6 +1077,7 @@ function renderInterfaceState() {
 function renderSettingsState() {
   const isRoman = state.pitNumberStyle === "roman";
 
+  themeSelect.value = state.themeId;
   pitRomanButton.classList.toggle("is-active", isRoman);
   pitArabicButton.classList.toggle("is-active", !isRoman);
   pitRomanButton.setAttribute("aria-pressed", String(isRoman));
@@ -1002,6 +1085,36 @@ function renderSettingsState() {
   volumeSlider.value = String(state.volumePercent);
   volumeValue.textContent = `${state.volumePercent}%`;
   playerHintToggle.checked = state.playerHintsEnabled;
+}
+
+function syncCoinSceneFace() {
+  coinTossButton.classList.remove("is-fallback");
+  coinScene.setFace(state.coinResult || "front");
+}
+
+function setTheme(themeId) {
+  const nextTheme = getThemeDefinition(themeId);
+  if (state.themeId === nextTheme.id) {
+    renderSettingsState();
+    return;
+  }
+
+  state.themeId = nextTheme.id;
+  activeThemeId = nextTheme.id;
+  clearThemeStateClasses();
+  objectPack = createObjectPackRuntime(nextTheme.objectPack);
+  visualPack = createThemeVisualPack(nextTheme);
+  objectPack.applySkin({ coinTossButton });
+  coinScene.dispose();
+  coinScene = createCoinScene();
+  syncCoinSceneFace();
+  render();
+
+  void visualPack.ready.then(() => {
+    if (state.themeId === nextTheme.id) {
+      render();
+    }
+  });
 }
 
 function setPitNumberStyle(style) {
@@ -2070,6 +2183,10 @@ ruleDemoOverlay.addEventListener("click", (event) => {
   if (event.target === ruleDemoOverlay) {
     closeRuleDemoCard();
   }
+});
+
+themeSelect.addEventListener("change", () => {
+  setTheme(themeSelect.value);
 });
 
 pitRomanButton.addEventListener("click", () => {
