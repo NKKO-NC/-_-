@@ -29,20 +29,20 @@ import {
 import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
 import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260621a";
 import { OBSIDIAN_OBJECT_PACK } from "./object-packs/obsidian.js?v=20260619b";
-import { ZEN_OBJECT_PACK } from "./object-packs/zen.js?v=20260621a";
+import { ZEN_OBJECT_PACK } from "./object-packs/zen.js?v=20260621b";
 import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
 
 const BOARD_MODEL = KALAH_BOARD_MODEL;
 const THEME_DEFINITIONS = Object.freeze({
   classic: Object.freeze({
     id: "classic",
-    label: "Classic",
+    label: "\u7d93\u5178",
     objectPack: OBSIDIAN_OBJECT_PACK,
     visualManifestUrl: "./visual-packs/obsidian-childhood/manifest.json",
   }),
   zen: Object.freeze({
     id: "zen",
-    label: "Zen Childhood",
+    label: "\u79aa\u98a8",
     objectPack: ZEN_OBJECT_PACK,
     visualManifestUrl: "./visual-packs/zen-childhood/manifest.json",
   }),

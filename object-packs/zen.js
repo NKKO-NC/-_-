@@ -2,21 +2,21 @@ import { defineObjectPack } from "../core/object-pack-manifest.js?v=20260619a";
 
 const ZEN_OBJECT_PACK = defineObjectPack({
   id: "zen-childhood",
-  displayName: "Zen Childhood",
-  assetVersion: "20260619a",
+  displayName: "\u79aa\u98a8",
+  assetVersion: "20260621b",
   assets: {
-    rubyStone: "assets/ruby-gem.png",
-    amethystStone: "assets/amethyst-gem.png",
-    coinBody: "assets/Coin.png",
-    dragonSigil: "assets/Dragon.png",
-    shieldSigil: "assets/Shield.png",
+    vermilionStone: "visual-packs/zen-childhood/assets/object-stone-vermilion.png",
+    indigoStone: "visual-packs/zen-childhood/assets/object-stone-indigo.png",
+    coinBody: "visual-packs/zen-childhood/assets/object-coin-body.png",
+    vermilionSigil: "visual-packs/zen-childhood/assets/object-sigil-vermilion.png",
+    indigoSigil: "visual-packs/zen-childhood/assets/object-sigil-indigo.png",
   },
   players: {
     1: {
       label: "\u6731\u7802\u65b9",
       sideLabel: "\u6731\u7802\u77f3\u65b9",
-      stoneAsset: "rubyStone",
-      storeSigilAsset: "dragonSigil",
+      stoneAsset: "vermilionStone",
+      storeSigilAsset: "vermilionSigil",
       classes: {
         bodyTurn: "turn-red",
         turnIndicator: "red",
@@ -27,8 +27,8 @@ const ZEN_OBJECT_PACK = defineObjectPack({
     2: {
       label: "\u975b\u9752\u65b9",
       sideLabel: "\u975b\u9752\u77f3\u65b9",
-      stoneAsset: "amethystStone",
-      storeSigilAsset: "shieldSigil",
+      stoneAsset: "indigoStone",
+      storeSigilAsset: "indigoSigil",
       classes: {
         bodyTurn: "turn-purple",
         turnIndicator: "purple",
@@ -48,7 +48,7 @@ const ZEN_OBJECT_PACK = defineObjectPack({
     faces: {
       front: {
         player: 1,
-        faceAsset: "dragonSigil",
+        faceAsset: "vermilionSigil",
         dialogueKey: "coin.redFirst",
         resultText: {
           pvp: "\u6b63\u9762\uff0c\u6731\u7802\u65b9\u5148\u624b",
@@ -57,7 +57,7 @@ const ZEN_OBJECT_PACK = defineObjectPack({
       },
       back: {
         player: 2,
-        faceAsset: "shieldSigil",
+        faceAsset: "indigoSigil",
         dialogueKey: "coin.purpleFirst",
         resultText: {
           pvp: "\u53cd\u9762\uff0c\u975b\u9752\u65b9\u5148\u624b",
@@ -71,13 +71,13 @@ const ZEN_OBJECT_PACK = defineObjectPack({
     "ruby-soft": "rgba(200, 81, 67, 0.34)",
     amethyst: "#355f8f",
     "amethyst-soft": "rgba(53, 95, 143, 0.34)",
-    gold: "#b99654",
-    "gold-bright": "#f2db9d",
+    gold: "#a47a36",
+    "gold-bright": "#5f421d",
     teal: "#5f9f86",
-    text: "#f5ebd8",
-    muted: "#c8b88f",
-    glass: "rgba(34, 29, 20, 0.76)",
-    "glass-strong": "rgba(19, 17, 13, 0.88)",
+    text: "#3e321f",
+    muted: "#756345",
+    glass: "rgba(230, 218, 190, 0.78)",
+    "glass-strong": "rgba(102, 94, 76, 0.84)",
     paper: "#e1d3b8",
     "paper-light": "#eee2c6",
     "paper-edge": "#95764a",

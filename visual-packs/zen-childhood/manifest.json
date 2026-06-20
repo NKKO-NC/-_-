@@ -1,8 +1,8 @@
 ﻿{
     "schemaVersion":  1,
     "id":  "zen-childhood-visual",
-    "displayName":  "Zen Childhood Visual",
-    "assetVersion":  "20260621-visual-a",
+    "displayName":  "禪風視覺",
+    "assetVersion":  "20260621-visual-b",
     "engineCompatibility":  "^1.0.0",
     "baseUrl":  "./assets/",
     "compliance":  {
@@ -283,6 +283,61 @@
                                          "license":  "project-owned-generated-commercial-use-ok",
                                          "sha256":  "f44696cb95d7c91be59003384aad5dc2b506965aaa856acdb64e97eeb59818c7"
                                      },
+                   "object.stone.vermilion":  {
+                                                  "src":  "object-stone-vermilion.png",
+                                                  "type":  "image/png",
+                                                  "width":  256,
+                                                  "height":  256,
+                                                  "alpha":  true,
+                                                  "role":  "object-stone",
+                                                  "source":  "original-generated",
+                                                  "license":  "project-owned-generated-commercial-use-ok",
+                                                  "sha256":  "9b4c05ddedbaa92c6f693246e4589b584064cfa610383bf2d17cb707a65fa154"
+                                              },
+                   "object.stone.indigo":  {
+                                               "src":  "object-stone-indigo.png",
+                                               "type":  "image/png",
+                                               "width":  256,
+                                               "height":  256,
+                                               "alpha":  true,
+                                               "role":  "object-stone",
+                                               "source":  "original-generated",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "81afa0944080078b417dd52040217793f42b1707530a7eeb64b2f3acb53eb99b"
+                                           },
+                   "object.coin.body":  {
+                                            "src":  "object-coin-body.png",
+                                            "type":  "image/png",
+                                            "width":  1024,
+                                            "height":  1024,
+                                            "alpha":  true,
+                                            "role":  "object-coin",
+                                            "source":  "original-generated",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "cc9cf926470f6a0e4d112fa2b4df9bdd014ce254a5f4f5721b26e296aa957e09"
+                                        },
+                   "object.sigil.vermilion":  {
+                                                  "src":  "object-sigil-vermilion.png",
+                                                  "type":  "image/png",
+                                                  "width":  512,
+                                                  "height":  512,
+                                                  "alpha":  true,
+                                                  "role":  "object-sigil",
+                                                  "source":  "original-generated",
+                                                  "license":  "project-owned-generated-commercial-use-ok",
+                                                  "sha256":  "1fdf09ba33d59500c52f1fc0162f2fc2b50b7532dd855a0e2c69f9f22acf5749"
+                                              },
+                   "object.sigil.indigo":  {
+                                               "src":  "object-sigil-indigo.png",
+                                               "type":  "image/png",
+                                               "width":  512,
+                                               "height":  512,
+                                               "alpha":  true,
+                                               "role":  "object-sigil",
+                                               "source":  "original-generated",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "920e80827e0c27b5485629a368f62ba0b027363a29bc880aed2e3db021a356db"
+                                           },
                    "hint.ring.red":  {
                                          "src":  "hint-ring-red.png",
                                          "type":  "image/png",
@@ -325,7 +380,7 @@
                                                      "role":  "background",
                                                      "source":  "original-generated",
                                                      "license":  "project-owned-generated-commercial-use-ok",
-                                                     "sha256":  "55c6cd25dccee2b122ae41cd36d7590097f47bf504a949b8399c1849f16e735c"
+                                                     "sha256":  "9bc311f7b07c92117672141dc830a7c508a44da997fa88f682ce837b2e93bccd"
                                                  },
                    "background.portrait.idle":  {
                                                     "src":  "background-portrait-idle.png",
@@ -336,7 +391,7 @@
                                                     "role":  "background",
                                                     "source":  "original-generated",
                                                     "license":  "project-owned-generated-commercial-use-ok",
-                                                    "sha256":  "a767748a7afa98a72ec007f2c0fa47ef9200c5daf3e8a78afa5447b2c4acc8bb"
+                                                    "sha256":  "41005b682295c2788acde23da0b28cef5ed7e7cedad07f1011a0b00ab61b172f"
                                                 },
                    "particle.ruby.01":  {
                                             "src":  "particle-ruby-01.png",
@@ -347,7 +402,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "5d8708dd5e1167ef377612f14958d500826937aa311824096623d87832d27f13"
+                                            "sha256":  "4f7c30309563cfa2feb92f5c9c60ee74de794f5a6bcf03d1f2c962322da0df02"
                                         },
                    "particle.ruby.02":  {
                                             "src":  "particle-ruby-02.png",
@@ -358,7 +413,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "ccc37dea8c4bcd6406cdb9d204e288000af3d4c0356cd96404c2b5a46ab32d40"
+                                            "sha256":  "bdcb92fdca8cb85d3b5fb0f3a7df1f878d84b92242bdf0a234fd2d2bac9c4614"
                                         },
                    "particle.ruby.03":  {
                                             "src":  "particle-ruby-03.png",
@@ -369,7 +424,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "cd486b64ccf74bacf59c998e9c043c23f15e8fb35e3a983ec2cd4dd5e6d8228e"
+                                            "sha256":  "54fed1a5b505b9b13f774436ff63a3eefdeb4f5566df1f5ae35d48b51a27ba9e"
                                         },
                    "particle.ruby.04":  {
                                             "src":  "particle-ruby-04.png",
@@ -380,7 +435,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "c7368898e4a5a1009bad0d4010a22341d3b53a91723915319be7611e410783ee"
+                                            "sha256":  "be12ae573e30916d6b16efaebbb963c27643afabe248eff564717f185b948a91"
                                         },
                    "particle.ruby.05":  {
                                             "src":  "particle-ruby-05.png",
@@ -391,7 +446,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "db86a23de99e44ba6313be24bcdbfaed18794221fb2d121f3bb05dc38258019d"
+                                            "sha256":  "e5b3b21b1a215c9e654c74e586da98caa621e6907a210bc7eb5cfa5b4da775e4"
                                         },
                    "particle.amethyst.01":  {
                                                 "src":  "particle-amethyst-01.png",
@@ -402,7 +457,7 @@
                                                 "role":  "particle",
                                                 "source":  "original-generated",
                                                 "license":  "project-owned-generated-commercial-use-ok",
-                                                "sha256":  "58f82d0ede98d4c54d2ddbc217822fda5fd65a184b93148065c92d3e5a910165"
+                                                "sha256":  "b5270a530ef7e4df96e8b9a3e31a7b3423c2d6898ca392742e5345d906566b2f"
                                             },
                    "particle.amethyst.02":  {
                                                 "src":  "particle-amethyst-02.png",
@@ -413,7 +468,7 @@
                                                 "role":  "particle",
                                                 "source":  "original-generated",
                                                 "license":  "project-owned-generated-commercial-use-ok",
-                                                "sha256":  "d6b103ddd8824ce7219989288d5c01913c6ba006517250268bcd51f4d1adec35"
+                                                "sha256":  "799ee05c8302574de1c6103f89f891962b3d1bb92c7ac6a63aca36be268e3608"
                                             },
                    "particle.amethyst.03":  {
                                                 "src":  "particle-amethyst-03.png",
@@ -424,7 +479,7 @@
                                                 "role":  "particle",
                                                 "source":  "original-generated",
                                                 "license":  "project-owned-generated-commercial-use-ok",
-                                                "sha256":  "156b51c03d24e5feb9365061759a3ff7a8a0c4a6b4ddf08fcbd9f2da05eb2554"
+                                                "sha256":  "3b99c2a3d35387c70c44cc2449f1ad0b65c6ab1f0b09e1a8915716ecec59393e"
                                             },
                    "particle.amethyst.04":  {
                                                 "src":  "particle-amethyst-04.png",
@@ -435,7 +490,7 @@
                                                 "role":  "particle",
                                                 "source":  "original-generated",
                                                 "license":  "project-owned-generated-commercial-use-ok",
-                                                "sha256":  "68da2c7922bfff464b48cac33cb3aff9b692db6a2989803d648844bbb036dd75"
+                                                "sha256":  "30e3ce540f95a4f7217bdbeacb866fd3ae4f5b389d10cd42669552ffc34d9b24"
                                             },
                    "particle.amethyst.05":  {
                                                 "src":  "particle-amethyst-05.png",
@@ -446,7 +501,7 @@
                                                 "role":  "particle",
                                                 "source":  "original-generated",
                                                 "license":  "project-owned-generated-commercial-use-ok",
-                                                "sha256":  "e0a78ecd80c1df2ebc43852911aff7543b52ccf6af89127f987f6fa2c69ee29f"
+                                                "sha256":  "dd9b7a8c3db16e6729268c625f733d3d114535757625c6abe8fc86fe74671ab6"
                                             },
                    "particle.gold.01":  {
                                             "src":  "particle-gold-01.png",
@@ -457,7 +512,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "d52861bb84056957e66d3796e482e92f07d22f81c63b2fceead4f2c0de076c5a"
+                                            "sha256":  "403c1d281ac5420233410e3642bfe0f15c85723bea561ce78fbde3297db80c1f"
                                         },
                    "particle.gold.02":  {
                                             "src":  "particle-gold-02.png",
@@ -468,7 +523,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "19cfdf1287037ebab11f49e79078dbca349afaa391d308c81653ab574621a725"
+                                            "sha256":  "4daa78925e2a621d49e9ec4e57b90ad3337be57f205a203fa73f8070482a3dd2"
                                         },
                    "particle.gold.03":  {
                                             "src":  "particle-gold-03.png",
@@ -479,7 +534,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "31f80fd12413ed7eb93af657da8f34bb60f923c07ffa9dd88bcd0de828b360e6"
+                                            "sha256":  "34c76a66cfdbd55099029a38c0276b92c756a243a6405857468466e2d4fad9f8"
                                         },
                    "particle.gold.04":  {
                                             "src":  "particle-gold-04.png",
@@ -490,7 +545,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "29741b97b92d682a92d1cd041ec751c14aa3f2258bd850b363bd1fac22490796"
+                                            "sha256":  "16500574d7d27f79e39d1e3868c2cf012bc868c2c149ca560f1a084f40c06102"
                                         },
                    "particle.gold.05":  {
                                             "src":  "particle-gold-05.png",
@@ -501,7 +556,7 @@
                                             "role":  "particle",
                                             "source":  "original-generated",
                                             "license":  "project-owned-generated-commercial-use-ok",
-                                            "sha256":  "b38646787e744b07adc9bb854d5d76412852c4e4faff49de5c5191073a6d75fd"
+                                            "sha256":  "9cdc12ba35114932c92585bde48a1d350170e5a60393bc1f797f9392fb29db2e"
                                         }
                },
     "nineSlice":  {

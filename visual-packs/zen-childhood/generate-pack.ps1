@@ -4,7 +4,8 @@ $ErrorActionPreference = "Stop"
 
 $PackRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $AssetRoot = Join-Path $PackRoot "assets"
-$AssetVersion = "20260621-visual-a"
+$AssetVersion = "20260621-visual-b"
+$ZenVisualDisplayName = -join @([char]0x79aa, [char]0x98a8, [char]0x8996, [char]0x89ba)
 $SampleSeed = 20260621
 $script:Random = [System.Random]::new($SampleSeed)
 $script:Assets = [ordered]@{}
@@ -104,6 +105,99 @@ function Add-PaperFibers([System.Drawing.Graphics]$Graphics, [int]$Width, [int]$
     $h = $script:Random.Next(2, 6)
     $Graphics.FillEllipse($brush, $x, $y, $w, $h)
     $brush.Dispose()
+  }
+}
+
+function Add-RakedSandLines(
+  [System.Drawing.Graphics]$Graphics,
+  [float]$X,
+  [float]$Y,
+  [float]$Width,
+  [float]$Height,
+  [int]$Count,
+  [int]$Alpha = 34
+) {
+  for ($i = 0; $i -lt $Count; $i++) {
+    $offset = ($i / [Math]::Max(1, $Count - 1)) * $Height
+    $pen = New-PenColor ([Math]::Max(12, $Alpha - ($i % 3) * 4)) 125 108 76 ([Math]::Max(1.2, $Width / 1600))
+    $Graphics.DrawArc($pen, $X, $Y + $offset, $Width, $Height * 0.34, 184, 172)
+    $pen.Dispose()
+  }
+}
+
+function Add-ZenGardenStone(
+  [System.Drawing.Graphics]$Graphics,
+  [float]$CenterX,
+  [float]$CenterY,
+  [float]$Radius,
+  [int]$Alpha = 210
+) {
+  for ($i = 0; $i -lt 8; $i++) {
+    $inset = $Radius * (0.86 + $i * 0.34)
+    $pen = New-PenColor ([Math]::Max(12, 42 - $i * 4)) 128 116 89 ([Math]::Max(1.4, $Radius / 22))
+    $Graphics.DrawEllipse($pen, $CenterX - $inset, $CenterY - $inset * 0.64, $inset * 2, $inset * 1.28)
+    $pen.Dispose()
+  }
+
+  $stoneRect = [System.Drawing.RectangleF]::new($CenterX - $Radius, $CenterY - $Radius * 0.7, $Radius * 2, $Radius * 1.4)
+  $stone = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+    $stoneRect,
+    (New-Color $Alpha 175 166 142),
+    (New-Color $Alpha 82 81 72),
+    [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal
+  )
+  $Graphics.FillEllipse($stone, $stoneRect)
+  $stone.Dispose()
+
+  $rim = New-PenColor ([Math]::Min(230, $Alpha + 24)) 78 72 58 ([Math]::Max(1.5, $Radius / 18))
+  $shine = New-PenColor ([Math]::Max(36, $Alpha - 86)) 246 238 210 ([Math]::Max(1, $Radius / 30))
+  $Graphics.DrawEllipse($rim, $stoneRect)
+  $Graphics.DrawArc($shine, $stoneRect.X + $Radius * 0.18, $stoneRect.Y + $Radius * 0.12, $stoneRect.Width * 0.58, $stoneRect.Height * 0.42, 200, 100)
+  $rim.Dispose()
+  $shine.Dispose()
+}
+
+function Add-BambooLeaves(
+  [System.Drawing.Graphics]$Graphics,
+  [float]$X,
+  [float]$Y,
+  [float]$Scale,
+  [int]$Alpha = 62
+) {
+  $stem = New-PenColor ([Math]::Max(18, $Alpha)) 86 122 73 ([Math]::Max(1.2, $Scale * 2.2))
+  $Graphics.DrawBezier($stem, $X, $Y, $X + $Scale * 12, $Y + $Scale * 34, $X - $Scale * 8, $Y + $Scale * 74, $X + $Scale * 18, $Y + $Scale * 112)
+  $stem.Dispose()
+
+  for ($i = 0; $i -lt 7; $i++) {
+    $side = if ($i % 2 -eq 0) { 1 } else { -1 }
+    $leafX = $X + $side * $Scale * (9 + $script:Random.Next(0, 6))
+    $leafY = $Y + $Scale * (14 + $i * 14)
+    $leaf = [System.Drawing.Drawing2D.GraphicsPath]::new()
+    $leaf.AddBezier(
+      $leafX,
+      $leafY,
+      $leafX + $side * $Scale * 34,
+      $leafY - $Scale * 7,
+      $leafX + $side * $Scale * 48,
+      $leafY + $Scale * 8,
+      $leafX + $side * $Scale * 58,
+      $leafY + $Scale * 14
+    )
+    $leaf.AddBezier(
+      $leafX + $side * $Scale * 58,
+      $leafY + $Scale * 14,
+      $leafX + $side * $Scale * 38,
+      $leafY + $Scale * 18,
+      $leafX + $side * $Scale * 15,
+      $leafY + $Scale * 12,
+      $leafX,
+      $leafY
+    )
+    $leaf.CloseFigure()
+    $brush = New-BrushColor ([Math]::Max(14, $Alpha - 14)) 86 122 73
+    $Graphics.FillPath($brush, $leaf)
+    $brush.Dispose()
+    $leaf.Dispose()
   }
 }
 
@@ -424,27 +518,45 @@ function New-Background([int]$Width, [int]$Height, [string]$Layout) {
   $ctx = New-Bitmap $Width $Height $false
   $g = $ctx.Graphics
   $rect = [System.Drawing.RectangleF]::new(0, 0, $Width, $Height)
-  $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 244 239 228), (New-Color 255 214 203 178), [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
+  $brush = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 239 232 214), (New-Color 255 211 197 166), [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
   $g.FillRectangle($brush, $rect)
   $brush.Dispose()
 
-  for ($i = 0; $i -lt 7; $i++) {
-    $x = $script:Random.Next([int]($Width * 0.08), [int]($Width * 0.92))
-    $y = $script:Random.Next([int]($Height * 0.08), [int]($Height * 0.92))
-    $r = $script:Random.Next([int]([Math]::Min($Width, $Height) * 0.12), [int]([Math]::Min($Width, $Height) * 0.28))
-    $blob = New-BrushColor 24 111 155 133
-    $g.FillEllipse($blob, $x - $r, $y - $r, $r * 2, $r * 2)
-    $blob.Dispose()
+  Add-PaperFibers $g $Width $Height ([Math]::Max(90, [int](($Width + $Height) / 18)))
+
+  $gardenWidth = if ($Layout -eq "portrait") { $Width * 1.16 } else { $Width * 0.82 }
+  $gardenHeight = if ($Layout -eq "portrait") { $Height * 0.36 } else { $Height * 0.34 }
+  $gardenX = if ($Layout -eq "portrait") { -$Width * 0.08 } else { $Width * 0.14 }
+  $gardenY = if ($Layout -eq "portrait") { $Height * 0.42 } else { $Height * 0.39 }
+  $sandPanel = [System.Drawing.RectangleF]::new($gardenX, $gardenY, $gardenWidth, $gardenHeight)
+  $sandWash = New-BrushColor 42 248 241 221
+  $g.FillRectangle($sandWash, $sandPanel)
+  $sandWash.Dispose()
+  Add-RakedSandLines $g $gardenX $gardenY $gardenWidth $gardenHeight 30 42
+
+  if ($Layout -eq "portrait") {
+    Add-ZenGardenStone $g ($Width * 0.72) ($Height * 0.2) ($Width * 0.07) 186
+    Add-ZenGardenStone $g ($Width * 0.82) ($Height * 0.22) ($Width * 0.045) 172
+    Add-RakedSandLines $g ($Width * 0.44) ($Height * 0.1) ($Width * 0.76) ($Height * 0.18) 16 35
+    Add-BambooLeaves $g ($Width * 0.08) ($Height * 0.04) ([Math]::Max(1.8, $Width / 760)) 46
+  } else {
+    Add-ZenGardenStone $g ($Width * 0.84) ($Height * 0.2) ($Height * 0.055) 190
+    Add-ZenGardenStone $g ($Width * 0.89) ($Height * 0.22) ($Height * 0.034) 172
+    Add-ZenGardenStone $g ($Width * 0.78) ($Height * 0.24) ($Height * 0.03) 158
+    Add-RakedSandLines $g ($Width * 0.66) ($Height * 0.07) ($Width * 0.3) ($Height * 0.18) 18 38
+    Add-BambooLeaves $g ($Width * 0.02) ($Height * 0.02) ([Math]::Max(1.4, $Height / 620)) 50
   }
 
-  for ($i = 0; $i -lt 34; $i++) {
-    $y = $script:Random.Next([int]($Height * 0.1), [int]($Height * 0.9))
-    $pen = New-PenColor 22 138 111 72 ([Math]::Max(2, $Width / 900))
-    $g.DrawArc($pen, -$Width * 0.1, $y, $Width * 1.2, $Height * 0.18, 8, 164)
+  for ($i = 0; $i -lt 16; $i++) {
+    $x1 = $script:Random.Next([int]($Width * 0.04), [int]($Width * 0.96))
+    $y1 = $script:Random.Next([int]($Height * 0.08), [int]($Height * 0.94))
+    $x2 = $x1 + $script:Random.Next([int](-$Width * 0.055), [int]($Width * 0.055))
+    $y2 = $y1 + $script:Random.Next([int](-$Height * 0.055), [int]($Height * 0.055))
+    $pen = New-PenColor 20 145 118 75 ([Math]::Max(1, $Width / 1900))
+    $g.DrawLine($pen, $x1, $y1, $x2, $y2)
     $pen.Dispose()
   }
 
-  Add-GoldVeins $g $Width $Height 22 20
   $g.Dispose()
   return $ctx.Bitmap
 }
@@ -484,6 +596,192 @@ function New-Particle([string]$Kind) {
   return $ctx.Bitmap
 }
 
+function Add-LotusMark(
+  [System.Drawing.Graphics]$Graphics,
+  [float]$CenterX,
+  [float]$CenterY,
+  [float]$Scale,
+  [System.Drawing.Color]$FillColor,
+  [System.Drawing.Color]$LineColor
+) {
+  $brush = [System.Drawing.SolidBrush]::new($FillColor)
+  $pen = [System.Drawing.Pen]::new($LineColor, [Math]::Max(1.2, $Scale * 0.035))
+  for ($i = 0; $i -lt 6; $i++) {
+    $angle = (-90 + $i * 60) * [Math]::PI / 180
+    $tipX = $CenterX + [Math]::Cos($angle) * $Scale * 0.46
+    $tipY = $CenterY + [Math]::Sin($angle) * $Scale * 0.46
+    $leftX = $CenterX + [Math]::Cos($angle - 0.62) * $Scale * 0.18
+    $leftY = $CenterY + [Math]::Sin($angle - 0.62) * $Scale * 0.18
+    $rightX = $CenterX + [Math]::Cos($angle + 0.62) * $Scale * 0.18
+    $rightY = $CenterY + [Math]::Sin($angle + 0.62) * $Scale * 0.18
+    $petal = [System.Drawing.Drawing2D.GraphicsPath]::new()
+    $petal.AddBezier($CenterX, $CenterY, $leftX, $leftY, $tipX, $tipY, $tipX, $tipY)
+    $petal.AddBezier($tipX, $tipY, $tipX, $tipY, $rightX, $rightY, $CenterX, $CenterY)
+    $petal.CloseFigure()
+    $Graphics.FillPath($brush, $petal)
+    $Graphics.DrawPath($pen, $petal)
+    $petal.Dispose()
+  }
+  $center = New-BrushColor 180 244 224 170
+  $Graphics.FillEllipse($center, $CenterX - $Scale * 0.08, $CenterY - $Scale * 0.08, $Scale * 0.16, $Scale * 0.16)
+  $center.Dispose()
+  $brush.Dispose()
+  $pen.Dispose()
+}
+
+function Add-WaveMark(
+  [System.Drawing.Graphics]$Graphics,
+  [float]$CenterX,
+  [float]$CenterY,
+  [float]$Scale,
+  [System.Drawing.Color]$LineColor
+) {
+  $pen = [System.Drawing.Pen]::new($LineColor, [Math]::Max(2, $Scale * 0.04))
+  $pen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
+  $pen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
+  for ($i = 0; $i -lt 3; $i++) {
+    $y = $CenterY + ($i - 1) * $Scale * 0.14
+    $path = [System.Drawing.Drawing2D.GraphicsPath]::new()
+    $path.AddBezier(
+      $CenterX - $Scale * 0.36,
+      $y,
+      $CenterX - $Scale * 0.15,
+      $y - $Scale * 0.2,
+      $CenterX + $Scale * 0.08,
+      $y + $Scale * 0.2,
+      $CenterX + $Scale * 0.36,
+      $y - $Scale * 0.02
+    )
+    $Graphics.DrawPath($pen, $path)
+    $path.Dispose()
+  }
+  $pen.Dispose()
+}
+
+function Add-GoldFlecks([System.Drawing.Graphics]$Graphics, [int]$Size, [int]$Count, [int]$Alpha = 120) {
+  $brush = New-BrushColor $Alpha 232 204 122
+  for ($i = 0; $i -lt $Count; $i++) {
+    $x = $script:Random.Next([int]($Size * 0.22), [int]($Size * 0.78))
+    $y = $script:Random.Next([int]($Size * 0.22), [int]($Size * 0.78))
+    $r = $script:Random.Next([int]([Math]::Max(2, $Size * 0.012)), [int]([Math]::Max(4, $Size * 0.026)))
+    $Graphics.FillEllipse($brush, $x, $y, $r, $r)
+  }
+  $brush.Dispose()
+}
+
+function New-ZenStone([int]$Size, [string]$Kind) {
+  $ctx = New-Bitmap $Size $Size $true
+  $g = $ctx.Graphics
+  $shadow = New-BrushColor 70 48 38 24
+  $g.FillEllipse($shadow, $Size * 0.16, $Size * 0.2, $Size * 0.7, $Size * 0.68)
+  $shadow.Dispose()
+
+  $rect = [System.Drawing.RectangleF]::new($Size * 0.14, $Size * 0.12, $Size * 0.72, $Size * 0.72)
+  if ($Kind -eq "vermilion") {
+    $top = New-Color 255 185 84 62
+    $bottom = New-Color 255 103 47 39
+    $mark = New-Color 178 248 221 170
+    $line = New-Color 130 106 55 33
+  } else {
+    $top = New-Color 255 62 91 126
+    $bottom = New-Color 255 24 39 62
+    $mark = New-Color 170 222 235 218
+    $line = New-Color 150 226 214 174
+  }
+  $fill = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, $top, $bottom, [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
+  $g.FillEllipse($fill, $rect)
+  $fill.Dispose()
+
+  $rim = New-PenColor 220 178 139 70 ([Math]::Max(4, $Size / 38))
+  $inner = New-PenColor 76 255 245 211 ([Math]::Max(2, $Size / 92))
+  $g.DrawEllipse($rim, $rect)
+  $g.DrawEllipse($inner, $Size * 0.23, $Size * 0.21, $Size * 0.54, $Size * 0.5)
+  Add-GoldFlecks $g $Size 16 92
+
+  if ($Kind -eq "vermilion") {
+    Add-LotusMark $g ($Size / 2) ($Size * 0.49) ($Size * 0.48) $mark $line
+  } else {
+    Add-WaveMark $g ($Size / 2) ($Size * 0.48) ($Size * 0.66) $mark
+  }
+
+  $rim.Dispose()
+  $inner.Dispose()
+  $g.Dispose()
+  return $ctx.Bitmap
+}
+
+function New-ZenSigil([int]$Size, [string]$Kind) {
+  $ctx = New-Bitmap $Size $Size $true
+  $g = $ctx.Graphics
+  $shadow = New-BrushColor 76 44 34 22
+  $g.FillEllipse($shadow, $Size * 0.11, $Size * 0.14, $Size * 0.8, $Size * 0.8)
+  $shadow.Dispose()
+
+  $rect = [System.Drawing.RectangleF]::new($Size * 0.1, $Size * 0.08, $Size * 0.8, $Size * 0.8)
+  if ($Kind -eq "vermilion") {
+    $top = New-Color 255 180 72 55
+    $bottom = New-Color 255 91 44 37
+    $mark = New-Color 188 246 222 174
+    $line = New-Color 132 97 49 35
+  } else {
+    $top = New-Color 255 50 78 113
+    $bottom = New-Color 255 18 31 52
+    $mark = New-Color 182 224 236 218
+    $line = New-Color 134 234 223 182
+  }
+  $fill = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, $top, $bottom, [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
+  $g.FillEllipse($fill, $rect)
+  $fill.Dispose()
+
+  $rim = New-PenColor 230 189 147 78 ([Math]::Max(8, $Size / 40))
+  $inner = New-PenColor 118 255 241 195 ([Math]::Max(3, $Size / 118))
+  $g.DrawEllipse($rim, $rect)
+  $g.DrawEllipse($inner, $Size * 0.2, $Size * 0.18, $Size * 0.6, $Size * 0.58)
+  Add-GoldFlecks $g $Size 24 92
+
+  if ($Kind -eq "vermilion") {
+    Add-LotusMark $g ($Size / 2) ($Size * 0.47) ($Size * 0.56) $mark $line
+  } else {
+    Add-WaveMark $g ($Size / 2) ($Size * 0.47) ($Size * 0.72) $mark
+  }
+
+  $rim.Dispose()
+  $inner.Dispose()
+  $g.Dispose()
+  return $ctx.Bitmap
+}
+
+function New-ZenCoinBody([int]$Size) {
+  $ctx = New-Bitmap $Size $Size $true
+  $g = $ctx.Graphics
+  $circle = [System.Drawing.Drawing2D.GraphicsPath]::new()
+  $circle.AddEllipse($Size * 0.07, $Size * 0.07, $Size * 0.86, $Size * 0.86)
+  $rect = [System.Drawing.RectangleF]::new($Size * 0.07, $Size * 0.07, $Size * 0.86, $Size * 0.86)
+  $fill = [System.Drawing.Drawing2D.LinearGradientBrush]::new($rect, (New-Color 255 239 223 182), (New-Color 255 151 112 55), [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
+  $g.FillPath($fill, $circle)
+  $fill.Dispose()
+  $g.SetClip($circle)
+  Add-RakedSandLines $g (-$Size * 0.16) ($Size * 0.2) ($Size * 1.32) ($Size * 0.48) 17 46
+  Add-PaperFibers $g $Size $Size 40
+  $g.ResetClip()
+
+  for ($i = 0; $i -lt 4; $i++) {
+    $inset = $Size * (0.08 + $i * 0.035)
+    $pen = New-PenColor ([Math]::Max(70, 212 - $i * 28)) 108 80 38 ([Math]::Max(4, $Size / (76 + $i * 20)))
+    $g.DrawEllipse($pen, $inset, $inset, $Size - $inset * 2, $Size - $inset * 2)
+    $pen.Dispose()
+  }
+  $rim = New-PenColor 245 194 147 74 ([Math]::Max(9, $Size / 44))
+  $shine = New-PenColor 116 255 242 196 ([Math]::Max(3, $Size / 180))
+  $g.DrawEllipse($rim, $rect)
+  $g.DrawArc($shine, $Size * 0.17, $Size * 0.15, $Size * 0.58, $Size * 0.36, 198, 110)
+  $rim.Dispose()
+  $shine.Dispose()
+  $circle.Dispose()
+  $g.Dispose()
+  return $ctx.Bitmap
+}
+
 function Add-Asset([string]$AssetId, [string]$FileName, [int]$Width, [int]$Height, [bool]$Alpha, [string]$Role, [scriptblock]$Maker) {
   $bitmap = & $Maker $Width $Height
   Save-Asset $bitmap $AssetId $FileName $Role $Alpha
@@ -516,6 +814,12 @@ Add-Asset "ui.button.secondary" "ui-button-secondary-9slice.png" 768 224 $true "
 Add-Asset "ui.icon.frame" "ui-icon-frame.png" 256 256 $true "ui-icon-frame" { param($w,$h) New-IconFrame $w }
 Add-Asset "ui.turn.badge" "ui-turn-badge.png" 384 384 $true "ui-turn-badge" { param($w,$h) New-TurnBadge $w }
 
+Add-Asset "object.stone.vermilion" "object-stone-vermilion.png" 256 256 $true "object-stone" { param($w,$h) New-ZenStone $w "vermilion" }
+Add-Asset "object.stone.indigo" "object-stone-indigo.png" 256 256 $true "object-stone" { param($w,$h) New-ZenStone $w "indigo" }
+Add-Asset "object.coin.body" "object-coin-body.png" 1024 1024 $true "object-coin" { param($w,$h) New-ZenCoinBody $w }
+Add-Asset "object.sigil.vermilion" "object-sigil-vermilion.png" 512 512 $true "object-sigil" { param($w,$h) New-ZenSigil $w "vermilion" }
+Add-Asset "object.sigil.indigo" "object-sigil-indigo.png" 512 512 $true "object-sigil" { param($w,$h) New-ZenSigil $w "indigo" }
+
 Add-Asset "hint.ring.red" "hint-ring-red.png" 512 512 $true "hint-ring" { param($w,$h) New-HintRing $w "red" }
 Add-Asset "hint.ring.purple" "hint-ring-purple.png" 512 512 $true "hint-ring" { param($w,$h) New-HintRing $w "purple" }
 Add-Asset "hint.ring.landing" "hint-ring-landing.png" 512 512 $true "hint-ring" { param($w,$h) New-HintRing $w "landing" }
@@ -534,7 +838,7 @@ foreach ($kind in @("ruby", "amethyst", "gold")) {
 $manifest = [ordered]@{
   schemaVersion = 1
   id = "zen-childhood-visual"
-  displayName = "Zen Childhood Visual"
+  displayName = $ZenVisualDisplayName
   assetVersion = $AssetVersion
   engineCompatibility = "^1.0.0"
   baseUrl = "./assets/"
@@ -577,9 +881,10 @@ $script:ChecksumLines | Set-Content -Path (Join-Path $PackRoot "checksums.sha256
 Generated playable visual pack for Kalah Childhood Memories.
 
 This pass translates the DALL-E Zen concept sheet into runtime-ready PNG assets:
-pale hinoki wood board surfaces, bamboo inlay, river-stone wells, rice-paper UI
-panels, aged brass trim, muted vermilion player-one feedback, deep indigo
-player-two feedback, and jade utility accents.
+pale hinoki wood board surfaces, bamboo inlay, river-stone wells, raked-sand
+backgrounds, rice-paper UI panels, Zen object stones, Zen coin/token faces,
+aged brass trim, muted vermilion player-one feedback, deep indigo player-two
+feedback, and jade utility accents.
 
 The files preserve asset ids, filenames, dimensions, and manifest structure.
 "@ | Set-Content -Path (Join-Path $PackRoot "README.md") -Encoding UTF8

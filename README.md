@@ -31,9 +31,9 @@ Then visit `http://127.0.0.1:8123/`.
 - 6 pits per player
 - 6 stones per pit at start
 - Ruby and amethyst image stones
-- Theme dropdown for Classic and Zen Childhood packs
+- Theme dropdown for `經典` and `禪風` packs
 - Replaceable object, visual, and sound packs
-- Generated Classic and Zen board, UI panel, background, and particle visual packs
+- Generated Classic and Zen board, UI panel, raked-sand background, token, coin, and particle visual packs
 - Animated sowing with random landing positions and light collision spacing
 - Stones keep their original color after moving
 - Coin toss rendered with local Three.js build and a transparent canvas overlay
@@ -54,10 +54,10 @@ Then visit `http://127.0.0.1:8123/`.
 - `ui/copy.js` - shared UI copy constants
 - `ui/dom.js` - DOM reference collection for the game screen
 - `ui/rule-demo-data.js` - rule tutorial data used by the rules panel
-- `object-packs/obsidian.js` - Classic skin/theme object pack
-- `object-packs/zen.js` - Zen Childhood skin/theme object pack
-- `visual-packs/obsidian-childhood/` - Classic visual pack and manifest
-- `visual-packs/zen-childhood/` - Zen Childhood visual pack and manifest
+- `object-packs/obsidian.js` - `經典` skin/theme object pack
+- `object-packs/zen.js` - `禪風` skin/theme object pack
+- `visual-packs/obsidian-childhood/` - `經典` visual pack and manifest
+- `visual-packs/zen-childhood/` - `禪風` visual pack and manifest
 - `sound-packs/procedural-crystal/` - procedural sound pack and manifest
 - `docs/object-pack-architecture.md` - notes for adding or swapping object packs
 - `docs/cross-department-asset-pack-brief-v0.1.md` - visual/sound pack handoff brief

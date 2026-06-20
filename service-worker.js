@@ -1,4 +1,4 @@
-const CACHE_VERSION = "20260621a";
+const CACHE_VERSION = "20260621b";
 const CACHE_NAME = `kalah-pwa-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -6,8 +6,8 @@ const APP_SHELL = [
   "./index.html",
   "./entry-friendly.html",
   "./manifest.webmanifest",
-  "./styles.css?v=20260621a",
-  "./script.js?v=20260621a",
+  "./styles.css?v=20260621b",
+  "./script.js?v=20260621b",
   "./core/object-model.js?v=20260619a",
   "./core/object-physics.js?v=20260619a",
   "./core/object-pack-manifest.js?v=20260619a",
@@ -19,7 +19,7 @@ const APP_SHELL = [
   "./ui/rule-demo-data.js?v=20260619a",
   "./sound/sound-pack-runtime.js?v=20260619b",
   "./object-packs/obsidian.js?v=20260619b",
-  "./object-packs/zen.js?v=20260621a",
+  "./object-packs/zen.js?v=20260621b",
   "./dialoguePicker.js?v=20260619a",
   "./dialogueBank.js?v=20260619a",
   "./coin/index.js?v=20260619a",
@@ -31,6 +31,11 @@ const APP_SHELL = [
   "./assets/Coin.png?v=20260619a",
   "./assets/Dragon.png?v=20260619a",
   "./assets/Shield.png?v=20260619a",
+  "./visual-packs/zen-childhood/assets/object-stone-vermilion.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-stone-indigo.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-coin-body.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-sigil-vermilion.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-sigil-indigo.png?v=20260621b",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
   "./assets/icon-maskable-512.png",
@@ -83,10 +88,20 @@ const VISUAL_PACK_FILES = [
   "particle-gold-04.png",
   "particle-gold-05.png"
 ];
-const VISUAL_PACK_ASSETS = VISUAL_PACK_IDS.flatMap((packId) => [
-  `./visual-packs/${packId}/manifest.json`,
-  ...VISUAL_PACK_FILES.map((file) => `./visual-packs/${packId}/assets/${file}`),
-]);
+const ZEN_OBJECT_ASSET_FILES = [
+  "object-stone-vermilion.png",
+  "object-stone-indigo.png",
+  "object-coin-body.png",
+  "object-sigil-vermilion.png",
+  "object-sigil-indigo.png"
+];
+const VISUAL_PACK_ASSETS = [
+  ...VISUAL_PACK_IDS.flatMap((packId) => [
+    `./visual-packs/${packId}/manifest.json`,
+    ...VISUAL_PACK_FILES.map((file) => `./visual-packs/${packId}/assets/${file}`),
+  ]),
+  ...ZEN_OBJECT_ASSET_FILES.map((file) => `./visual-packs/zen-childhood/assets/${file}`),
+];
 
 const SOUND_PACK_ASSETS = [
   "./sound-packs/procedural-crystal/manifest.json",
