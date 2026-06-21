@@ -1,4 +1,4 @@
-const CACHE_VERSION = "20260621e";
+const CACHE_VERSION = "20260622a";
 const CACHE_NAME = `kalah-pwa-${CACHE_VERSION}`;
 
 const APP_SHELL = [
