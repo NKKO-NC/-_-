@@ -673,6 +673,42 @@ h1 {
   opacity: 0.72;
 }
 
+html[data-visual-pack="artifact-childhood-visual"] .ai-dialogue {
+  background:
+    var(--visual-ui-dialogue-panel),
+    radial-gradient(circle at 18% 0%, rgba(255, 244, 214, 0.05), transparent 38%),
+    linear-gradient(145deg, rgba(255, 248, 236, 0.04), rgba(121, 95, 62, 0.08)),
+    var(--panel-core-soft);
+  background-size: 100% 100%, auto, auto, auto;
+}
+
+html[data-visual-pack="artifact-childhood-visual"] .player-score {
+  background:
+    var(--visual-ui-score-panel),
+    radial-gradient(circle at 18% 0%, rgba(255, 244, 214, 0.05), transparent 40%),
+    linear-gradient(145deg, rgba(255, 248, 236, 0.04), rgba(129, 98, 59, 0.08)),
+    var(--panel-core);
+  background-size: 100% 100%, auto, auto, auto;
+}
+
+html[data-visual-pack="artifact-childhood-visual"] .player-one.active {
+  background:
+    var(--visual-ui-score-panel),
+    radial-gradient(circle at 18% 0%, rgba(255, 244, 214, 0.05), transparent 40%),
+    linear-gradient(145deg, var(--panel-ruby-tint), rgba(255, 249, 240, 0.04)),
+    var(--panel-core);
+  background-size: 100% 100%, auto, auto, auto;
+}
+
+html[data-visual-pack="artifact-childhood-visual"] .player-two.active {
+  background:
+    var(--visual-ui-score-panel),
+    radial-gradient(circle at 18% 0%, rgba(255, 244, 214, 0.05), transparent 40%),
+    linear-gradient(145deg, var(--panel-amethyst-tint), rgba(255, 249, 240, 0.04)),
+    var(--panel-core);
+  background-size: 100% 100%, auto, auto, auto;
+}
+
 .board-wrap {
   width: 100%;
   display: grid;
@@ -707,6 +743,19 @@ h1 {
     inset 0 0 70px rgba(0, 0, 0, 0.54);
 }
 
+html[data-visual-pack="artifact-childhood-visual"] .board {
+  border: 0;
+  border-radius: 28px;
+  background-color: rgba(0, 0, 0, 0.92);
+  background-image: var(--visual-board-landscape-base);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow:
+    0 34px 80px rgba(0, 0, 0, 0.62),
+    0 24px 64px rgba(0, 0, 0, 0.44);
+}
+
 .board::before,
 .board::after {
   content: "";
@@ -729,6 +778,11 @@ h1 {
 .board::after {
   inset: 19px;
   border: 1px solid rgba(217, 180, 100, 0.22);
+}
+
+html[data-visual-pack="artifact-childhood-visual"] .board::before,
+html[data-visual-pack="artifact-childhood-visual"] .board::after {
+  display: none;
 }
 
 .board.is-sowing {
@@ -3153,6 +3207,13 @@ html[data-board-layout="compact-landscape"] .pit {
       linear-gradient(145deg, rgba(255, 228, 161, 0.12), transparent 22%),
       repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 17px),
       linear-gradient(135deg, rgba(23, 23, 28, 0.96), rgba(0, 0, 0, 0.88));
+  }
+
+  html[data-visual-pack="artifact-childhood-visual"] .board {
+    background-image: var(--visual-board-portrait-base);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .board::before {

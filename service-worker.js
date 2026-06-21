@@ -1,4 +1,4 @@
-const CACHE_VERSION = "20260621b";
+const CACHE_VERSION = "20260621e";
 const CACHE_NAME = `kalah-pwa-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -6,8 +6,8 @@ const APP_SHELL = [
   "./index.html",
   "./entry-friendly.html",
   "./manifest.webmanifest",
-  "./styles.css?v=20260621b",
-  "./script.js?v=20260621b",
+  "./styles.css?v=20260621c",
+  "./script.js?v=20260621c",
   "./core/object-model.js?v=20260619a",
   "./core/object-physics.js?v=20260619a",
   "./core/object-pack-manifest.js?v=20260619a",
@@ -19,6 +19,7 @@ const APP_SHELL = [
   "./ui/rule-demo-data.js?v=20260619a",
   "./sound/sound-pack-runtime.js?v=20260619b",
   "./object-packs/obsidian.js?v=20260619b",
+  "./object-packs/artifact.js?v=20260621a",
   "./object-packs/zen.js?v=20260621b",
   "./dialoguePicker.js?v=20260619a",
   "./dialogueBank.js?v=20260619a",
@@ -42,7 +43,7 @@ const APP_SHELL = [
   "./assets/apple-touch-icon.png"
 ];
 
-const VISUAL_PACK_IDS = ["obsidian-childhood", "zen-childhood"];
+const VISUAL_PACK_IDS = ["obsidian-childhood", "zen-childhood", "artifact-childhood"];
 const VISUAL_PACK_FILES = [
   "background-landscape-idle.png",
   "background-portrait-idle.png",
@@ -88,19 +89,26 @@ const VISUAL_PACK_FILES = [
   "particle-gold-04.png",
   "particle-gold-05.png"
 ];
-const ZEN_OBJECT_ASSET_FILES = [
-  "object-stone-vermilion.png",
-  "object-stone-indigo.png",
-  "object-coin-body.png",
-  "object-sigil-vermilion.png",
-  "object-sigil-indigo.png"
+const ZEN_OBJECT_ASSET_URLS = [
+  "./visual-packs/zen-childhood/assets/object-stone-vermilion.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-stone-indigo.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-coin-body.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-sigil-vermilion.png?v=20260621b",
+  "./visual-packs/zen-childhood/assets/object-sigil-indigo.png?v=20260621b"
+];
+const ARTIFACT_OBJECT_ASSET_URLS = [
+  "./visual-packs/artifact-childhood/assets/object-stone-amber.png?v=20260621-artifact-a",
+  "./visual-packs/artifact-childhood/assets/object-coin-body.png?v=20260621-artifact-a",
+  "./visual-packs/artifact-childhood/assets/object-sigil-seat-a.png?v=20260621-artifact-a",
+  "./visual-packs/artifact-childhood/assets/object-sigil-seat-b.png?v=20260621-artifact-a"
 ];
 const VISUAL_PACK_ASSETS = [
   ...VISUAL_PACK_IDS.flatMap((packId) => [
     `./visual-packs/${packId}/manifest.json`,
     ...VISUAL_PACK_FILES.map((file) => `./visual-packs/${packId}/assets/${file}`),
   ]),
-  ...ZEN_OBJECT_ASSET_FILES.map((file) => `./visual-packs/zen-childhood/assets/${file}`),
+  ...ZEN_OBJECT_ASSET_URLS,
+  ...ARTIFACT_OBJECT_ASSET_URLS,
 ];
 
 const SOUND_PACK_ASSETS = [

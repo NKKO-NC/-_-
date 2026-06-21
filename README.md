@@ -30,10 +30,10 @@ Then visit `http://127.0.0.1:8123/`.
 
 - 6 pits per player
 - 6 stones per pit at start
-- Ruby and amethyst image stones
-- Theme dropdown for `經典` and `禪風` packs
+- Replaceable object stones and seal emblems by theme
+- Theme dropdown for `經典`, `禪風`, and `貴器` packs
 - Replaceable object, visual, and sound packs
-- Generated Classic and Zen board, UI panel, raked-sand background, token, coin, and particle visual packs
+- Generated Classic, Zen, and Artifact board, UI panel, background, token, coin, and particle visual packs
 - Animated sowing with random landing positions and light collision spacing
 - Stones keep their original color after moving
 - Coin toss rendered with local Three.js build and a transparent canvas overlay
@@ -55,7 +55,9 @@ Then visit `http://127.0.0.1:8123/`.
 - `ui/dom.js` - DOM reference collection for the game screen
 - `ui/rule-demo-data.js` - rule tutorial data used by the rules panel
 - `object-packs/obsidian.js` - `經典` skin/theme object pack
+- `object-packs/artifact.js` - `東方貴器` skin/theme object pack
 - `object-packs/zen.js` - `禪風` skin/theme object pack
+- `visual-packs/artifact-childhood/` - `東方貴器` visual pack scaffold and object assets
 - `visual-packs/obsidian-childhood/` - `經典` visual pack and manifest
 - `visual-packs/zen-childhood/` - `禪風` visual pack and manifest
 - `sound-packs/procedural-crystal/` - procedural sound pack and manifest

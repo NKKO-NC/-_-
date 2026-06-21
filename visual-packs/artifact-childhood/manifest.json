@@ -1,0 +1,549 @@
+﻿{
+    "schemaVersion":  1,
+    "id":  "artifact-childhood-visual",
+    "displayName":  "Artifact Childhood Visual",
+    "assetVersion":  "20260621-artifact-d",
+    "engineCompatibility":  "^1.0.0",
+    "baseUrl":  "./assets/",
+    "compliance":  {
+                       "source":  "original-generated-and-derived",
+                       "commercialUseIntended":  true,
+                       "commercialUse":  true,
+                       "thirdPartySourceAssets":  false,
+                       "attributionRequired":  false,
+                       "licenseNote":  "Original generated visual assets and derived runtime crops for Kalah Childhood Memories."
+                   },
+    "layouts":  {
+                    "landscape":  {
+                                      "canvas":  [
+                                                     2048,
+                                                     1024
+                                                 ],
+                                      "physicalModel":  "kalah-6x6-landscape"
+                                  },
+                    "portrait":  {
+                                     "canvas":  [
+                                                    1536,
+                                                    2048
+                                                ],
+                                     "physicalModel":  "kalah-6x6-portrait"
+                                 }
+                },
+    "assets":  {
+                   "board.landscape.base":  {
+                                                "src":  "board-landscape-base.png",
+                                                "type":  "image/png",
+                                                "width":  2048,
+                                                "height":  1024,
+                                                "alpha":  true,
+                                                "role":  "board-base",
+                                                "source":  "original-generated-and-derived",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "d5b2f948fa4b1cfc3fad1359221e9179cedb464831eaa9da1b0cbf1162ae3f79"
+                                            },
+                   "board.landscape.rim":  {
+                                               "src":  "board-landscape-rim-overlay.png",
+                                               "type":  "image/png",
+                                               "width":  2048,
+                                               "height":  1024,
+                                               "alpha":  true,
+                                               "role":  "board-rim-overlay",
+                                               "source":  "original-generated-and-derived",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "57ae376c021176f1ad7957041f964c1ee337cd16efc17300917eef34df2a7978"
+                                           },
+                   "board.landscape.shadow":  {
+                                                  "src":  "board-landscape-shadow.png",
+                                                  "type":  "image/png",
+                                                  "width":  2048,
+                                                  "height":  1024,
+                                                  "alpha":  true,
+                                                  "role":  "board-shadow",
+                                                  "source":  "original-generated-and-derived",
+                                                  "license":  "project-owned-generated-commercial-use-ok",
+                                                  "sha256":  "57ae376c021176f1ad7957041f964c1ee337cd16efc17300917eef34df2a7978"
+                                              },
+                   "board.landscape.slot-mask":  {
+                                                     "src":  "board-landscape-slot-mask.png",
+                                                     "type":  "image/png",
+                                                     "width":  2048,
+                                                     "height":  1024,
+                                                     "alpha":  true,
+                                                     "role":  "board-slot-mask",
+                                                     "source":  "original-generated-and-derived",
+                                                     "license":  "project-owned-generated-commercial-use-ok",
+                                                     "sha256":  "57ae376c021176f1ad7957041f964c1ee337cd16efc17300917eef34df2a7978"
+                                                 },
+                   "board.portrait.base":  {
+                                               "src":  "board-portrait-base.png",
+                                               "type":  "image/png",
+                                               "width":  1536,
+                                               "height":  2048,
+                                               "alpha":  true,
+                                               "role":  "board-base",
+                                               "source":  "original-generated-and-derived",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "dba179c644fb98b4aac2bc8b3f829e82782babf403c0d49e3cba202b92579e44"
+                                           },
+                   "board.portrait.rim":  {
+                                              "src":  "board-portrait-rim-overlay.png",
+                                              "type":  "image/png",
+                                              "width":  1536,
+                                              "height":  2048,
+                                              "alpha":  true,
+                                              "role":  "board-rim-overlay",
+                                              "source":  "original-generated-and-derived",
+                                              "license":  "project-owned-generated-commercial-use-ok",
+                                              "sha256":  "54cbeb3d44ace7844c65045776a809d0a6d6885d4ed2953d422c80f99ece8c96"
+                                          },
+                   "board.portrait.shadow":  {
+                                                 "src":  "board-portrait-shadow.png",
+                                                 "type":  "image/png",
+                                                 "width":  1536,
+                                                 "height":  2048,
+                                                 "alpha":  true,
+                                                 "role":  "board-shadow",
+                                                 "source":  "original-generated-and-derived",
+                                                 "license":  "project-owned-generated-commercial-use-ok",
+                                                 "sha256":  "54cbeb3d44ace7844c65045776a809d0a6d6885d4ed2953d422c80f99ece8c96"
+                                             },
+                   "board.portrait.slot-mask":  {
+                                                    "src":  "board-portrait-slot-mask.png",
+                                                    "type":  "image/png",
+                                                    "width":  1536,
+                                                    "height":  2048,
+                                                    "alpha":  true,
+                                                    "role":  "board-slot-mask",
+                                                    "source":  "original-generated-and-derived",
+                                                    "license":  "project-owned-generated-commercial-use-ok",
+                                                    "sha256":  "54cbeb3d44ace7844c65045776a809d0a6d6885d4ed2953d422c80f99ece8c96"
+                                                },
+                   "pit.albedo":  {
+                                      "src":  "pit-well-albedo.png",
+                                      "type":  "image/png",
+                                      "width":  512,
+                                      "height":  512,
+                                      "alpha":  false,
+                                      "role":  "pit-material",
+                                      "source":  "original-generated-and-derived",
+                                      "license":  "project-owned-generated-commercial-use-ok",
+                                      "sha256":  "9c71ed5259e28334277645152505560b64f8edff9cd2f2156b3c07ef9ad24885"
+                                  },
+                   "pit.normal":  {
+                                      "src":  "pit-well-normal.png",
+                                      "type":  "image/png",
+                                      "width":  512,
+                                      "height":  512,
+                                      "alpha":  false,
+                                      "role":  "pit-material-normal",
+                                      "source":  "original-generated-and-derived",
+                                      "license":  "project-owned-generated-commercial-use-ok",
+                                      "sha256":  "31b6fb06c70c7770a7ea7d65f19e0ce4701d202896a02f6a5cc31ca298063f34"
+                                  },
+                   "pit.roughness":  {
+                                         "src":  "pit-well-roughness.png",
+                                         "type":  "image/png",
+                                         "width":  512,
+                                         "height":  512,
+                                         "alpha":  false,
+                                         "role":  "pit-material-roughness",
+                                         "source":  "original-generated-and-derived",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "3bad56f20822c4fb1f9b19a0e6e21cdaa3a018f88ee3ecd203cdfaf7920b9e9d"
+                                     },
+                   "store.landscape.albedo":  {
+                                                  "src":  "store-well-landscape-albedo.png",
+                                                  "type":  "image/png",
+                                                  "width":  512,
+                                                  "height":  1024,
+                                                  "alpha":  false,
+                                                  "role":  "store-material",
+                                                  "source":  "original-generated-and-derived",
+                                                  "license":  "project-owned-generated-commercial-use-ok",
+                                                  "sha256":  "aa1134873ab7fee53c666f0f6cd52db687de2d82e743b4a7b2fd5676f03a4b43"
+                                              },
+                   "store.portrait.albedo":  {
+                                                 "src":  "store-well-portrait-albedo.png",
+                                                 "type":  "image/png",
+                                                 "width":  512,
+                                                 "height":  768,
+                                                 "alpha":  false,
+                                                 "role":  "store-material",
+                                                 "source":  "original-generated-and-derived",
+                                                 "license":  "project-owned-generated-commercial-use-ok",
+                                                 "sha256":  "f41ea8c4f4e0ca9d7645cdd407be1072703ca72b0dfb83f8f0930de54affe350"
+                                             },
+                   "store.normal":  {
+                                        "src":  "store-well-normal.png",
+                                        "type":  "image/png",
+                                        "width":  512,
+                                        "height":  1024,
+                                        "alpha":  false,
+                                        "role":  "store-material-normal",
+                                        "source":  "original-generated-and-derived",
+                                        "license":  "project-owned-generated-commercial-use-ok",
+                                        "sha256":  "e92643bc2f6daf28e39a9d58a59e360ae03e16bdacf62043a421d8e7c8801425"
+                                    },
+                   "store.roughness":  {
+                                           "src":  "store-well-roughness.png",
+                                           "type":  "image/png",
+                                           "width":  512,
+                                           "height":  1024,
+                                           "alpha":  false,
+                                           "role":  "store-material-roughness",
+                                           "source":  "original-generated-and-derived",
+                                           "license":  "project-owned-generated-commercial-use-ok",
+                                           "sha256":  "a122b27d50276b2f763625b16a67de84dd13bd74aff838c4a5fc6bcab59b465c"
+                                       },
+                   "ui.score.panel":  {
+                                          "src":  "ui-score-panel-9slice.png",
+                                          "type":  "image/png",
+                                          "width":  1024,
+                                          "height":  256,
+                                          "alpha":  false,
+                                          "role":  "ui-score-panel",
+                                          "source":  "original-generated-and-derived",
+                                          "license":  "project-owned-generated-commercial-use-ok",
+                                          "sha256":  "f688d270d88fdad105445a758df4f6501a822e571c31da15b654f1a645767579"
+                                      },
+                   "ui.dialogue.panel":  {
+                                             "src":  "ui-dialogue-panel-9slice.png",
+                                             "type":  "image/png",
+                                             "width":  1536,
+                                             "height":  320,
+                                             "alpha":  false,
+                                             "role":  "ui-dialogue-panel",
+                                             "source":  "original-generated-and-derived",
+                                             "license":  "project-owned-generated-commercial-use-ok",
+                                             "sha256":  "9ad0d98982ad17f264a62cb25a1d0c1552a63cd223abdd9d2b28daad0a4999a6"
+                                         },
+                   "ui.modal.panel":  {
+                                          "src":  "ui-modal-panel-9slice.png",
+                                          "type":  "image/png",
+                                          "width":  1400,
+                                          "height":  1200,
+                                          "alpha":  false,
+                                          "role":  "ui-modal-panel",
+                                          "source":  "original-generated-and-derived",
+                                          "license":  "project-owned-generated-commercial-use-ok",
+                                          "sha256":  "247111e4f78161680296a24a5fc5c4c2ae0e94a93ec552e177b7a3dd058be1d7"
+                                      },
+                   "ui.result.panel":  {
+                                           "src":  "ui-result-panel-9slice.png",
+                                           "type":  "image/png",
+                                           "width":  1024,
+                                           "height":  1024,
+                                           "alpha":  false,
+                                           "role":  "ui-result-panel",
+                                           "source":  "original-generated-and-derived",
+                                           "license":  "project-owned-generated-commercial-use-ok",
+                                           "sha256":  "e0660d08374727cd871c1797bebde099142d1186fdd7b42201898fb8a398c6a9"
+                                       },
+                   "ui.button.primary":  {
+                                             "src":  "ui-button-primary-9slice.png",
+                                             "type":  "image/png",
+                                             "width":  768,
+                                             "height":  224,
+                                             "alpha":  false,
+                                             "role":  "ui-button-primary",
+                                             "source":  "original-generated-and-derived",
+                                             "license":  "project-owned-generated-commercial-use-ok",
+                                             "sha256":  "807a8b2a26f00a8603be0a6dde9e2fb29f2f6c51cc2b0c61a50c4eafea0ea25e"
+                                         },
+                   "ui.button.secondary":  {
+                                               "src":  "ui-button-secondary-9slice.png",
+                                               "type":  "image/png",
+                                               "width":  768,
+                                               "height":  224,
+                                               "alpha":  false,
+                                               "role":  "ui-button-secondary",
+                                               "source":  "original-generated-and-derived",
+                                               "license":  "project-owned-generated-commercial-use-ok",
+                                               "sha256":  "807a8b2a26f00a8603be0a6dde9e2fb29f2f6c51cc2b0c61a50c4eafea0ea25e"
+                                           },
+                   "ui.icon.frame":  {
+                                         "src":  "ui-icon-frame.png",
+                                         "type":  "image/png",
+                                         "width":  256,
+                                         "height":  256,
+                                         "alpha":  true,
+                                         "role":  "ui-icon-frame",
+                                         "source":  "original-generated-and-derived",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "38b48c2938d050638d6037e08c0c9ae8feead24ed02b58acb48064dfb4ae9ea8"
+                                     },
+                   "ui.turn.badge":  {
+                                         "src":  "ui-turn-badge.png",
+                                         "type":  "image/png",
+                                         "width":  384,
+                                         "height":  384,
+                                         "alpha":  true,
+                                         "role":  "ui-turn-badge",
+                                         "source":  "original-generated-and-derived",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "613bc325ef8e6b1694326f7538c04b0f620b79321a9d21603d63daa4c365de73"
+                                     },
+                   "hint.ring.red":  {
+                                         "src":  "hint-ring-red.png",
+                                         "type":  "image/png",
+                                         "width":  512,
+                                         "height":  512,
+                                         "alpha":  true,
+                                         "role":  "hint-ring",
+                                         "source":  "original-generated-and-derived",
+                                         "license":  "project-owned-generated-commercial-use-ok",
+                                         "sha256":  "6752d2314f78b40a804a72ebeb45e4b37cdbee9b9678eca23f8e0c4fe8f79bb3"
+                                     },
+                   "hint.ring.purple":  {
+                                            "src":  "hint-ring-purple.png",
+                                            "type":  "image/png",
+                                            "width":  512,
+                                            "height":  512,
+                                            "alpha":  true,
+                                            "role":  "hint-ring",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "6752d2314f78b40a804a72ebeb45e4b37cdbee9b9678eca23f8e0c4fe8f79bb3"
+                                        },
+                   "hint.ring.landing":  {
+                                             "src":  "hint-ring-landing.png",
+                                             "type":  "image/png",
+                                             "width":  512,
+                                             "height":  512,
+                                             "alpha":  true,
+                                             "role":  "hint-ring",
+                                             "source":  "original-generated-and-derived",
+                                             "license":  "project-owned-generated-commercial-use-ok",
+                                             "sha256":  "6752d2314f78b40a804a72ebeb45e4b37cdbee9b9678eca23f8e0c4fe8f79bb3"
+                                         },
+                   "background.landscape.idle":  {
+                                                     "src":  "background-landscape-idle.png",
+                                                     "type":  "image/png",
+                                                     "width":  2560,
+                                                     "height":  1440,
+                                                     "alpha":  false,
+                                                     "role":  "background",
+                                                     "source":  "original-generated-and-derived",
+                                                     "license":  "project-owned-generated-commercial-use-ok",
+                                                     "sha256":  "ef7055458b36c90f8f97f345b58ee492a513780d53ab061c4b7a986d4bd2f577"
+                                                 },
+                   "background.portrait.idle":  {
+                                                    "src":  "background-portrait-idle.png",
+                                                    "type":  "image/png",
+                                                    "width":  1440,
+                                                    "height":  2560,
+                                                    "alpha":  false,
+                                                    "role":  "background",
+                                                    "source":  "original-generated-and-derived",
+                                                    "license":  "project-owned-generated-commercial-use-ok",
+                                                    "sha256":  "fd6c6e0afc54264133cb0896e3c1b1a69b496fa87960e77884690fb0b2c37df7"
+                                                },
+                   "particle.ruby.01":  {
+                                            "src":  "particle-ruby-01.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "59928e1fe6b90752c376975716c1ff9026a251c385688025674ed0e59dc11792"
+                                        },
+                   "particle.ruby.02":  {
+                                            "src":  "particle-ruby-02.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "bb8ae91cb4e90165996e856af43383d8dfa1b8046bbbc8d0fc282c726a5ff41f"
+                                        },
+                   "particle.ruby.03":  {
+                                            "src":  "particle-ruby-03.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "0bd0936dc57ab9da07bef6aeaf50ebf23c8b4a4762a08eaa4d09d36e2e73ae71"
+                                        },
+                   "particle.ruby.04":  {
+                                            "src":  "particle-ruby-04.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "a5ba24a47f933a4e9717040c350d58ab1a88bbd219d79c89141803a717be549f"
+                                        },
+                   "particle.ruby.05":  {
+                                            "src":  "particle-ruby-05.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "1a8c54b6b9b506d021031b2dedfb00e4c9ce23702b3c9701d3ef2de801e9a072"
+                                        },
+                   "particle.amethyst.01":  {
+                                                "src":  "particle-amethyst-01.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated-and-derived",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "c12df187fb6f7446af8351214d3c9421c3381e2b1fc94d06db893bc32b15aeb0"
+                                            },
+                   "particle.amethyst.02":  {
+                                                "src":  "particle-amethyst-02.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated-and-derived",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "173d654d19856ecd77d4f654e563548df01e88233d0e6856021f6010e35d41fa"
+                                            },
+                   "particle.amethyst.03":  {
+                                                "src":  "particle-amethyst-03.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated-and-derived",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "4ae7743ddc82128d7a238422b5bdc7de880cb3a3b70eba112e75d5588e1993a9"
+                                            },
+                   "particle.amethyst.04":  {
+                                                "src":  "particle-amethyst-04.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated-and-derived",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "e9b5c419f6db9cdc65c728f05d7c6790eeb360ae7e7588409844823c60db63f7"
+                                            },
+                   "particle.amethyst.05":  {
+                                                "src":  "particle-amethyst-05.png",
+                                                "type":  "image/png",
+                                                "width":  128,
+                                                "height":  128,
+                                                "alpha":  true,
+                                                "role":  "particle",
+                                                "source":  "original-generated-and-derived",
+                                                "license":  "project-owned-generated-commercial-use-ok",
+                                                "sha256":  "2a14cd372f4e463cb9af7e0e4e3d42b7b11baec035180db32787705fc39a396f"
+                                            },
+                   "particle.gold.01":  {
+                                            "src":  "particle-gold-01.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "ee0f94f31ae173fdb49df3a42d1123c6ac3560b5e166c43e0f3ad5204309d672"
+                                        },
+                   "particle.gold.02":  {
+                                            "src":  "particle-gold-02.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "f8c06323d29fc35342fe27255da4072371875b433f7f4552af9dbbf85f6ce08c"
+                                        },
+                   "particle.gold.03":  {
+                                            "src":  "particle-gold-03.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "797415e1a0021bc6a09137637c6ae751238f2d6e4404450a4265982b189004eb"
+                                        },
+                   "particle.gold.04":  {
+                                            "src":  "particle-gold-04.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "e1bdf573205917b24c60e11baf6c714acff87a309b8c68f7dddb36f411604fdb"
+                                        },
+                   "particle.gold.05":  {
+                                            "src":  "particle-gold-05.png",
+                                            "type":  "image/png",
+                                            "width":  128,
+                                            "height":  128,
+                                            "alpha":  true,
+                                            "role":  "particle",
+                                            "source":  "original-generated-and-derived",
+                                            "license":  "project-owned-generated-commercial-use-ok",
+                                            "sha256":  "b773c09726c163669c3c68fb6e3d86b02437470a7565c7e3916b51f1fc0b048c"
+                                        }
+               },
+    "nineSlice":  {
+                      "ui.score.panel":  {
+                                             "left":  96,
+                                             "right":  96,
+                                             "top":  72,
+                                             "bottom":  72
+                                         },
+                      "ui.dialogue.panel":  {
+                                                "left":  128,
+                                                "right":  128,
+                                                "top":  88,
+                                                "bottom":  88
+                                            },
+                      "ui.modal.panel":  {
+                                             "left":  128,
+                                             "right":  128,
+                                             "top":  128,
+                                             "bottom":  128
+                                         },
+                      "ui.result.panel":  {
+                                              "left":  120,
+                                              "right":  120,
+                                              "top":  120,
+                                              "bottom":  120
+                                          },
+                      "ui.button.primary":  {
+                                                "left":  96,
+                                                "right":  96,
+                                                "top":  72,
+                                                "bottom":  72
+                                            },
+                      "ui.button.secondary":  {
+                                                  "left":  96,
+                                                  "right":  96,
+                                                  "top":  72,
+                                                  "bottom":  72
+                                              }
+                  },
+    "notes":  {
+                  "artPass":  "mother-art-aligned rebuild with approved board renders, approved UI family crops, and quiet noble lacquer language",
+                  "backgroundFormatNote":  "PNG is used for local compatibility with the current PowerShell/.NET pipeline."
+              }
+}

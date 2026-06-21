@@ -29,6 +29,7 @@ import {
 import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
 import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260621a";
 import { OBSIDIAN_OBJECT_PACK } from "./object-packs/obsidian.js?v=20260619b";
+import { ARTIFACT_OBJECT_PACK } from "./object-packs/artifact.js?v=20260621a";
 import { ZEN_OBJECT_PACK } from "./object-packs/zen.js?v=20260621b";
 import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
 
@@ -45,6 +46,12 @@ const THEME_DEFINITIONS = Object.freeze({
     label: "\u79aa\u98a8",
     objectPack: ZEN_OBJECT_PACK,
     visualManifestUrl: "./visual-packs/zen-childhood/manifest.json",
+  }),
+  artifact: Object.freeze({
+    id: "artifact",
+    label: "\u8cb4\u5668",
+    objectPack: ARTIFACT_OBJECT_PACK,
+    visualManifestUrl: "./visual-packs/artifact-childhood/manifest.json",
   }),
 });
 const DEFAULT_THEME_ID = "classic";
