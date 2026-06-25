@@ -54,6 +54,7 @@ const THEME_DEFINITIONS = Object.freeze({
     visualManifestUrl: "./visual-packs/artifact-childhood/manifest.json",
   }),
 });
+const AVAILABLE_THEME_IDS = Object.freeze(["classic", "zen"]);
 const DEFAULT_THEME_ID = "classic";
 let activeThemeId = DEFAULT_THEME_ID;
 let objectPack = createObjectPackRuntime(THEME_DEFINITIONS[DEFAULT_THEME_ID].objectPack);
@@ -141,7 +142,11 @@ const {
 } = getGameDomRefs();
 
 function getThemeDefinition(themeId) {
-  return THEME_DEFINITIONS[themeId] || THEME_DEFINITIONS[DEFAULT_THEME_ID];
+  if (AVAILABLE_THEME_IDS.includes(themeId) && THEME_DEFINITIONS[themeId]) {
+    return THEME_DEFINITIONS[themeId];
+  }
+
+  return THEME_DEFINITIONS[DEFAULT_THEME_ID];
 }
 
 function createThemeVisualPack(theme) {
@@ -963,7 +968,7 @@ function renderInterfaceState() {
 function renderSettingsState() {
   const isRoman = state.pitNumberStyle === "roman";
 
-  themeSelect.value = state.themeId;
+  themeSelect.value = AVAILABLE_THEME_IDS.includes(state.themeId) ? state.themeId : DEFAULT_THEME_ID;
   pitRomanButton.classList.toggle("is-active", isRoman);
   pitArabicButton.classList.toggle("is-active", !isRoman);
   pitRomanButton.setAttribute("aria-pressed", String(isRoman));
