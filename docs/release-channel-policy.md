@@ -13,7 +13,7 @@ The goal is to keep the player-facing version stable while allowing managers to 
 
 Manager test build:
 
-- `https://rawcdn.githack.com/NKKO-NC/-_-/main/index.html`
+- `https://raw.githack.com/NKKO-NC/-_-/main/index.html`
 
 Player release build:
 

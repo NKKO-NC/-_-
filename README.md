@@ -16,7 +16,7 @@
 
 管理者測試頁入口：
 
-[Open the main branch test build](https://rawcdn.githack.com/NKKO-NC/-_-/main/index.html)
+[Open the main branch test build](https://raw.githack.com/NKKO-NC/-_-/main/index.html)
 
 目前規則如下：
 
