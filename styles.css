@@ -275,7 +275,6 @@ h1 {
 .menu-help-button:focus-visible,
 .result-button:focus-visible,
 .floating-card-close:focus-visible,
-.rule-dynamic-demo-button:focus-visible,
 .rule-item:focus-visible,
 .rule-demo-replay:focus-visible,
 .rule-step-button:focus-visible,
@@ -1001,47 +1000,6 @@ html[data-visual-pack="artifact-childhood-visual"] .store-count {
   filter: saturate(0.72) brightness(0.72);
 }
 
-.board.is-dynamic-demo {
-  margin-top: 30px;
-  filter: none;
-}
-
-.board.is-dynamic-demo::before {
-  content: var(--dynamic-demo-title);
-  inset: auto auto calc(100% + 10px) 50%;
-  width: max-content;
-  max-width: min(86vw, 680px);
-  min-height: 30px;
-  display: inline-grid;
-  place-items: center;
-  padding: 5px 16px;
-  border: 1px solid rgba(255, 228, 161, 0.52);
-  border-radius: 999px;
-  background:
-    linear-gradient(145deg, rgba(255, 228, 161, 0.2), rgba(255, 255, 255, 0.035)),
-    rgba(0, 0, 0, 0.82);
-  color: var(--gold-bright);
-  font-weight: 800;
-  transform: translateX(-50%);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.32);
-}
-
-.board.is-dynamic-demo::after {
-  content: "\4e0a\65b9  AI \65b9        \4e0b\65b9  \73a9\5bb6\65b9";
-  inset: auto auto -34px 50%;
-  width: min(100%, 520px);
-  min-height: 26px;
-  display: inline-grid;
-  place-items: center;
-  padding: 4px 14px;
-  border: 1px solid rgba(255, 228, 161, 0.26);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.64);
-  color: var(--paper-ink-soft);
-  font-size: 0.84rem;
-  transform: translateX(-50%);
-}
-
 .pit,
 .store {
   position: relative;
@@ -1549,7 +1507,6 @@ html[data-visual-pack="artifact-childhood-visual"] .store-count {
 
 .floating-card-kicker,
 .floating-card h2,
-.rule-dynamic-demo-button,
 .rules-overview,
 .rules-list,
 .setting-row {
@@ -1609,26 +1566,6 @@ html[data-visual-pack="artifact-childhood-visual"] .store-count {
   width: min(94vw, 640px);
 }
 
-.rule-dynamic-demo-button {
-  min-height: 46px;
-  border: 1px solid rgba(255, 228, 161, 0.66);
-  border-radius: 8px;
-  background:
-    linear-gradient(145deg, rgba(255, 228, 161, 0.22), rgba(255, 255, 255, 0.035)),
-    rgba(0, 0, 0, 0.48);
-  color: var(--gold-bright);
-  cursor: pointer;
-  font-weight: 800;
-  box-shadow:
-    0 14px 28px rgba(0, 0, 0, 0.22),
-    inset 0 0 20px rgba(255, 228, 161, 0.08);
-}
-
-.rule-dynamic-demo-button:hover {
-  border-color: var(--gold-bright);
-  transform: translateY(-1px);
-}
-
 .rules-list {
   display: grid;
   gap: 10px;
@@ -1683,6 +1620,17 @@ html[data-visual-pack="artifact-childhood-visual"] .store-count {
   display: grid;
   gap: 4px;
   min-height: 74px;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.rule-item:hover,
+.rule-item.is-active {
+  transform: translateY(-1px);
+  border-color: var(--paper-edge);
+  box-shadow:
+    inset 0 0 22px rgba(255, 248, 236, 0.12),
+    0 12px 22px rgba(0, 0, 0, 0.18);
 }
 
 .rule-title {
@@ -2509,7 +2457,6 @@ html[data-object-pack="zen-childhood"] .rule-setup-info p {
   color: #665237;
 }
 
-html[data-object-pack="zen-childhood"] .rule-dynamic-demo-button,
 html[data-object-pack="zen-childhood"] .segmented-control,
 html[data-object-pack="zen-childhood"] .theme-select {
   border-color: rgba(137, 108, 64, 0.46);

@@ -40,7 +40,6 @@ function getGameDomRefs(root = document) {
     rulesButton: queryRequired("#rulesButton", root),
     settingsButton: queryRequired("#settingsButton", root),
     rulesOverlay: queryRequired("#rulesOverlay", root),
-    dynamicDemoButton: queryRequired("#dynamicDemoButton", root),
     settingsOverlay: queryRequired("#settingsOverlay", root),
     rulesCloseButton: queryRequired("#rulesCloseButton", root),
     settingsCloseButton: queryRequired("#settingsCloseButton", root),

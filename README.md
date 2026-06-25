@@ -2,13 +2,21 @@
 
 &#31461;&#24180;&#22238;&#25014;_&#38750;&#27954;&#26827; / Kalah &#25773;&#26827; MVP
 
-A simple browser-based Kalah / Mancala MVP built with plain HTML, CSS, and JavaScript.
+這是一個以純 HTML、CSS、JavaScript 製作的瀏覽器版 Kalah / Mancala MVP。
 
 ## Play
 
-[Play the game on GitHub Pages](https://nkko-nc.github.io/-_-/)
+[Play the public GitHub Pages build](https://nkko-nc.github.io/-_-/)
 
-[Entry-friendly mode](https://nkko-nc.github.io/-_-/entry-friendly.html) starts with Easy AI, Arabic numerals, path previews, and a full-board dynamic demo inside the game explanation.
+Public Pages entry is the repository root: `https://nkko-nc.github.io/-_-/`
+
+## 管理者測試
+
+Maintenance / acceptance branch: [`gh-pages`](https://github.com/NKKO-NC/-_-/tree/gh-pages)
+
+Entry-friendly maintenance entry: `https://nkko-nc.github.io/-_-/entry-friendly.html`
+
+`entry-friendly.html` 僅保留作為維護驗收用入口，不作為公開 Play 導流。
 
 ## Run
 
