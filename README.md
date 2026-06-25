@@ -6,17 +6,23 @@
 
 ## Play
 
+玩家正式版 GitHub Pages 入口：
+
 [Play the public GitHub Pages build](https://nkko-nc.github.io/-_-/)
 
-Public Pages entry is the repository root: `https://nkko-nc.github.io/-_-/`
+目前對外玩家連結以 `gh-pages` 發版內容為準。
 
-## 管理者測試
+## 管理者驗收
 
-Maintenance / acceptance branch: [`gh-pages`](https://github.com/NKKO-NC/-_-/tree/gh-pages)
+管理者驗收以 `main` 分支為準，日常更新預設先進 `main`，只有在管理者同意發版後才同步到 `gh-pages`。
 
-Entry-friendly maintenance entry: `https://nkko-nc.github.io/-_-/entry-friendly.html`
+- 驗收分支：[`main`](https://github.com/NKKO-NC/-_-/tree/main)
+- 正式發版分支：[`gh-pages`](https://github.com/NKKO-NC/-_-/tree/gh-pages)
+- 維護用新手入口：`https://nkko-nc.github.io/-_-/entry-friendly.html`
 
 `entry-friendly.html` 僅保留作為維護驗收用入口，不作為公開 Play 導流。
+
+詳細規範請見 [docs/release-channel-policy.md](/C:/Users/User/OneDrive/文件/Kalah_童年回憶計畫/docs/release-channel-policy.md)。
 
 ## Run
 
@@ -63,9 +69,9 @@ Then visit `http://127.0.0.1:8123/`.
 - `ui/dom.js` - DOM reference collection for the game screen
 - `ui/rule-demo-data.js` - rule tutorial data used by the rules panel
 - `object-packs/obsidian.js` - `經典` skin/theme object pack
-- `object-packs/artifact.js` - `東方貴器` skin/theme object pack
+- `object-packs/artifact.js` - `貴器` skin/theme object pack
 - `object-packs/zen.js` - `禪風` skin/theme object pack
-- `visual-packs/artifact-childhood/` - `東方貴器` visual pack scaffold and object assets
+- `visual-packs/artifact-childhood/` - `貴器` visual pack scaffold and object assets
 - `visual-packs/obsidian-childhood/` - `經典` visual pack and manifest
 - `visual-packs/zen-childhood/` - `禪風` visual pack and manifest
 - `sound-packs/procedural-crystal/` - procedural sound pack and manifest
