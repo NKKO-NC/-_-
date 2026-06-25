@@ -1808,6 +1808,20 @@ html[data-visual-pack="artifact-childhood-visual"] .store-count {
   line-height: 1.42;
 }
 
+.rule-text-list {
+  position: relative;
+  z-index: 1;
+  margin: 6px 0 0;
+  padding-left: 1.15rem;
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.42;
+}
+
+.rule-text-list li + li {
+  margin-top: 6px;
+}
+
 .rule-demo-board {
   position: relative;
   width: min(100%, 700px);

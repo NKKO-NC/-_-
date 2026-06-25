@@ -3,7 +3,7 @@ import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=2026061
 import { createKalahAi } from "./game/ai.js?v=20260619a";
 import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260620b";
 import { getGameDomRefs } from "./ui/dom.js?v=20260627a";
-import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260619a";
+import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260627a";
 import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
@@ -1265,7 +1265,13 @@ function createRuleTextCard(rule) {
             (section) => `
               <section class="rule-text-item">
                 <strong>${escapeHtml(section.label)}</strong>
-                <p>${escapeHtml(section.text)}</p>
+                ${
+                  Array.isArray(section.items) && section.items.length
+                    ? `<ul class="rule-text-list">${section.items
+                        .map((item) => `<li>${escapeHtml(item)}</li>`)
+                        .join("")}</ul>`
+                    : `<p>${escapeHtml(section.text)}</p>`
+                }
               </section>
             `
           )
