@@ -6,21 +6,24 @@
 
 ## Play
 
-玩家正式版 GitHub Pages 入口：
+玩家正式版入口：
 
-[Play the public GitHub Pages build](https://nkko-nc.github.io/-_-/)
+[Play the player release build](https://nkko-nc.github.io/-_-/)
 
-目前對外玩家連結以 `gh-pages` 發版內容為準。
+目前玩家實際使用的版本以 `gh-pages` 發版內容為準。
 
 ## 管理者驗收
 
-管理者驗收以 `main` 分支為準，日常更新預設先進 `main`，只有在管理者同意發版後才同步到 `gh-pages`。
+管理者測試頁入口：
 
-- 驗收分支：[`main`](https://github.com/NKKO-NC/-_-/tree/main)
-- 正式發版分支：[`gh-pages`](https://github.com/NKKO-NC/-_-/tree/gh-pages)
-- 維護用新手入口：`https://nkko-nc.github.io/-_-/entry-friendly.html`
+[Open the main branch test build](https://rawcdn.githack.com/NKKO-NC/-_-/main/index.html)
 
-`entry-friendly.html` 僅保留作為維護驗收用入口，不作為公開 Play 導流。
+目前規則如下：
+
+- `main` 對應管理者驗收用測試畫面
+- `gh-pages` 對應玩家實際使用版本
+- 日常修改預設先進 `main`
+- 只有在管理者同意發版後，才同步到 `gh-pages`
 
 詳細規範請見 [docs/release-channel-policy.md](/C:/Users/User/OneDrive/文件/Kalah_童年回憶計畫/docs/release-channel-policy.md)。
 
