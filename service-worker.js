@@ -1,4 +1,4 @@
-const CACHE_VERSION = "20260627a";
+const CACHE_VERSION = "20260627b";
 const CACHE_NAME = `kalah-pwa-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -6,8 +6,8 @@ const APP_SHELL = [
   "./index.html",
   "./entry-friendly.html",
   "./manifest.webmanifest",
-  "./styles.css?v=20260627a",
-  "./script.js?v=20260627a",
+  "./styles.css?v=20260627b",
+  "./script.js?v=20260627b",
   "./core/object-model.js?v=20260619a",
   "./core/object-physics.js?v=20260619a",
   "./core/object-pack-manifest.js?v=20260619a",
@@ -18,7 +18,7 @@ const APP_SHELL = [
   "./ui/dom.js?v=20260627a",
   "./ui/rule-demo-data.js?v=20260619a",
   "./sound/sound-pack-runtime.js?v=20260619b",
-  "./object-packs/obsidian.js?v=20260619b",
+  "./object-packs/obsidian.js?v=20260627a",
   "./object-packs/artifact.js?v=20260621a",
   "./object-packs/zen.js?v=20260621b",
   "./dialoguePicker.js?v=20260619a",
@@ -27,8 +27,7 @@ const APP_SHELL = [
   "./coin/coin-toss-scene.js?v=20260619a",
   "./vendor/three/build/three.module.js?v=20260619a",
   "./vendor/three/build/three.core.js",
-  "./assets/ruby-gem.png?v=20260619a",
-  "./assets/amethyst-gem.png?v=20260619a",
+  "./assets/golden-gem.png?v=20260627a",
   "./assets/Coin.png?v=20260619a",
   "./assets/Dragon.png?v=20260619a",
   "./assets/Shield.png?v=20260619a",

@@ -3,10 +3,9 @@ import { defineObjectPack } from "../core/object-pack-manifest.js?v=20260619a";
 const OBSIDIAN_OBJECT_PACK = defineObjectPack({
   id: "obsidian-childhood",
   displayName: "Obsidian Childhood",
-  assetVersion: "20260619b",
+  assetVersion: "20260627-gold-a",
   assets: {
-    rubyStone: "assets/ruby-gem.png",
-    amethystStone: "assets/amethyst-gem.png",
+    goldenStone: "assets/golden-gem.png",
     coinBody: "assets/Coin.png",
     dragonSigil: "assets/Dragon.png",
     shieldSigil: "assets/Shield.png",
@@ -15,7 +14,7 @@ const OBSIDIAN_OBJECT_PACK = defineObjectPack({
     1: {
       label: "\u7d05\u6676\u65b9",
       sideLabel: "\u7d05\u6c34\u6676\u65b9",
-      stoneAsset: "rubyStone",
+      stoneAsset: "goldenStone",
       storeSigilAsset: "dragonSigil",
       classes: {
         bodyTurn: "turn-red",
@@ -27,7 +26,7 @@ const OBSIDIAN_OBJECT_PACK = defineObjectPack({
     2: {
       label: "\u7d2b\u6676\u65b9",
       sideLabel: "\u7d2b\u6c34\u6676\u65b9",
-      stoneAsset: "amethystStone",
+      stoneAsset: "goldenStone",
       storeSigilAsset: "shieldSigil",
       classes: {
         bodyTurn: "turn-purple",

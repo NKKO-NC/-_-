@@ -28,7 +28,7 @@ import {
 } from "./core/object-physics.js?v=20260619a";
 import { createObjectPackRuntime } from "./core/object-pack-runtime.js?v=20260619a";
 import { createVisualPackRuntime } from "./core/visual-pack-runtime.js?v=20260621a";
-import { OBSIDIAN_OBJECT_PACK } from "./object-packs/obsidian.js?v=20260619b";
+import { OBSIDIAN_OBJECT_PACK } from "./object-packs/obsidian.js?v=20260627a";
 import { ARTIFACT_OBJECT_PACK } from "./object-packs/artifact.js?v=20260621a";
 import { ZEN_OBJECT_PACK } from "./object-packs/zen.js?v=20260621b";
 import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
