@@ -56,6 +56,8 @@ function getGameDomRefs(root = document) {
     rulePrevButton: queryRequired("#rulePrevButton", root),
     ruleNextButton: queryRequired("#ruleNextButton", root),
     ruleStepIndicator: queryRequired("#ruleStepIndicator", root),
+    gameModeClassic4Button: queryRequired("#gameModeClassic4Button", root),
+    gameModeVariant6Button: queryRequired("#gameModeVariant6Button", root),
     themeSelect: queryRequired("#themeSelect", root),
     pitRomanButton: queryRequired("#pitRomanButton", root),
     pitArabicButton: queryRequired("#pitArabicButton", root),

@@ -1,24 +1,38 @@
 const PLAYER_ONE = 1;
 const PLAYER_TWO = 2;
 
-const KALAH_BOARD_MODEL = deepFreeze({
+function createBoardModel({ id, pitsPerSide = 6, startingStonesPerPit = 6 }) {
+  const bottomPits = Array.from({ length: pitsPerSide }, (_, index) => index);
+  const playerOneStore = pitsPerSide;
+  const topPitsAscending = Array.from({ length: pitsPerSide }, (_, index) => pitsPerSide + 1 + index);
+  const playerTwoStore = pitsPerSide * 2 + 1;
+
+  return deepFreeze({
+    id,
+    players: [PLAYER_ONE, PLAYER_TWO],
+    pitsPerSide,
+    boardSize: pitsPerSide * 2 + 2,
+    startingStonesPerPit,
+    stores: {
+      [PLAYER_ONE]: playerOneStore,
+      [PLAYER_TWO]: playerTwoStore,
+    },
+    pits: {
+      [PLAYER_ONE]: bottomPits,
+      [PLAYER_TWO]: topPitsAscending,
+    },
+    layout: {
+      topPits: [...topPitsAscending].reverse(),
+      bottomPits,
+    },
+    oppositePitIndexSum: pitsPerSide * 2,
+  });
+}
+
+const KALAH_BOARD_MODEL = createBoardModel({
   id: "kalah-standard-6x6",
-  players: [PLAYER_ONE, PLAYER_TWO],
-  boardSize: 14,
+  pitsPerSide: 6,
   startingStonesPerPit: 6,
-  stores: {
-    [PLAYER_ONE]: 6,
-    [PLAYER_TWO]: 13,
-  },
-  pits: {
-    [PLAYER_ONE]: [0, 1, 2, 3, 4, 5],
-    [PLAYER_TWO]: [7, 8, 9, 10, 11, 12],
-  },
-  layout: {
-    topPits: [12, 11, 10, 9, 8, 7],
-    bottomPits: [0, 1, 2, 3, 4, 5],
-  },
-  oppositePitIndexSum: 12,
 });
 
 function deepFreeze(value) {
@@ -102,6 +116,7 @@ export {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
   PLAYER_TWO,
+  createBoardModel,
   createCellLayoutSalt,
   createInitialObjectBoard,
   createLayoutSalt,

@@ -1,4 +1,4 @@
-﻿import {
+import {
   KALAH_BOARD_MODEL,
   PLAYER_ONE,
   PLAYER_TWO,
@@ -9,13 +9,23 @@
   getPlayerPitIndices,
   getStoreIndex,
   isStoreIndex,
-} from "../core/object-model.js?v=20260619a";
+} from "../core/object-model.js?v=20260703a";
+import { createStandardAiProfile } from "./ai-profile.js?v=20260703a";
 
 function toCountBoard(stoneBoard) {
   return stoneBoard.map((cell) => cell.length);
 }
 
-function createKalahAi(model = KALAH_BOARD_MODEL) {
+function pickDepthFromBands(remaining, bands) {
+  const match = bands.find((band) => band.remainingAtMost == null || remaining <= band.remainingAtMost);
+  return match?.depth ?? 3;
+}
+
+function getDistinctEntries(entries, excludedSet) {
+  return entries.filter((entry) => !excludedSet.has(entry));
+}
+
+function createKalahAi(model = KALAH_BOARD_MODEL, profile = createStandardAiProfile(model)) {
   const boardSize = model.boardSize;
   const playerOneStore = getStoreIndex(model, PLAYER_ONE);
   const playerTwoStore = getStoreIndex(model, PLAYER_TWO);
@@ -176,8 +186,12 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
     const opponentSide = getSideStoneTotal(countBoard, otherPlayer(player));
     const storeDiff = getStoreDiff(countBoard, player);
 
-    if (ownSide <= 6 || opponentSide <= 6) {
-      return storeDiff + (opponentSide === 0 ? 6 : 0) - (ownSide === 0 ? 6 : 0);
+    if (ownSide <= profile.endgame.sideThreshold || opponentSide <= profile.endgame.sideThreshold) {
+      return (
+        storeDiff +
+        (opponentSide === 0 ? profile.endgame.emptySideBonus : 0) -
+        (ownSide === 0 ? profile.endgame.emptySideBonus : 0)
+      );
     }
 
     return 0;
@@ -193,13 +207,13 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
     const endgamePressure = getEndgamePressure(countBoard, player);
 
     return (
-      storeDiff * 12 +
-      sideStoneDiff * 2 +
-      ownExtraTurns * 7 -
-      opponentExtraTurns * 5 +
-      ownCapturePotential * 5 -
-      opponentCaptureThreat * 6 +
-      endgamePressure * 8
+      storeDiff * profile.evaluationWeights.storeDiff +
+      sideStoneDiff * profile.evaluationWeights.sideStoneDiff +
+      ownExtraTurns * profile.evaluationWeights.ownExtraTurns -
+      opponentExtraTurns * profile.evaluationWeights.opponentExtraTurns +
+      ownCapturePotential * profile.evaluationWeights.ownCapturePotential -
+      opponentCaptureThreat * profile.evaluationWeights.opponentCaptureThreat +
+      endgamePressure * profile.evaluationWeights.endgamePressure
     );
   }
 
@@ -218,27 +232,27 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
     const opponentBestExtraTurn = result.gameOver ? 0 : countImmediateExtraTurns(result.board, result.nextPlayer);
     const evaluation = evaluateCountBoard(result.board, player);
     const greedyScore =
-      immediateStoreGain * 10 +
-      result.captureCount * 7 +
-      (result.extraTurn ? 9 : 0) +
-      storeDiffAfter * 2;
+      immediateStoreGain * profile.greedyWeights.immediateStoreGain +
+      result.captureCount * profile.greedyWeights.captureCount +
+      (result.extraTurn ? profile.greedyWeights.extraTurn : 0) +
+      storeDiffAfter * profile.greedyWeights.storeDiffAfter;
     const easyScore =
-      immediateStoreGain * 6 +
-      result.captureCount * 8 +
-      (result.extraTurn ? 12 : 0) +
-      evaluation * 0.35 -
-      opponentBestCapture * 4;
+      immediateStoreGain * profile.easyWeights.immediateStoreGain +
+      result.captureCount * profile.easyWeights.captureCount +
+      (result.extraTurn ? profile.easyWeights.extraTurn : 0) +
+      evaluation * profile.easyWeights.evaluationFactor -
+      opponentBestCapture * profile.easyWeights.opponentBestCapture;
     const searchPriority =
-      (result.extraTurn ? 100 : 0) +
-      result.captureCount * 18 +
-      immediateStoreGain * 7 -
-      opponentBestCapture * 4 -
-      opponentBestExtraTurn * 6;
+      (result.extraTurn ? profile.searchPriorityWeights.extraTurn : 0) +
+      result.captureCount * profile.searchPriorityWeights.captureCount +
+      immediateStoreGain * profile.searchPriorityWeights.immediateStoreGain -
+      opponentBestCapture * profile.searchPriorityWeights.opponentBestCapture -
+      opponentBestExtraTurn * profile.searchPriorityWeights.opponentBestExtraTurn;
     const severeBlunder =
       !result.gameOver &&
       !result.extraTurn &&
       result.captureCount === 0 &&
-      opponentBestCapture >= 4 &&
+      opponentBestCapture >= profile.risk.severeBlunderCaptureThreat &&
       storeDiffAfter <= beforeStoreDiff;
 
     return {
@@ -338,15 +352,12 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
 
   function getMediumDepth(countBoard) {
     const remaining = getSideStoneTotal(countBoard, PLAYER_ONE) + getSideStoneTotal(countBoard, PLAYER_TWO);
-    return remaining <= 18 ? 4 : 3;
+    return pickDepthFromBands(remaining, profile.mediumDepthBands);
   }
 
   function getHardDepth(countBoard) {
     const remaining = getSideStoneTotal(countBoard, PLAYER_ONE) + getSideStoneTotal(countBoard, PLAYER_TWO);
-
-    if (remaining <= 14) return 8;
-    if (remaining <= 24) return 7;
-    return 6;
+    return pickDepthFromBands(remaining, profile.hardDepthBands);
   }
 
   function weightedChoice(items, getWeight) {
@@ -389,17 +400,22 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
     );
     const preferredPool =
       tacticalMoves.length > 0
-        ? clampPoolByScore(tacticalMoves, "easyScore", 10)
-        : clampPoolByScore(moves, "easyScore", 8).slice(0, Math.min(3, moves.length));
+        ? clampPoolByScore(tacticalMoves, "easyScore", profile.easySelection.preferredMargin)
+        : clampPoolByScore(moves, "easyScore", profile.easySelection.fallbackMargin).slice(0, Math.min(3, moves.length));
 
     const fallbackPool = moves.slice(0, Math.min(4, moves.length));
-    const roll = Math.random();
 
-    if (roll < 0.82) {
-      return weightedChoice(preferredPool, (entry) => entry.easyScore + 24)?.move ?? fallbackPool[0].move;
+    if (Math.random() < profile.easySelection.preferredShare) {
+      return (
+        weightedChoice(preferredPool, (entry) => entry.easyScore + profile.easySelection.preferredWeightBase)?.move ??
+        fallbackPool[0].move
+      );
     }
 
-    return weightedChoice(fallbackPool, (entry) => entry.easyScore + 8)?.move ?? fallbackPool[0].move;
+    return (
+      weightedChoice(fallbackPool, (entry) => entry.easyScore + profile.easySelection.fallbackWeightBase)?.move ??
+      fallbackPool[0].move
+    );
   }
 
   function scoreMoveWithSearch(countBoard, player, analysis, depth) {
@@ -434,30 +450,43 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
       }))
       .sort((a, b) => b.searchValue - a.searchValue);
 
-    const smartPool = clampPoolByScore(evaluated, "searchValue", 6);
+    const smartPool = clampPoolByScore(evaluated, "searchValue", profile.mediumSelection.smartMargin);
     const greedyPool = analyses
       .map((entry) => ({
         ...entry,
-        searchValue: scoreMoveWithSearch(countBoard, player, entry, Math.max(2, depth - 1)),
+        searchValue: scoreMoveWithSearch(
+          countBoard,
+          player,
+          entry,
+          Math.max(profile.mediumSelection.minimumSearchDepth, depth - 1)
+        ),
       }))
       .sort((a, b) => b.greedyScore - a.greedyScore);
-    const greedyTop = clampPoolByScore(greedyPool, "greedyScore", 8);
+    const greedyTop = clampPoolByScore(greedyPool, "greedyScore", profile.mediumSelection.greedyMargin);
     const sillyPool = [...greedyPool]
       .sort((a, b) => a.searchValue - b.searchValue)
       .slice(0, Math.max(1, Math.ceil(greedyPool.length / 2)));
     const roll = Math.random();
 
-    if (roll < 0.7) {
-      return weightedChoice(smartPool, (entry) => entry.searchValue + 48)?.move ?? evaluated[0].move;
+    if (roll < profile.mediumSelection.smartShare) {
+      return (
+        weightedChoice(smartPool, (entry) => entry.searchValue + profile.mediumSelection.smartWeightBase)?.move ??
+        evaluated[0].move
+      );
     }
 
-    if (roll < 0.99) {
-      return weightedChoice(greedyTop, (entry) => entry.greedyScore + 20)?.move ?? greedyPool[0].move;
+    if (roll < profile.mediumSelection.smartShare + profile.mediumSelection.greedyShare) {
+      return (
+        weightedChoice(greedyTop, (entry) => entry.greedyScore + profile.mediumSelection.greedyWeightBase)?.move ??
+        greedyPool[0].move
+      );
     }
 
     return (
-      weightedChoice(sillyPool, (entry) => Math.max(1, 24 - entry.searchValue))?.move ??
-      greedyPool[greedyPool.length - 1].move
+      weightedChoice(
+        sillyPool,
+        (entry) => Math.max(1, profile.mediumSelection.sillyWeightBase - entry.searchValue)
+      )?.move ?? greedyPool[greedyPool.length - 1].move
     );
   }
 
@@ -474,9 +503,36 @@ function createKalahAi(model = KALAH_BOARD_MODEL) {
         searchValue: scoreMoveWithSearch(countBoard, player, entry, depth),
       }))
       .sort((a, b) => b.searchValue - a.searchValue);
-    const topMoves = clampPoolByScore(evaluated, "searchValue", 2);
+    const smartPool = clampPoolByScore(evaluated, "searchValue", profile.hardSelection.searchMargin);
+    const smartSet = new Set(smartPool);
+    const remainingPool = getDistinctEntries(evaluated, smartSet);
+    const nextBestPool =
+      clampPoolByScore(remainingPool, "searchValue", profile.hardSelection.nextBestMargin).slice(
+        0,
+        Math.max(1, Math.min(2, remainingPool.length))
+      ) || [];
+    const greedyPool = [...evaluated].sort((a, b) => b.greedyScore - a.greedyScore);
+    const greedyTop = clampPoolByScore(greedyPool, "greedyScore", profile.hardSelection.greedyMargin);
+    const roll = Math.random();
 
-    return weightedChoice(topMoves, (entry) => entry.searchValue + 64)?.move ?? evaluated[0].move;
+    if (roll < profile.hardSelection.smartShare) {
+      return (
+        weightedChoice(smartPool, (entry) => entry.searchValue + profile.hardSelection.smartWeightBase)?.move ??
+        evaluated[0].move
+      );
+    }
+
+    if (roll < profile.hardSelection.smartShare + profile.hardSelection.nextBestShare && nextBestPool.length > 0) {
+      return (
+        weightedChoice(nextBestPool, (entry) => entry.searchValue + profile.hardSelection.nextBestWeightBase)?.move ??
+        nextBestPool[0].move
+      );
+    }
+
+    return (
+      weightedChoice(greedyTop, (entry) => entry.greedyScore + profile.hardSelection.greedyWeightBase)?.move ??
+      greedyPool[0].move
+    );
   }
 
   function chooseMove({ countBoard, stoneBoard, player, difficulty = "medium" }) {

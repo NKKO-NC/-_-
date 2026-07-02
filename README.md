@@ -46,7 +46,7 @@ Then visit `http://127.0.0.1:8123/`.
 ## Features
 
 - 6 pits per player
-- 6 stones per pit at start
+- Switchable game modes: Classic 4-seed and 6-seed variant
 - Replaceable object stones and seal emblems by theme
 - Theme dropdown for `經典`, `禪風`, and `貴器` packs
 - Replaceable object, visual, and sound packs

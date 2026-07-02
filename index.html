@@ -13,7 +13,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260619a" />
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png?v=20260619a" />
-    <link rel="stylesheet" href="styles.css?v=20260627c" />
+    <link rel="stylesheet" href="styles.css?v=20260703a" />
   </head>
   <body>
     <main class="game-app">
@@ -153,7 +153,17 @@
       <section class="floating-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
         <button class="floating-card-close" id="settingsCloseButton" type="button" aria-label="&#38364;&#38281;&#35373;&#23450;">&times;</button>
         <p class="floating-card-kicker">&#35373;&#23450;</p>
-        <h2 id="settingsTitle">&#30059;&#38754;&#35373;&#23450;</h2>
+        <h2 id="settingsTitle">&#36938;&#25138;&#35373;&#23450;</h2>
+        <div class="setting-row">
+          <div>
+            <strong>&#36938;&#25138;&#27169;&#24335;</strong>
+            <small>&#32147;&#20856; 4 &#23376;&#26159;&#30446;&#21069;&#20027;&#35215;&#26684;&#65307;6 &#23376;&#35722;&#39636;&#20445;&#30041;&#20659;&#32113;&#36611;&#38263;&#23616;&#31680;&#22863;&#12290;&#20999;&#25563;&#24460;&#26371;&#37325;&#26032;&#38283;&#22987;&#26032;&#23616;&#12290;</small>
+          </div>
+          <div class="segmented-control" role="group" aria-label="&#36938;&#25138;&#27169;&#24335;">
+            <button class="setting-option is-active" id="gameModeClassic4Button" type="button" data-game-mode="classic4">&#32147;&#20856; 4 &#23376;</button>
+            <button class="setting-option" id="gameModeVariant6Button" type="button" data-game-mode="variant6">6 &#23376;&#35722;&#39636;</button>
+          </div>
+        </div>
         <div class="setting-row">
           <div>
             <strong>變更主題</strong>
@@ -199,7 +209,7 @@
       </section>
     </div>
 
-    <script type="module" src="script.js?v=20260627c"></script>
+    <script type="module" src="script.js?v=20260703a"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {

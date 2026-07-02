@@ -1,11 +1,11 @@
 ﻿import { CoinTossScene } from "./coin/index.js?v=20260619a";
 import { getDialogue, resetDialogueHistory } from "./dialoguePicker.js?v=20260619a";
-import { createKalahAi } from "./game/ai.js?v=20260619a";
+import { createKalahAi } from "./game/ai.js?v=20260703a";
+import { DEFAULT_GAME_MODE_ID, GAME_MODE_DEFINITIONS } from "./core/game-modes.js?v=20260703a";
 import { DIFFICULTY_LABELS, NARRATOR, TEXT } from "./ui/copy.js?v=20260620b";
-import { getGameDomRefs } from "./ui/dom.js?v=20260627a";
+import { getGameDomRefs } from "./ui/dom.js?v=20260703a";
 import { RULE_DEMO_CELLS, RULE_DEMOS } from "./ui/rule-demo-data.js?v=20260627a";
 import {
-  KALAH_BOARD_MODEL,
   PLAYER_ONE,
   PLAYER_TWO,
   createCellLayoutSalt,
@@ -19,7 +19,7 @@ import {
   getStoreIndex,
   getVisiblePitNumber,
   isStoreIndex,
-} from "./core/object-model.js?v=20260619a";
+} from "./core/object-model.js?v=20260703a";
 import {
   PARTICLE_PHYSICS,
   STONE_FLIGHT_PHYSICS,
@@ -33,7 +33,6 @@ import { ARTIFACT_OBJECT_PACK } from "./object-packs/artifact.js?v=20260621a";
 import { ZEN_OBJECT_PACK } from "./object-packs/zen.js?v=20260621b";
 import { createSoundPackRuntime } from "./sound/sound-pack-runtime.js?v=20260619b";
 
-const BOARD_MODEL = KALAH_BOARD_MODEL;
 const THEME_DEFINITIONS = Object.freeze({
   classic: Object.freeze({
     id: "classic",
@@ -62,13 +61,17 @@ let visualPack = createThemeVisualPack(THEME_DEFINITIONS[DEFAULT_THEME_ID]);
 const sound = createSoundPackRuntime({
   manifestUrl: "./sound-packs/procedural-crystal/manifest.json",
 });
-const ai = createKalahAi(BOARD_MODEL);
-const PLAYER_ONE_STORE = getStoreIndex(BOARD_MODEL, PLAYER_ONE);
-const PLAYER_TWO_STORE = getStoreIndex(BOARD_MODEL, PLAYER_TWO);
-const BOARD_SIZE = BOARD_MODEL.boardSize;
-const topPits = BOARD_MODEL.layout.topPits;
-const bottomPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_ONE);
-const playerTwoPits = getPlayerPitIndices(BOARD_MODEL, PLAYER_TWO);
+const GAME_MODE_RUNTIMES = Object.freeze(
+  Object.fromEntries(
+    Object.values(GAME_MODE_DEFINITIONS).map((definition) => [
+      definition.id,
+      Object.freeze({
+        ...definition,
+        ai: createKalahAi(definition.boardModel, definition.aiProfile),
+      }),
+    ])
+  )
+);
 const COMPACT_LANDSCAPE_MAX_HEIGHT = 560;
 const COMPACT_LANDSCAPE_MAX_WIDTH = 980;
 const urlParams = new URLSearchParams(window.location.search);
@@ -121,6 +124,8 @@ const {
   rulePrevButton,
   ruleNextButton,
   ruleStepIndicator,
+  gameModeClassic4Button,
+  gameModeVariant6Button,
   themeSelect,
   pitRomanButton,
   pitArabicButton,
@@ -140,6 +145,14 @@ const {
   resultMenuButton,
   particleField,
 } = getGameDomRefs();
+
+function getGameModeRuntime(gameModeId = DEFAULT_GAME_MODE_ID) {
+  return GAME_MODE_RUNTIMES[gameModeId] ?? GAME_MODE_RUNTIMES[DEFAULT_GAME_MODE_ID];
+}
+
+function getBoardModelForGameMode(gameModeId = DEFAULT_GAME_MODE_ID) {
+  return getGameModeRuntime(gameModeId).boardModel;
+}
 
 function getThemeDefinition(themeId) {
   if (AVAILABLE_THEME_IDS.includes(themeId) && THEME_DEFINITIONS[themeId]) {
@@ -279,7 +292,7 @@ objectPack.applySkin({ coinTossButton });
 let coinScene = createCoinScene();
 
 const state = {
-  board: createInitialBoard(),
+  board: createInitialBoard(DEFAULT_GAME_MODE_ID),
   activePlayer: 1,
   gameOver: false,
   animating: false,
@@ -292,9 +305,10 @@ const state = {
   lastDropIndex: null,
   lastDropKey: 0,
   message: "",
-  layoutSalt: createLayoutSalt(BOARD_MODEL),
+  layoutSalt: createLayoutSalt(getBoardModelForGameMode(DEFAULT_GAME_MODE_ID)),
   screen: "menu",
   mode: "pve",
+  gameModeId: DEFAULT_GAME_MODE_ID,
   aiDifficulty: DEFAULT_AI_DIFFICULTY,
   themeId: DEFAULT_THEME_ID,
   humanPlayer: 1,
@@ -323,6 +337,11 @@ const difficultyButtons = {
   hard: difficultyHardButton,
 };
 
+const gameModeButtons = {
+  classic4: gameModeClassic4Button,
+  variant6: gameModeVariant6Button,
+};
+
 const RULE_AUTO_START_DELAY_MS = 320;
 const RULE_FRAME_HOLD_MS = 1700;
 const RULE_NOTE_FADE_MS = 420;
@@ -336,8 +355,6 @@ const ruleDemoState = {
   notePhase: "in",
   setupInfoId: "player-pits",
 };
-
-const LOW_SIDE_THRESHOLD = 8;
 
 if (ENTRY_FRIENDLY_MODE) {
   document.documentElement.dataset.entryFriendly = "true";
@@ -355,8 +372,56 @@ function updateBoardLayoutMode() {
   document.documentElement.dataset.boardLayout = layoutMode;
 }
 
-function createInitialBoard() {
-  return createInitialObjectBoard(BOARD_MODEL);
+function getCurrentGameMode() {
+  return getGameModeRuntime(state.gameModeId);
+}
+
+function getCurrentBoardModel() {
+  return getCurrentGameMode().boardModel;
+}
+
+function getCurrentAi() {
+  return getCurrentGameMode().ai;
+}
+
+function getCurrentBoardSize() {
+  return getCurrentBoardModel().boardSize;
+}
+
+function getPlayerOneStoreIndex() {
+  return getStoreIndex(getCurrentBoardModel(), PLAYER_ONE);
+}
+
+function getPlayerTwoStoreIndex() {
+  return getStoreIndex(getCurrentBoardModel(), PLAYER_TWO);
+}
+
+function getTopPits() {
+  return getCurrentBoardModel().layout.topPits;
+}
+
+function getBottomPits() {
+  return getPlayerPitIndices(getCurrentBoardModel(), PLAYER_ONE);
+}
+
+function getPlayerTwoPits() {
+  return getPlayerPitIndices(getCurrentBoardModel(), PLAYER_TWO);
+}
+
+function getStartingStonesPerPit() {
+  return getCurrentBoardModel().startingStonesPerPit;
+}
+
+function getLowSideThreshold() {
+  return getStartingStonesPerPit() * 2;
+}
+
+function getGameModeLabel() {
+  return getCurrentGameMode().label;
+}
+
+function createInitialBoard(gameModeId = DEFAULT_GAME_MODE_ID) {
+  return createInitialObjectBoard(getBoardModelForGameMode(gameModeId));
 }
 
 function resetGame() {
@@ -376,7 +441,7 @@ function resetGame() {
   state.lastDropIndex = null;
   state.lastDropKey = 0;
   state.aiThinking = false;
-  state.layoutSalt = createLayoutSalt(BOARD_MODEL);
+  state.layoutSalt = createLayoutSalt(getCurrentBoardModel());
   state.moveHint = null;
   state.message = TEXT.coinReady;
   resetDialogueHistory();
@@ -422,27 +487,27 @@ function maybeOpenEntryFriendlyExplanation() {
 }
 
 function otherPlayer(player) {
-  return getOpponentPlayer(BOARD_MODEL, player);
+  return getOpponentPlayer(getCurrentBoardModel(), player);
 }
 
 function getOwner(index) {
-  return getBoardSpaceOwner(BOARD_MODEL, index);
+  return getBoardSpaceOwner(getCurrentBoardModel(), index);
 }
 
 function isStore(index) {
-  return isStoreIndex(BOARD_MODEL, index);
+  return isStoreIndex(getCurrentBoardModel(), index);
 }
 
 function getStore(player) {
-  return getStoreIndex(BOARD_MODEL, player);
+  return getStoreIndex(getCurrentBoardModel(), player);
 }
 
 function getOpponentStore(player) {
-  return getOpponentStoreIndex(BOARD_MODEL, player);
+  return getOpponentStoreIndex(getCurrentBoardModel(), player);
 }
 
 function getPlayerPits(player) {
-  return getPlayerPitIndices(BOARD_MODEL, player);
+  return getPlayerPitIndices(getCurrentBoardModel(), player);
 }
 
 function getStoneCount(index) {
@@ -499,9 +564,9 @@ function createMoveHint(startIndex, player) {
   let currentIndex = startIndex;
 
   for (let i = 0; i < getStoneCount(startIndex); i += 1) {
-    currentIndex = (currentIndex + 1) % BOARD_SIZE;
+    currentIndex = (currentIndex + 1) % getCurrentBoardSize();
     if (currentIndex === opponentStore) {
-      currentIndex = (currentIndex + 1) % BOARD_SIZE;
+      currentIndex = (currentIndex + 1) % getCurrentBoardSize();
     }
 
     const visit = (cells.get(currentIndex)?.visits ?? 0) + 1;
@@ -565,7 +630,7 @@ function getSideName(player) {
 }
 
 function getSideStoneCount(board, player) {
-  const pits = player === 1 ? bottomPits : playerTwoPits;
+  const pits = player === PLAYER_ONE ? getBottomPits() : getPlayerTwoPits();
   return pits.reduce((total, index) => total + board[index].length, 0);
 }
 
@@ -610,8 +675,8 @@ function getAdvantageDialogue(redScore, purpleScore) {
 }
 
 function getEndDialogue() {
-  const redScore = getStoneCount(PLAYER_ONE_STORE);
-  const purpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const redScore = getStoneCount(getPlayerOneStoreIndex());
+  const purpleScore = getStoneCount(getPlayerTwoStoreIndex());
 
   if (redScore === purpleScore) {
     return getDialogue("endgame.draw");
@@ -642,8 +707,8 @@ function getPostMoveDialogue({
     return getDialogue("move.extraTurn");
   }
 
-  const postRedScore = getStoneCount(PLAYER_ONE_STORE);
-  const postPurpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const postRedScore = getStoneCount(getPlayerOneStoreIndex());
+  const postPurpleScore = getStoneCount(getPlayerTwoStoreIndex());
   const movingScoreGain =
     (movingPlayer === 1 ? postRedScore - preRedScore : postPurpleScore - prePurpleScore);
 
@@ -659,11 +724,12 @@ function getPostMoveDialogue({
 
   const postRedSide = getSideStoneCount(state.board, 1);
   const postPurpleSide = getSideStoneCount(state.board, 2);
-  if (preRedSide > LOW_SIDE_THRESHOLD && postRedSide <= LOW_SIDE_THRESHOLD) {
+  const lowSideThreshold = getLowSideThreshold();
+  if (preRedSide > lowSideThreshold && postRedSide <= lowSideThreshold) {
     return getDialogue("boardState.redSideLow");
   }
 
-  if (prePurpleSide > LOW_SIDE_THRESHOLD && postPurpleSide <= LOW_SIDE_THRESHOLD) {
+  if (prePurpleSide > lowSideThreshold && postPurpleSide <= lowSideThreshold) {
     return getDialogue("boardState.purpleSideLow");
   }
 
@@ -683,7 +749,9 @@ function getDifficultyLabel() {
 }
 
 function getModeSummary() {
-  return state.mode === "pve" ? `\u55ae\u4eba\u5c0d\u6230 \u00b7 ${getDifficultyLabel()}` : "\u96d9\u4eba\u5c0d\u6230";
+  return state.mode === "pve"
+    ? `\u55ae\u4eba\u5c0d\u6230 \u00b7 ${getDifficultyLabel()} \u00b7 ${getGameModeLabel()}`
+    : `\u96d9\u4eba\u5c0d\u6230 \u00b7 ${getGameModeLabel()}`;
 }
 
 function getCoinResultText(result) {
@@ -717,7 +785,7 @@ async function maybeRunAiTurn() {
     return;
   }
 
-  const move = ai.chooseMove({
+  const move = getCurrentAi().chooseMove({
     stoneBoard: state.board,
     player: state.aiPlayer,
     difficulty: state.aiDifficulty,
@@ -748,8 +816,8 @@ async function makeMove(startIndex) {
   boardEl.classList.add("is-sowing");
 
   const movingPlayer = state.activePlayer;
-  const preRedScore = getStoneCount(PLAYER_ONE_STORE);
-  const prePurpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const preRedScore = getStoneCount(getPlayerOneStoreIndex());
+  const prePurpleScore = getStoneCount(getPlayerTwoStoreIndex());
   const preRedSide = getSideStoneCount(state.board, 1);
   const prePurpleSide = getSideStoneCount(state.board, 2);
   const ownStore = getStore(movingPlayer);
@@ -767,7 +835,7 @@ async function makeMove(startIndex) {
   while (stones.length > 0) {
     if (token !== state.animationToken) return;
 
-    currentIndex = (currentIndex + 1) % BOARD_SIZE;
+    currentIndex = (currentIndex + 1) % getCurrentBoardSize();
     if (currentIndex === opponentStore) continue;
 
     const stoneOwner = stones.shift();
@@ -793,7 +861,7 @@ async function makeMove(startIndex) {
   const landedInOwnPit = !isStore(currentIndex) && getOwner(currentIndex) === movingPlayer;
 
   if (landedInOwnPit && getStoneCount(currentIndex) === 1) {
-    const oppositeIndex = getOppositePitIndex(BOARD_MODEL, currentIndex);
+    const oppositeIndex = getOppositePitIndex(getCurrentBoardModel(), currentIndex);
     const oppositeCount = getStoneCount(oppositeIndex);
 
     if (oppositeCount > 0) {
@@ -870,6 +938,10 @@ async function makeMove(startIndex) {
 }
 
 function maybeEndGame() {
+  const bottomPits = getBottomPits();
+  const playerTwoPits = getPlayerTwoPits();
+  const playerOneStore = getPlayerOneStoreIndex();
+  const playerTwoStore = getPlayerTwoStoreIndex();
   const playerOneEmpty = bottomPits.every((index) => getStoneCount(index) === 0);
   const playerTwoEmpty = playerTwoPits.every((index) => getStoneCount(index) === 0);
 
@@ -878,23 +950,23 @@ function maybeEndGame() {
   const playerOneRemainder = bottomPits.flatMap((index) => state.board[index]);
   const playerTwoRemainder = playerTwoPits.flatMap((index) => state.board[index]);
 
-  state.board[PLAYER_ONE_STORE].push(...playerOneRemainder);
-  state.board[PLAYER_TWO_STORE].push(...playerTwoRemainder);
+  state.board[playerOneStore].push(...playerOneRemainder);
+  state.board[playerTwoStore].push(...playerTwoRemainder);
 
   for (const index of [...bottomPits, ...playerTwoPits]) {
     state.board[index] = [];
     randomizeCell(index);
   }
 
-  randomizeCell(PLAYER_ONE_STORE);
-  randomizeCell(PLAYER_TWO_STORE);
+  randomizeCell(playerOneStore);
+  randomizeCell(playerTwoStore);
   state.gameOver = true;
   return true;
 }
 
 function getEndMessage() {
-  const redScore = getStoneCount(PLAYER_ONE_STORE);
-  const purpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const redScore = getStoneCount(getPlayerOneStoreIndex());
+  const purpleScore = getStoneCount(getPlayerTwoStoreIndex());
 
   if (redScore === purpleScore) return `${TEXT.draw} ${redScore} : ${purpleScore}`;
   return redScore > purpleScore
@@ -911,8 +983,12 @@ function render() {
   boardEl.innerHTML = "";
   boardEl.classList.toggle("is-sowing", state.animating);
   boardEl.classList.toggle("is-locked", state.awaitingCoinToss || state.aiThinking || isAiTurn());
+  const topPits = getTopPits();
+  const bottomPits = getBottomPits();
+  const playerOneStore = getPlayerOneStoreIndex();
+  const playerTwoStore = getPlayerTwoStoreIndex();
   boardEl.appendChild(
-    createStore(PLAYER_TWO_STORE, `${getPlayerName(PLAYER_TWO)}${TEXT.store}`, getPlayerCssClass(PLAYER_TWO, "store"))
+    createStore(playerTwoStore, `${getPlayerName(PLAYER_TWO)}${TEXT.store}`, getPlayerCssClass(PLAYER_TWO, "store"))
   );
 
   topPits.forEach((index, position) => {
@@ -924,12 +1000,12 @@ function render() {
   });
 
   boardEl.appendChild(
-    createStore(PLAYER_ONE_STORE, `${getPlayerName(PLAYER_ONE)}${TEXT.store}`, getPlayerCssClass(PLAYER_ONE, "store"))
+    createStore(playerOneStore, `${getPlayerName(PLAYER_ONE)}${TEXT.store}`, getPlayerCssClass(PLAYER_ONE, "store"))
   );
   playerOneLabel.textContent = getScoreLabel(PLAYER_ONE);
   playerTwoLabel.textContent = getScoreLabel(PLAYER_TWO);
-  playerOneScore.querySelector("strong").textContent = getStoneCount(PLAYER_ONE_STORE);
-  playerTwoScore.querySelector("strong").textContent = getStoneCount(PLAYER_TWO_STORE);
+  playerOneScore.querySelector("strong").textContent = getStoneCount(playerOneStore);
+  playerTwoScore.querySelector("strong").textContent = getStoneCount(playerTwoStore);
   playerOneScore.classList.toggle("active", state.activePlayer === PLAYER_ONE && !state.gameOver);
   playerTwoScore.classList.toggle("active", state.activePlayer === PLAYER_TWO && !state.gameOver);
   renderTurnIndicator();
@@ -957,8 +1033,8 @@ function renderInterfaceState() {
 
   controlHint.textContent =
     state.mode === "pve"
-      ? "\u7b2c\u4e00\u6b21\u5efa\u8b70\uff1a\u7c21\u55ae\u96e3\u5ea6\u3001\u963f\u62c9\u4f2f\u6578\u5b57\u3001\u8def\u5f91\u63d0\u793a\u5df2\u958b\u555f\u3002"
-      : TEXT.pvpHint;
+      ? `${getGameModeLabel()} \u00b7 \u7b2c\u4e00\u6b21\u5efa\u8b70\uff1a\u7c21\u55ae\u96e3\u5ea6\u3001\u963f\u62c9\u4f2f\u6578\u5b57\u3001\u8def\u5f91\u63d0\u793a\u5df2\u958b\u555f\u3002`
+      : `${TEXT.pvpHint} \u00b7 ${getGameModeLabel()}`;
   aiDialogue.hidden = state.screen !== "game";
   aiDialogueSpeaker.textContent = state.aiDialogue.speaker;
   aiDialogueLine.textContent = state.aiDialogue.line;
@@ -967,6 +1043,11 @@ function renderInterfaceState() {
 
 function renderSettingsState() {
   const isRoman = state.pitNumberStyle === "roman";
+
+  for (const [gameModeId, button] of Object.entries(gameModeButtons)) {
+    button.classList.toggle("is-active", state.gameModeId === gameModeId);
+    button.setAttribute("aria-pressed", String(state.gameModeId === gameModeId));
+  }
 
   themeSelect.value = AVAILABLE_THEME_IDS.includes(state.themeId) ? state.themeId : DEFAULT_THEME_ID;
   pitRomanButton.classList.toggle("is-active", isRoman);
@@ -981,6 +1062,25 @@ function renderSettingsState() {
 function syncCoinSceneFace() {
   coinTossButton.classList.remove("is-fallback");
   coinScene.setFace(state.coinResult || "front");
+}
+
+function setGameMode(gameModeId) {
+  const nextGameMode = getGameModeRuntime(gameModeId);
+  if (state.gameModeId === nextGameMode.id) {
+    renderSettingsState();
+    return;
+  }
+
+  state.gameModeId = nextGameMode.id;
+  state.moveHint = null;
+
+  if (state.screen === "game") {
+    closeFloatingCard(settingsOverlay);
+    resetGame();
+    return;
+  }
+
+  renderInterfaceState();
 }
 
 function setTheme(themeId) {
@@ -1221,7 +1321,7 @@ function createRuleSetupCard(rule) {
   return `
     <div class="rule-demo-guidance">
       <p class="rule-demo-primary">&#36938;&#25138;&#29256;&#38754;&#35469;&#35672;</p>
-      <p class="rule-demo-secondary">&#27491;&#24335;&#26827;&#30436;&#27599;&#20491;&#26827;&#22353;&#25918; 6 &#38982;&#65307;&#36889;&#35041;&#29992;&#23569;&#37327;&#26827;&#23376;&#31034;&#31684;&#12290;</p>
+      <p class="rule-demo-secondary">&#27491;&#24335;&#26827;&#30436;&#27599;&#20491;&#26827;&#22353;&#25918; ${getStartingStonesPerPit()} &#38982;&#65307;&#36889;&#35041;&#29992;&#23569;&#37327;&#26827;&#23376;&#31034;&#31684;&#12290;</p>
     </div>
     <div class="rule-setup-layout">
       <div class="rule-demo-board setup-board" aria-label="&#36938;&#25138;&#21021;&#22987;&#35373;&#32622;&#31034;&#31684;">
@@ -1402,7 +1502,7 @@ function renderTurnIndicator() {
   const activePlayer = showingTurn ? state.activePlayer : 0;
   const neutralSkin = getNeutralSkin();
 
-  for (const player of BOARD_MODEL.players) {
+  for (const player of getCurrentBoardModel().players) {
     document.body.classList.toggle(getPlayerCssClass(player, "bodyTurn"), activePlayer === player);
     turnIndicator.classList.toggle(getPlayerCssClass(player, "turnIndicator"), activePlayer === player);
   }
@@ -1480,8 +1580,8 @@ function resetCoinVisual() {
 }
 
 function showResultOverlay() {
-  const redScore = getStoneCount(PLAYER_ONE_STORE);
-  const purpleScore = getStoneCount(PLAYER_TWO_STORE);
+  const redScore = getStoneCount(getPlayerOneStoreIndex());
+  const purpleScore = getStoneCount(getPlayerTwoStoreIndex());
   const winner = redScore === purpleScore ? 0 : redScore > purpleScore ? 1 : 2;
   const resultSound =
     winner === 0 ? "result.draw" : state.mode === "pve" && winner !== state.humanPlayer ? "result.defeat" : "result.victory";
@@ -1557,7 +1657,7 @@ function launchParticles(anchor, count, player) {
 function createPit(index, owner, column, row) {
   const button = document.createElement("button");
   const count = getStoneCount(index);
-  const visibleNumber = getVisiblePitNumber(BOARD_MODEL, index, owner);
+  const visibleNumber = getVisiblePitNumber(getCurrentBoardModel(), index, owner);
 
   button.type = "button";
   button.className = `pit cell${state.lastDropIndex === index ? " just-dropped" : ""}${getMoveHintClasses(index)}`;
@@ -1886,6 +1986,14 @@ difficultyMediumButton.addEventListener("click", () => {
 difficultyHardButton.addEventListener("click", () => {
   state.aiDifficulty = "hard";
   renderInterfaceState();
+});
+
+gameModeClassic4Button.addEventListener("click", () => {
+  setGameMode("classic4");
+});
+
+gameModeVariant6Button.addEventListener("click", () => {
+  setGameMode("variant6");
 });
 
 startButton.addEventListener("click", resetGame);
